@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Linq;
 using Template10.Common;
@@ -18,6 +19,7 @@ namespace vFlash.Views
         {
             Instance = this;
             InitializeComponent();
+            LoginModal.IsModal = true;
         }
 
         public Shell(INavigationService navigationService) : this()
@@ -29,6 +31,15 @@ namespace vFlash.Views
         {
             MyHamburgerMenu.NavigationService = navigationService;
         }
+
+        #region Login
+
+        private void LoginLoggedIn(object sender, EventArgs e)
+        {
+            LoginModal.IsModal = false;
+        }
+
+        #endregion
     }
 }
 

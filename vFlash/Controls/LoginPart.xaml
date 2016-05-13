@@ -1,0 +1,37 @@
+﻿<UserControl
+    x:Class="vFlash.Controls.LoginPart"
+xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="using:vFlash.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="391.094" x:Name="ThisPage"
+             mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <!-- header -->
+        <Rectangle Fill="DarkBlue" />
+        <TextBlock Foreground="White" VerticalAlignment="Center" Margin="20,0" FontSize="24">Login</TextBlock>
+        <!--<Button Margin="12" Foreground="White" Click="CloseClicked" VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource TextBlockButtonStyle}">
+            <SymbolIcon Symbol="Clear" />
+        </Button>--> 
+
+        <!-- login form -->
+        <StackPanel Grid.Row="2" Margin="20, 16" DataContext="{Binding ElementName=ThisPage}" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button x:Name="LoginMSButton" Click="LoginMSButton_Click">
+                <RelativePanel>
+                    <Image Source="/Assets/msLogo.png" Height="30" Width="30" x:Name="msLogo"/>
+                    <TextBlock RelativePanel.RightOf="msLogo" Text="Login with Microsoft Account" Margin="8,4,0,0"/>
+                </RelativePanel>
+            </Button>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

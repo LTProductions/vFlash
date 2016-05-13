@@ -6,42 +6,59 @@
       xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="using:vFlash.Views"
+      xmlns:myControls="using:vFlash.Controls"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:views="using:vFlash.Views"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
       mc:Ignorable="d">
 
-    <Controls:HamburgerMenu x:Name="MyHamburgerMenu">
+    <Grid>
 
-        <Controls:HamburgerMenu.PrimaryButtons>
-            <!--  mainpage button  -->
-            <Controls:HamburgerButtonInfo ClearHistory="True" PageType="views:MainPage">
-                <StackPanel Orientation="Horizontal">
-                    <SymbolIcon Width="48" Height="48"
+        <Controls:HamburgerMenu x:Name="MyHamburgerMenu">
+
+            <Controls:HamburgerMenu.PrimaryButtons>
+                <!--  mainpage button  -->
+                <Controls:HamburgerButtonInfo ClearHistory="True" PageType="views:MainPage">
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Width="48" Height="48"
                                 Symbol="Home" />
-                    <TextBlock Margin="12,0,0,0" VerticalAlignment="Center"
+                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center"
                                Text="Home" />
-                </StackPanel>
-            </Controls:HamburgerButtonInfo>
-        </Controls:HamburgerMenu.PrimaryButtons>
+                    </StackPanel>
+                </Controls:HamburgerButtonInfo>
+            </Controls:HamburgerMenu.PrimaryButtons>
 
-        <Controls:HamburgerMenu.SecondaryButtons>
-            <!--  settingspage button  -->
-            <Controls:HamburgerButtonInfo x:Name="SettingsButton" PageParameter="0"
+            <Controls:HamburgerMenu.SecondaryButtons>
+                <!--  settingspage button  -->
+                <Controls:HamburgerButtonInfo x:Name="SettingsButton" PageParameter="0"
                                           PageType="views:SettingsPage">
-                <Controls:HamburgerButtonInfo.NavigationTransitionInfo>
-                    <SuppressNavigationTransitionInfo />
-                </Controls:HamburgerButtonInfo.NavigationTransitionInfo>
-                <StackPanel Orientation="Horizontal">
-                    <SymbolIcon Width="48" Height="48"
+                    <Controls:HamburgerButtonInfo.NavigationTransitionInfo>
+                        <SuppressNavigationTransitionInfo />
+                    </Controls:HamburgerButtonInfo.NavigationTransitionInfo>
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Width="48" Height="48"
                                 Symbol="Setting" />
-                    <TextBlock Margin="12,0,0,0" VerticalAlignment="Center"
+                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center"
                                Text="Settings" />
-                </StackPanel>
-            </Controls:HamburgerButtonInfo>
-        </Controls:HamburgerMenu.SecondaryButtons>
+                    </StackPanel>
+                </Controls:HamburgerButtonInfo>
+            </Controls:HamburgerMenu.SecondaryButtons>
 
-    </Controls:HamburgerMenu>
+        </Controls:HamburgerMenu>
+
+        <Controls:ModalDialog x:Name="LoginModal"
+                              CanBackButtonDismiss="False"
+                              DisableBackButtonWhenModal="True">
+            <Controls:ModalDialog.ModalContent>
+                <myControls:LoginPart x:Name="loginPart"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  LoggedIn="LoginLoggedIn" />
+                                
+            </Controls:ModalDialog.ModalContent>
+        </Controls:ModalDialog>
+
+    </Grid>
 
 </Page>
 

@@ -6,6 +6,8 @@ using Template10.Controls;
 using Template10.Common;
 using System;
 using System.Linq;
+using Microsoft.WindowsAzure.MobileServices;
+using vFlash.Models;
 
 namespace vFlash
 {
@@ -32,6 +34,20 @@ namespace vFlash
             #endregion
         }
 
+        #region Azure Stuff
+
+        // Mobile App
+        public static MobileServiceClient MobileService =
+        new MobileServiceClient(
+            "https://vflash.azurewebsites.net"
+        );
+
+
+        // Tables
+        public static IMobileServiceTable<ClassData> classTable;
+
+        #endregion
+
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
         {
             if (Window.Current.Content as ModalDialog == null)
@@ -52,7 +68,6 @@ namespace vFlash
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
             // long-running startup tasks go here
-
             NavigationService.Navigate(typeof(Views.MainPage));
             await Task.CompletedTask;
         }
