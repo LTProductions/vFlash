@@ -9,7 +9,7 @@ using vFlash.Utils;
 
 namespace vFlash.Models
 {
-    public class ClassData : BaseDataModel
+    public class ClassData : BaseAzureModel
     {
         // Inherits all typical Azure columns from BaseDataModel.
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
-    public class BaseDataModel : BaseModel
+    public class BaseAzureModel : BaseModel
     {
         // Inherits PropertyChangedEvent from BaseModel.
 
