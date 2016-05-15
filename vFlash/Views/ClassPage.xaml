@@ -12,7 +12,7 @@
       xmlns:vm="using:vFlash.ViewModels" mc:Ignorable="d">
 
     <Page.DataContext>
-        <vm:MainPageViewModel x:Name="ClassPageViewModel" />
+        <vm:ClassPageViewModel x:Name="ClassPageViewModel" />
     </Page.DataContext>
 
     <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -42,24 +43,27 @@ namespace vFlash.ViewModels
                     RaisePropertyChanged();
                     // Navigate.
                     // this.NavigationService.Navigate(typeof(Views.SubclassPage), SelectedItem);
-
                 }
             }
         }
 
         #endregion
 
+        #region Constructor
+
         public ClassPageViewModel()
         {
-
+            LoadData();
         }
 
+        #endregion
 
         #region Methods
 
         public async void LoadData()
         {
-
+            var cd = new ClassData();
+            ClassList = new ObservableCollection<ClassData>(await cd.GetClassList());
         }
 
         #endregion

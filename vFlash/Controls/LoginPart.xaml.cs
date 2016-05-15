@@ -41,6 +41,7 @@ namespace vFlash.Controls
                     if (TryLoadUser(out user))
                     {
                         client.CurrentUser = user;
+                        App.MobileService.CurrentUser = client.CurrentUser;
                     }
                 }
 
@@ -51,6 +52,7 @@ namespace vFlash.Controls
                     if (TryLoadUser(out user))
                     {
                         client.CurrentUser = user;
+                        App.MobileService.CurrentUser = client.CurrentUser;
                     }
                 }
 

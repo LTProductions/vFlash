@@ -62,21 +62,21 @@ namespace vFlash.Models
             }
         }
 
-        private Version _version;
+        //private Version _version;
 
-        [JsonProperty(PropertyName = "version")]
-        public Version Version
-        {
-            get { return _version; }
-            set
-            {
-                if (_version != value)
-                {
-                    _version = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
+        //[JsonProperty(PropertyName = "version")]
+        //public Version Version
+        //{
+        //    get { return _version; }
+        //    set
+        //    {
+        //        if (_version != value)
+        //        {
+        //            _version = value;
+        //            NotifyPropertyChanged();
+        //        }
+        //    }
+        //}
 
         private Boolean _deleted;
 
