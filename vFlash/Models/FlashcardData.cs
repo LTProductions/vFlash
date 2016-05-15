@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
-    public class ClassData : BaseModel
+    public class FlashcardData : BaseModel
     {
+
         private string _id;
 
         [JsonProperty(PropertyName = "id")]
@@ -106,8 +107,21 @@ namespace vFlash.Models
             }
         }
 
+        private string _fcstack_id;
 
-
+        [JsonProperty(PropertyName = "fcstack_id")]
+        public string FCStack_ID
+        {
+            get { return _fcstack_id; }
+            set
+            {
+                if (_fcstack_id != value)
+                {
+                    _fcstack_id = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
 
     }

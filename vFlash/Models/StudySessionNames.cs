@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
-    public class ClassData : BaseModel
+    public class StudySessionNames : BaseModel
     {
+
         private string _id;
 
         [JsonProperty(PropertyName = "id")]
@@ -105,10 +106,6 @@ namespace vFlash.Models
                 }
             }
         }
-
-
-
-
 
     }
 }

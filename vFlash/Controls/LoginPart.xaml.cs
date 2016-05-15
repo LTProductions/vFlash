@@ -54,10 +54,11 @@ namespace vFlash.Controls
                     }
                 }
 
-
+                // Views.Busy.SetBusy(true, "Logging In...");
                 var table = client.GetTable<ClassData>();
                 var items = await table.Take(3).ToEnumerableAsync();
                 LoggedIn?.Invoke(this, EventArgs.Empty);
+                // Views.Busy.SetBusy(false);
             }
             catch (Exception ex)
             {

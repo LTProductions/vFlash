@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
-    public class ClassData : BaseModel
+    public class SubclassData : BaseModel
     {
+
         private string _id;
 
         [JsonProperty(PropertyName = "id")]
@@ -106,8 +107,21 @@ namespace vFlash.Models
             }
         }
 
+        private string _class_id;
 
-
+        [JsonProperty(PropertyName = "class_id")]
+        public string Class_ID
+        {
+            get { return _class_id; }
+            set
+            {
+                if (_class_id != value)
+                {
+                    _class_id = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
 
     }

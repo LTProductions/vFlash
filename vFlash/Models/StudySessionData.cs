@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
-    public class ClassData : BaseModel
+    public class StudySessionData : BaseModel
     {
+
         private string _id;
 
         [JsonProperty(PropertyName = "id")]
@@ -106,9 +107,21 @@ namespace vFlash.Models
             }
         }
 
+        private string _sessionname_id;
 
-
-
+        [JsonProperty(PropertyName = "sessionname_id")]
+        public string SessionName_ID
+        {
+            get { return _sessionname_id; }
+            set
+            {
+                if (_sessionname_id != value)
+                {
+                    _sessionname_id = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
     }
 }

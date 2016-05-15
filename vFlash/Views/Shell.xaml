@@ -58,6 +58,12 @@
             </Controls:ModalDialog.ModalContent>
         </Controls:ModalDialog>
 
+        <!--<Controls:ModalDialog x:Name="RegisterModal"
+                              CanBackButtonDismiss="False"
+                              DisableBackButtonWhenModal="True">
+            
+        </Controls:ModalDialog>-->
+
     </Grid>
 
 </Page>

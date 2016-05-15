@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
-    public class ClassData : BaseModel
+    public class ScoreData : BaseModel
     {
         private string _id;
 
@@ -106,9 +106,37 @@ namespace vFlash.Models
             }
         }
 
+        private string _fcdata_id;
 
+        [JsonProperty(PropertyName = "fcdata_id")]
+        public string FCData_ID
+        {
+            get { return _fcdata_id; }
+            set
+            {
+                if (_fcdata_id != value)
+                {
+                    _fcdata_id = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
+        private string _sessiondata_id;
 
+        [JsonProperty(PropertyName = "sessiondata_id")]
+        public string SessionData_ID
+        {
+            get { return _sessiondata_id; }
+            set
+            {
+                if (_sessiondata_id != value)
+                {
+                    _sessiondata_id = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
     }
 }
