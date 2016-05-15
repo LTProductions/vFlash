@@ -1,5 +1,4 @@
-﻿using Microsoft.WindowsAzure.MobileServices;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,20 +11,20 @@ using Windows.UI.Xaml.Navigation;
 
 namespace vFlash.ViewModels
 {
-    public class ClassPageViewModel : ViewModelBase
+    class SubclassPageViewModel : ViewModelBase
     {
 
         #region Properties and Fields
 
-        private ObservableCollection<ClassData> _classList;
-        public ObservableCollection<ClassData> ClassList
+        private ObservableCollection<SubclassData> _subclassList;
+        public ObservableCollection<SubclassData> SubclassList
         {
-            get { return _classList; }
+            get { return _subclassList; }
             set
             {
-                if (_classList != value)
+                if (_subclassList != value)
                 {
-                    _classList = value;
+                    _subclassList = value;
                     RaisePropertyChanged();
                 }
             }
@@ -42,18 +41,20 @@ namespace vFlash.ViewModels
                     _selectedItem = value;
                     RaisePropertyChanged();
                     // Navigate.
-                    this.NavigationService.Navigate(typeof(Views.SubclassPage), SelectedItem);
+                    // this.NavigationService.Navigate(typeof(Views.FCStackPage), SelectedItem);
                 }
             }
         }
+
+        private ClassData passedItem;
 
         #endregion
 
         #region Constructor
 
-        public ClassPageViewModel()
+        public SubclassPageViewModel()
         {
-            LoadData();
+            
         }
 
         #endregion
@@ -62,8 +63,10 @@ namespace vFlash.ViewModels
 
         public async void LoadData()
         {
-            var cd = new ClassData();
-            ClassList = new ObservableCollection<ClassData>(await cd.GetList<ClassData>());
+            var scd = new SubclassData();
+            var list = await scd.GetList<SubclassData>();
+            var queriedList = list.Where(p => p.Class_ID == passedItem.Id);
+            SubclassList = new ObservableCollection<SubclassData>(queriedList);
         }
 
         #endregion
@@ -75,6 +78,8 @@ namespace vFlash.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {
+            passedItem = (ClassData)parameter;
+            LoadData();
             Value = (suspensionState.ContainsKey(nameof(Value))) ? suspensionState[nameof(Value)]?.ToString() : parameter?.ToString();
             await Task.CompletedTask;
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
-    public class SubclassData : BaseModel
+    public class SubclassData : BaseAzureModel
     {
 
         private string _name;
@@ -42,6 +42,9 @@ namespace vFlash.Models
             }
         }
 
-
+        public static explicit operator SubclassData(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -45,6 +45,7 @@ namespace vFlash
 
         // Tables
         public static IMobileServiceTable<ClassData> classTable;
+        public static IMobileServiceTable<SubclassData> subclassTable;
 
         #endregion
 
