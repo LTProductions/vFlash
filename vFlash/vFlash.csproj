@@ -106,7 +106,7 @@
     <Compile Include="Controls\RegisterPart.xaml.cs">
       <DependentUpon>RegisterPart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\BaseDataModel.cs" />
+    <Compile Include="Models\BaseAzureModel.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\ClassData.cs" />
     <Compile Include="Models\FCStackData.cs" />

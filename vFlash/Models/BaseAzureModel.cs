@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,9 +99,34 @@ namespace vFlash.Models
 
         // Generic methods for querying Azure data.
 
+            // List of all.
         public async Task<List<T>> GetList<T>()
         {
-            return await App.MobileService.GetTable<T>().ToListAsync();
+            try
+            {
+                return await App.MobileService.GetTable<T>().ToListAsync();
+            }
+
+            catch
+            {
+                //error
+                return null;
+            }
+        }
+
+        // Queried list.
+        public async Task<IEnumerable<T>> GetEnum<T>(IMobileServiceTableQuery<T> query)
+        {
+            try
+            {
+                return await query.ToEnumerableAsync();
+            }
+
+            catch
+            {
+                // error
+                return null;
+            }
         }
 
         public async Task<Boolean> InsertItem<T>(T item)

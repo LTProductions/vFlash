@@ -63,10 +63,22 @@ namespace vFlash.ViewModels
 
         public async void LoadData()
         {
+            #region GetList...not needed
+            //var scd = new SubclassData();
+            //var list = await scd.GetList<SubclassData>();
+            //var queriedList = list.Where(p => p.Class_ID == passedItem.Id);
+            //SubclassList = new ObservableCollection<SubclassData>(queriedList);
+            #endregion
+
+            // Create a SubclassData item and a query to get only the relevant data.
             var scd = new SubclassData();
-            var list = await scd.GetList<SubclassData>();
-            var queriedList = list.Where(p => p.Class_ID == passedItem.Id);
-            SubclassList = new ObservableCollection<SubclassData>(queriedList);
+            var query = from SubclassData in
+                            App.MobileService.GetTable<SubclassData>()
+                        where SubclassData.Class_ID == passedItem.Id
+                        select new SubclassData();
+
+            var list = await scd.GetEnum<SubclassData>(query);
+            SubclassList = new ObservableCollection<SubclassData>(list);
         }
 
         #endregion
