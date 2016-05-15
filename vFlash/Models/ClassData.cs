@@ -32,53 +32,5 @@ namespace vFlash.Models
             }
         }
 
-
-        #region Methods
-
-        public async Task<List<ClassData>> GetClassList()
-        {
-            try
-            {
-                return await App.MobileService.GetTable<ClassData>().ToListAsync();
-            }
-
-            catch (Exception e)
-            {
-                // error
-                return null;
-            }
-        }
-
-        public async Task<Boolean> CreateClass(ClassData classItem)
-        {
-            try
-            {
-                await App.MobileService.GetTable<ClassData>().InsertAsync(classItem);
-                return true;
-            }
-
-            catch
-            {
-                // error
-                return false;
-            }
-        }
-
-        public async Task<Boolean> DeleteClass(ClassData classItem)
-        {
-            try
-            {
-                await App.MobileService.GetTable<ClassData>().DeleteAsync(classItem);
-                return true;
-            }
-            catch
-            {
-                // error
-                return false;
-            }
-        }
-
-        #endregion
-
     }
 }

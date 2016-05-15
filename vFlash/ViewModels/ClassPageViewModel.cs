@@ -63,7 +63,7 @@ namespace vFlash.ViewModels
         public async void LoadData()
         {
             var cd = new ClassData();
-            ClassList = new ObservableCollection<ClassData>(await cd.GetClassList());
+            ClassList = new ObservableCollection<ClassData>(await cd.GetList<ClassData>());
         }
 
         #endregion
