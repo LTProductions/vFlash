@@ -15,54 +15,68 @@
         <vm:ClassPageViewModel x:Name="ClassPageViewModel" />
     </Page.DataContext>
 
-    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
-                <VisualState x:Name="VisualStateNarrow">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="VisualStateNormal">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="{StaticResource NormalMinWidth}" />
-                    </VisualState.StateTriggers>
-                </VisualState>
-                <VisualState x:Name="VisualStateWide">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="{StaticResource WideMinWidth}" />
-                    </VisualState.StateTriggers>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-        <controls:PageHeader x:Name="pageHeader" RelativePanel.AlignLeftWithPanel="True"
+        <RelativePanel>
+
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
+                    <VisualState x:Name="VisualStateNarrow">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="VisualStateNormal">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="{StaticResource NormalMinWidth}" />
+                        </VisualState.StateTriggers>
+                    </VisualState>
+                    <VisualState x:Name="VisualStateWide">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="{StaticResource WideMinWidth}" />
+                        </VisualState.StateTriggers>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+
+            <controls:PageHeader x:Name="pageHeader" RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
                              RelativePanel.AlignTopWithPanel="True" Text="Classes">
 
-            <!--  secondary commands  -->
-            <!--<controls:PageHeader.SecondaryCommands>
+                <!--  secondary commands  -->
+                <!--<controls:PageHeader.SecondaryCommands>
                 <AppBarButton Click="{x:Bind ViewModel.GotoSettings}" Label="Settings" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoPrivacy}" Label="Privacy" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="About" />
             </controls:PageHeader.SecondaryCommands>-->
 
-        </controls:PageHeader>
+            </controls:PageHeader>
 
 
-        <ListBox x:Name="Classes" ItemsSource="{Binding ClassList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <RelativePanel>
-                        <TextBlock Text="{Binding Name}" />
-                    </RelativePanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        
-        
-    </RelativePanel>
+            <ListBox x:Name="Classes" ItemsSource="{Binding ClassList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <RelativePanel>
+                            <TextBlock Text="{Binding Name}" />
+                        </RelativePanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+        </RelativePanel>
+
+        <Grid x:Name="BottomBar" Grid.Row="2">
+            <CommandBar ClosedDisplayMode="Compact">
+                <AppBarButton Icon="Add" Label="Add Class" Command="{Binding AddClassNavCommand}" />
+            </CommandBar>
+        </Grid>
+    </Grid>
 </Page>
