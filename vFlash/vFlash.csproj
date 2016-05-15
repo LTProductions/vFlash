@@ -106,6 +106,7 @@
     <Compile Include="Controls\RegisterPart.xaml.cs">
       <DependentUpon>RegisterPart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\BaseDataModel.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\ClassData.cs" />
     <Compile Include="Models\FCStackData.cs" />
@@ -123,6 +124,9 @@
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
     <Compile Include="Views\Busy.xaml.cs">
       <DependentUpon>Busy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ClassPage.xaml.cs">
+      <DependentUpon>ClassPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DetailPage.xaml.cs">
       <DependentUpon>DetailPage.xaml</DependentUpon>
@@ -187,6 +191,10 @@
     <Page Include="Views\Busy.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ClassPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DetailPage.xaml">
       <SubType>Designer</SubType>
