@@ -25,7 +25,7 @@ namespace vFlash.ViewModels
                 if (_subclassList != value)
                 {
                     _subclassList = value;
-                    RaisePropertyChanged();
+                    // Not needed in observable collection. RaisePropertyChanged();
                 }
             }
         }
@@ -46,6 +46,7 @@ namespace vFlash.ViewModels
             }
         }
 
+        // Item passed when navigating from ClassPage.
         private ClassData passedItem;
 
         #endregion

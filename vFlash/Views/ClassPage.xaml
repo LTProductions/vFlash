@@ -23,7 +23,9 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <RelativePanel>
+        <controls:PageHeader x:Name="pageHeader" Text="Classes"/>
+
+        <RelativePanel Grid.Row="1">
 
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
@@ -47,18 +49,18 @@
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
 
-            <controls:PageHeader x:Name="pageHeader" RelativePanel.AlignLeftWithPanel="True"
+            <!--<controls:PageHeader x:Name="pageHeader" RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
-                             RelativePanel.AlignTopWithPanel="True" Text="Classes">
+                             RelativePanel.AlignTopWithPanel="True" Text="Classes">-->
 
                 <!--  secondary commands  -->
                 <!--<controls:PageHeader.SecondaryCommands>
                 <AppBarButton Click="{x:Bind ViewModel.GotoSettings}" Label="Settings" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoPrivacy}" Label="Privacy" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="About" />
-            </controls:PageHeader.SecondaryCommands>-->
+            </controls:PageHeader.SecondaryCommands>
 
-            </controls:PageHeader>
+            </controls:PageHeader> -->
 
 
             <ListBox x:Name="Classes" ItemsSource="{Binding ClassList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
