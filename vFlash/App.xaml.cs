@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using Microsoft.WindowsAzure.MobileServices;
 using vFlash.Models;
+using vFlash.Utils;
 
 namespace vFlash
 {
@@ -55,6 +56,7 @@ namespace vFlash
             {
                 // create a new frame 
                 var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);
+                await SavedLogin.MSLogin(false);
                 // create modal root
                 Window.Current.Content = new ModalDialog
                 {
@@ -69,7 +71,8 @@ namespace vFlash
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
             // long-running startup tasks go here
-            NavigationService.Navigate(typeof(Views.MainPage));
+            if (MobileService.CurrentUser!= null)
+                NavigationService.Navigate(typeof(Views.MainPage));
             await Task.CompletedTask;
         }
     }

@@ -100,7 +100,7 @@ namespace vFlash.Models
         // Generic methods for querying Azure data.
 
             // List of all.
-        public async Task<List<T>> GetList<T>()
+        public async Task<IList<T>> GetList<T>()
         {
             try
             {
@@ -115,11 +115,11 @@ namespace vFlash.Models
         }
 
         // Queried list.
-        public async Task<IEnumerable<T>> GetEnum<T>(IMobileServiceTableQuery<T> query)
+        public async Task<IList<T>> GetQueriedList<T>(IMobileServiceTableQuery<T> query)
         {
             try
             {
-                return await query.ToEnumerableAsync();
+                return await query.ToListAsync();
             }
 
             catch

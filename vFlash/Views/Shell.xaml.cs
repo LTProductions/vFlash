@@ -19,7 +19,8 @@ namespace vFlash.Views
         {
             Instance = this;
             InitializeComponent();
-            LoginModal.IsModal = true;
+            if (App.MobileService.CurrentUser == null)
+                LoginModal.IsModal = true;
         }
 
         public Shell(INavigationService navigationService) : this()
@@ -36,7 +37,8 @@ namespace vFlash.Views
 
         private void LoginLoggedIn(object sender, EventArgs e)
         {
-            LoginModal.IsModal = false;
+           MyHamburgerMenu.NavigationService.Navigate(typeof(Views.MainPage));
+           LoginModal.IsModal = false;
         }
 
         #endregion

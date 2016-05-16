@@ -61,7 +61,7 @@ namespace vFlash.ViewModels
 
         #region Methods
 
-        public async void LoadData()
+        public async Task LoadData()
         {
             #region GetList...not needed
             //var scd = new SubclassData();
@@ -77,7 +77,8 @@ namespace vFlash.ViewModels
                         where SubclassData.Class_ID == passedItem.Id
                         select new SubclassData();
 
-            var list = await scd.GetEnum<SubclassData>(query);
+            var list = await scd.GetQueriedList<SubclassData>(query);
+            // or maybe just this...? var list = await query.ToListAsync();
             SubclassList = new ObservableCollection<SubclassData>(list);
         }
 
@@ -91,7 +92,7 @@ namespace vFlash.ViewModels
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {
             passedItem = (ClassData)parameter;
-            LoadData();
+            await LoadData();
             Value = (suspensionState.ContainsKey(nameof(Value))) ? suspensionState[nameof(Value)]?.ToString() : parameter?.ToString();
             await Task.CompletedTask;
         }
