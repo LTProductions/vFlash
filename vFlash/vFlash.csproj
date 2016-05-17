@@ -120,6 +120,7 @@
     <Compile Include="Utils\AuthHandler.cs" />
     <Compile Include="Utils\SavedLogin.cs" />
     <Compile Include="ViewModels\ClassPageViewModel.cs" />
+    <Compile Include="ViewModels\FCStackPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\DetailPageViewModel.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
@@ -132,6 +133,9 @@
     </Compile>
     <Compile Include="Views\DetailPage.xaml.cs">
       <DependentUpon>DetailPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FCStackPage.xaml.cs">
+      <DependentUpon>FCStackPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginRegisterMain.xaml.cs">
       <DependentUpon>LoginRegisterMain.xaml</DependentUpon>
@@ -202,6 +206,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DetailPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FCStackPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Template10.Mvvm;
 using Template10.Services.NavigationService;
 using vFlash.Models;
+using vFlash.Views;
 using Windows.UI.Xaml.Navigation;
 
 namespace vFlash.ViewModels
@@ -26,7 +27,7 @@ namespace vFlash.ViewModels
                 if (_classList != value)
                 {
                     _classList = value;
-                    RaisePropertyChanged();
+                    // not needed, ObservableCollection -- RaisePropertyChanged();
                 }
             }
         }
@@ -53,14 +54,14 @@ namespace vFlash.ViewModels
 
         public ClassPageViewModel()
         {
-            LoadData();
+            LoadData().ConfigureAwait(false);
         }
 
         #endregion
 
         #region Methods
 
-        public async void LoadData()
+        public async Task LoadData()
         {
             var cd = new ClassData();
             ClassList = new ObservableCollection<ClassData>(await cd.GetList<ClassData>());

@@ -1,6 +1,6 @@
 ﻿<Page
-    x:Class="vFlash.Views.SubclassPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Class="vFlash.Views.FCStackPage"
+   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:Behaviors="using:Template10.Behaviors"
       xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
@@ -12,7 +12,7 @@
       xmlns:vm="using:vFlash.ViewModels" mc:Ignorable="d">
 
     <Page.DataContext>
-        <vm:SubclassPageViewModel x:Name="SubclassPageViewModel" />
+        <vm:FCStackPageViewModel x:Name="FCStackPageViewModel" />
     </Page.DataContext>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <controls:PageHeader x:Name="pageHeader" Text="Subclasses"/>
+        <controls:PageHeader x:Name="pageHeader" Text="Groups"/>
 
         <RelativePanel Grid.Row="1">
 
@@ -51,19 +51,19 @@
 
             <!--<controls:PageHeader x:Name="pageHeader" RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
-                             RelativePanel.AlignTopWithPanel="True" Text="Subclasses">
+                             RelativePanel.AlignTopWithPanel="True" Text="Classes">-->
 
-                --><!--  secondary commands  -->
-                <!--<controls:PageHeader.SecondaryCommands>
+            <!--  secondary commands  -->
+            <!--<controls:PageHeader.SecondaryCommands>
                 <AppBarButton Click="{x:Bind ViewModel.GotoSettings}" Label="Settings" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoPrivacy}" Label="Privacy" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="About" />
-            </controls:PageHeader.SecondaryCommands>--><!--
+            </controls:PageHeader.SecondaryCommands>
 
-            </controls:PageHeader>-->
+            </controls:PageHeader> -->
 
 
-            <ListBox x:Name="Subclasses" ItemsSource="{Binding SubclassList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+            <ListBox x:Name="Classes" ItemsSource="{Binding StackList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <RelativePanel>
@@ -77,7 +77,7 @@
 
         <Grid x:Name="BottomBar" Grid.Row="2">
             <CommandBar ClosedDisplayMode="Compact">
-                <AppBarButton Icon="Add" Label="Add Class" Command="{Binding AddSubclassNavCommand}" />
+                <AppBarButton Icon="Add" Label="Add Class" Command="{Binding }" />
             </CommandBar>
         </Grid>
     </Grid>

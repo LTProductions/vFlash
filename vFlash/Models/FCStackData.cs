@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
-    public class FCStackData : BaseModel
+    public class FCStackData : BaseAzureModel
     {
 
         private string _name;
