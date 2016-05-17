@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -25,13 +26,13 @@ namespace vFlash.ViewModels
                 if (_subclassList != value)
                 {
                     _subclassList = value;
-                    // Not needed in observable collection. RaisePropertyChanged();
+                    RaisePropertyChanged();
                 }
             }
         }
 
-        private ClassData _selectedItem;
-        public ClassData SelectedItem
+        private SubclassData _selectedItem;
+        public SubclassData SelectedItem
         {
             get { return _selectedItem; }
             set
@@ -64,22 +65,14 @@ namespace vFlash.ViewModels
 
         public async Task LoadData()
         {
-            #region GetList...not needed
             //var scd = new SubclassData();
             //var list = await scd.GetList<SubclassData>();
             //var queriedList = list.Where(p => p.Class_ID == passedItem.Id);
             //SubclassList = new ObservableCollection<SubclassData>(queriedList);
-            #endregion
 
-            // Create a SubclassData item and a query to get only the relevant data.
             var scd = new SubclassData();
-            var query = from SubclassData in
-                            App.MobileService.GetTable<SubclassData>()
-                        where SubclassData.Class_ID == passedItem.Id
-                        select new SubclassData();
-
-            var list = await scd.GetQueriedList<SubclassData>(query);
-            // or maybe just this...? var list = await query.ToListAsync();
+            var query = App.MobileService.GetTable<SubclassData>().CreateQuery();
+            var list = await scd.GetQueriedList<SubclassData>(query.Where(p => p.Class_ID == passedItem.Id));
             SubclassList = new ObservableCollection<SubclassData>(list);
         }
 

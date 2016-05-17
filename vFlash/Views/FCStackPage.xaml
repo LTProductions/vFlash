@@ -63,7 +63,7 @@
             </controls:PageHeader> -->
 
 
-            <ListBox x:Name="Classes" ItemsSource="{Binding StackList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+            <ListBox x:Name="Classes" ItemsSource="{Binding StackList}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <RelativePanel>

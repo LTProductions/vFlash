@@ -41,10 +41,5 @@ namespace vFlash.Models
                 }
             }
         }
-
-        public static explicit operator SubclassData(string v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

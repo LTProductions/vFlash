@@ -27,7 +27,7 @@ namespace vFlash.ViewModels
                 if (_classList != value)
                 {
                     _classList = value;
-                    // not needed, ObservableCollection -- RaisePropertyChanged();
+                    RaisePropertyChanged();
                 }
             }
         }

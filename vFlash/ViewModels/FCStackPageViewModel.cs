@@ -23,26 +23,26 @@ namespace vFlash.ViewModels
                 if (_stackList != value)
                 {
                     _stackList = value;
-                    // not needed, ObservableCollection -- RaisePropertyChanged();
+                    RaisePropertyChanged();
                 }
             }
         }
 
-        private ClassData _selectedItem;
-        public ClassData SelectedItem
-        {
-            get { return _selectedItem; }
-            set
-            {
-                if (_selectedItem != value)
-                {
-                    _selectedItem = value;
-                    RaisePropertyChanged();
-                    // Navigate.
-                    this.NavigationService.Navigate(typeof(Views.SubclassPage), SelectedItem);
-                }
-            }
-        }
+        //private FCStackData _selectedItem;
+        //public FCStackData SelectedItem
+        //{
+        //    get { return _selectedItem; }
+        //    set
+        //    {
+        //        if (_selectedItem != value)
+        //        {
+        //            _selectedItem = value;
+        //            RaisePropertyChanged();
+        //            // Navigate.
+        //            this.NavigationService.Navigate(typeof(Views.SubclassPage), SelectedItem);
+        //        }
+        //    }
+        //}
 
         // Item passed when navigating from SubclassPage.
         private SubclassData passedItem;
@@ -62,8 +62,10 @@ namespace vFlash.ViewModels
 
         public async Task LoadData()
         {
-            var sd = new FCStackData();
-            StackList = new ObservableCollection<FCStackData>(await sd.GetList<FCStackData>());
+            var fcsd = new FCStackData();
+            var query = App.MobileService.GetTable<FCStackData>().CreateQuery();
+            var list = await fcsd.GetQueriedList<FCStackData>(query.Where(p => p.Subclass_ID == passedItem.Id));
+            StackList = new ObservableCollection<FCStackData>(list);
         }
 
         #endregion
