@@ -50,11 +50,31 @@ namespace vFlash.ViewModels
 
         #endregion
 
+        #region Commands
+
+        private DelegateCommand _addClassNavCommand;
+        public DelegateCommand AddClassNavCommand
+        {
+            get { return _addClassNavCommand; }
+        }
+
+        #endregion
+
         #region Constructor
 
         public ClassPageViewModel()
         {
             LoadData().ConfigureAwait(false);
+
+            #region Command Initializers
+
+            _addClassNavCommand = new DelegateCommand(delegate ()
+            {
+                this.NavigationService.Navigate(typeof(Views.ClassAddPage));
+
+            });
+
+            #endregion
         }
 
         #endregion

@@ -119,6 +119,7 @@
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
     <Compile Include="Utils\AuthHandler.cs" />
     <Compile Include="Utils\SavedLogin.cs" />
+    <Compile Include="ViewModels\ClassAddPageViewModel.cs" />
     <Compile Include="ViewModels\ClassPageViewModel.cs" />
     <Compile Include="ViewModels\FCStackPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
@@ -127,6 +128,9 @@
     <Compile Include="ViewModels\SubclassPageViewModel.cs" />
     <Compile Include="Views\Busy.xaml.cs">
       <DependentUpon>Busy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ClassAddPage.xaml.cs">
+      <DependentUpon>ClassAddPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ClassPage.xaml.cs">
       <DependentUpon>ClassPage.xaml</DependentUpon>
@@ -200,6 +204,10 @@
     <Page Include="Views\Busy.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ClassAddPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ClassPage.xaml">
       <SubType>Designer</SubType>
