@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using vFlash.Models;
+using Windows.UI;
 using Windows.UI.Xaml.Controls;
 
 namespace vFlash.ViewModels
@@ -82,7 +83,6 @@ namespace vFlash.ViewModels
             // Create the initial text box with the header and placeholder text and add the event.
             var box = new TextBox { Header = "Class Name", PlaceholderText = "Biology, Calculus, etc." };
             box.Width = 200;
-
             TextBoxList.Add(box);
         }
 
@@ -104,8 +104,7 @@ namespace vFlash.ViewModels
             foreach (var item in TextBoxList)
             {
                 if (string.IsNullOrWhiteSpace(item.Text))
-                {
-                    // display popup with error.
+                { 
                     return false;
                 }
 
