@@ -26,5 +26,6 @@ namespace vFlash.Views
         {
             this.InitializeComponent();
         }
+        
     }
 }

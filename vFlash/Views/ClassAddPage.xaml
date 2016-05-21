@@ -63,13 +63,16 @@
             </controls:PageHeader> -->
 
             <RelativePanel Padding="4" Margin="4,12,0,0">
-                <ListView x:Name="ClassTextBoxes" ItemsSource="{Binding TextBoxList}" SelectionMode="None">
+                <TextBlock x:Name="Label" Text="Class Name" Margin="12,0,0,4"/>
+                <ListView x:Name="ClassTextBoxes" ItemsSource="{Binding TextBoxList}" SelectionMode="None" RelativePanel.Below="Label">
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox Text="{Binding}" PlaceholderText="{Binding}" Height="Auto" Width="{Binding}"/>
-                                <Button Content="Delete" Margin="12,0,0,0"/>
-                            </StackPanel>
+                        <DataTemplate >
+                            <RelativePanel>
+                                <TextBox x:Name="tbox" PlaceholderText="{Binding PlaceHolder}" Text="{Binding BoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="4" Width="200" MaxLength="25"/>
+                                <TextBlock x:Name="errorLabel" RelativePanel.Below="tbox" Text="{Binding Error, Mode=TwoWay}" Padding="0,0,0,4"
+                                           FontSize="10" Foreground="Red"/>
+                                <Button Content="Delete" Margin="12,0,0,0" RelativePanel.RightOf="tbox" Command="{Binding ElementName=ClassTextBoxes, Path=DataContext.DeleteTBoxCommand}" CommandParameter="{Binding}"/>
+                            </RelativePanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

@@ -2,10 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using vFlash.Models;
+using vFlash.Utils;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
 
@@ -15,8 +18,8 @@ namespace vFlash.ViewModels
     {
 
 
-        private ObservableCollection<TextBox> _textBoxList = new ObservableCollection<TextBox>();
-        public ObservableCollection<TextBox> TextBoxList
+        private ObservableCollection<TextBoxStrings> _textBoxList;
+        public ObservableCollection<TextBoxStrings> TextBoxList
         {
             get { return _textBoxList; }
             set
@@ -43,6 +46,7 @@ namespace vFlash.ViewModels
             }
         }
 
+
         #region Commands
 
         private DelegateCommand _addTextBoxCommand;
@@ -57,12 +61,18 @@ namespace vFlash.ViewModels
             get { return _saveClassesCommand; }
         }
 
+        private DelegateCommand<TextBoxStrings> _deleteTBoxCommand;
+        public DelegateCommand<TextBoxStrings> DeleteTBoxCommand
+        {
+            get { return _deleteTBoxCommand; }
+        }
         #endregion
 
         #region Constructor
 
         public ClassAddPageViewModel()
         {
+            TextBoxList = new ObservableCollection<TextBoxStrings>();
             LoadInitialTBox();
 
             _addTextBoxCommand = new DelegateCommand(AddNewTextBox, CanAddTextBox);
@@ -71,6 +81,8 @@ namespace vFlash.ViewModels
                Views.Busy.SetBusy(true, "Saving...");
                await SaveClasses();
            });
+
+            _deleteTBoxCommand = new DelegateCommand<TextBoxStrings>(DeleteTBox, CanDeleteTextBox);
         }
 
         #endregion
@@ -78,19 +90,16 @@ namespace vFlash.ViewModels
 
         #region Methods
 
-        private void LoadInitialTBox()
+        public void LoadInitialTBox()
         {
-            // Create the initial text box with the header and placeholder text and add the event.
-            var box = new TextBox { Header = "Class Name", PlaceholderText = "Biology, Calculus, etc." };
-            box.Width = 200;
-            TextBoxList.Add(box);
+            var tboxValues = new TextBoxStrings() { PlaceHolder = "Biology, Calculus, etc." };
+            TextBoxList.Add(tboxValues);
         }
 
         public void AddNewTextBox()
         {
-            TextBox newTBox = new TextBox();
-            newTBox.Width = 200;
-            TextBoxList.Add(newTBox);
+            var tboxValues = new TextBoxStrings();
+            TextBoxList.Add(tboxValues);
             AddTextBoxCommand.RaiseCanExecuteChanged();
         }
 
@@ -99,43 +108,40 @@ namespace vFlash.ViewModels
             return TextBoxList.Count() < 7;
         }
 
-        private bool CanSave()
+        private void DeleteTBox(TextBoxStrings tb)
         {
-            foreach (var item in TextBoxList)
-            {
-                if (string.IsNullOrWhiteSpace(item.Text))
-                { 
-                    return false;
-                }
+            TextBoxList.Remove(tb);
+            AddTextBoxCommand.RaiseCanExecuteChanged();
+        }
 
-                if (item.Text.Length > 30)
-                {
-                    //display popup with error.
-                    return false;
-                }
-            }
-
-            return true;
+        private bool CanDeleteTextBox(TextBoxStrings tb)
+        {
+            return tb != TextBoxList.ElementAt(0);
         }
 
         private async Task SaveClasses()
         {
-            if (CanSave())
-            {
-                // Create a new ClassData item to be used for inserting.
-                ClassData classItem;
+            bool isBusy = false;
+            
+            // Create a new ClassData item to be used for inserting.
+            ClassData classItem;
 
-                foreach (var item in TextBoxList)
+            foreach (var item in TextBoxList)
+            {
+                if (!string.IsNullOrWhiteSpace(item.BoxText))
                 {
+                    if (isBusy != true)
+                    {
+                        Views.Busy.SetBusy(true, "Saving...");
+                    }
+
                     try
                     {
                         // Set the properties of the classitem.
-                        classItem = new ClassData() { Name = item.Text };
+                        classItem = new ClassData() { Name = item.BoxText };
 
                         await classItem.InsertItem(classItem);
-
-                        // Remove that textbox.
-                        item.Text = string.Empty;
+                        item.BoxText = string.Empty;
                     }
 
                     catch (Exception e)
@@ -144,15 +150,23 @@ namespace vFlash.ViewModels
                     }
                 }
 
-                TextBoxList = new ObservableCollection<TextBox>();
-                AddTextBoxCommand.RaiseCanExecuteChanged();
-                LoadInitialTBox();
+                else
+                {
+                    item.Error = "Item not saved: Can't save empty text box.";
+                }
             }
+
+            TextBoxList = new ObservableCollection<TextBoxStrings>();
+            LoadInitialTBox();
+            AddTextBoxCommand.RaiseCanExecuteChanged();
+
 
             Views.Busy.SetBusy(false);
         }
 
         #endregion
 
+
     }
+
 }
