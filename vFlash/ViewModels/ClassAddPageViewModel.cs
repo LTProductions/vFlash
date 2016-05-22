@@ -14,115 +14,28 @@ using Windows.UI.Xaml.Controls;
 
 namespace vFlash.ViewModels
 {
-    public class ClassAddPageViewModel : Template10.Mvvm.ViewModelBase
+    public class ClassAddPageViewModel : BaseAddPageViewModel
     {
-
-
-        private ObservableCollection<TextBoxStrings> _textBoxList;
-        public ObservableCollection<TextBoxStrings> TextBoxList
-        {
-            get { return _textBoxList; }
-            set
-            {
-                if (_textBoxList != value)
-                {
-                    _textBoxList = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private List<ClassData> _classList;
-        public List<ClassData> ClassList
-        {
-            get { return _classList; }
-            set
-            {
-                if (_classList != value)
-                {
-                    _classList = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-
-        #region Commands
-
-        private DelegateCommand _addTextBoxCommand;
-        public DelegateCommand AddTextBoxCommand
-        {
-            get { return _addTextBoxCommand; }
-        }
-
-        private DelegateCommand _saveClassesCommand;
-        public DelegateCommand SaveClassesCommand
-        {
-            get { return _saveClassesCommand; }
-        }
-
-        private DelegateCommand<TextBoxStrings> _deleteTBoxCommand;
-        public DelegateCommand<TextBoxStrings> DeleteTBoxCommand
-        {
-            get { return _deleteTBoxCommand; }
-        }
-        #endregion
-
-        #region Constructor
 
         public ClassAddPageViewModel()
         {
             TextBoxList = new ObservableCollection<TextBoxStrings>();
-            LoadInitialTBox();
+            LoadInitialTBox("Biology, Calculus, etc.");
 
-            _addTextBoxCommand = new DelegateCommand(AddNewTextBox, CanAddTextBox);
-            _saveClassesCommand = new DelegateCommand(async delegate ()
-           {
-               Views.Busy.SetBusy(true, "Saving...");
-               await SaveClasses();
-           });
+            AddTextBoxCommand = new DelegateCommand(AddNewTextBox, CanAddTextBox);
+            SaveClassesCommand = new DelegateCommand(async delegate ()
+            {
+                Views.Busy.SetBusy(true, "Saving...");
+                await SaveItem();
+            });
 
-            _deleteTBoxCommand = new DelegateCommand<TextBoxStrings>(DeleteTBox, CanDeleteTextBox);
+            DeleteTBoxCommand = new DelegateCommand<TextBoxStrings>(DeleteTBox, CanDeleteTextBox);
         }
 
-        #endregion
-
-
-        #region Methods
-
-        public void LoadInitialTBox()
-        {
-            var tboxValues = new TextBoxStrings() { PlaceHolder = "Biology, Calculus, etc." };
-            TextBoxList.Add(tboxValues);
-        }
-
-        public void AddNewTextBox()
-        {
-            var tboxValues = new TextBoxStrings();
-            TextBoxList.Add(tboxValues);
-            AddTextBoxCommand.RaiseCanExecuteChanged();
-        }
-
-        private bool CanAddTextBox()
-        {
-            return TextBoxList.Count() < 7;
-        }
-
-        private void DeleteTBox(TextBoxStrings tb)
-        {
-            TextBoxList.Remove(tb);
-            AddTextBoxCommand.RaiseCanExecuteChanged();
-        }
-
-        private bool CanDeleteTextBox(TextBoxStrings tb)
-        {
-            return tb != TextBoxList.ElementAt(0);
-        }
-
-        private async Task SaveClasses()
+        public override async Task SaveItem()
         {
             bool isBusy = false;
-            
+
             // Create a new ClassData item to be used for inserting.
             ClassData classItem;
 
@@ -157,14 +70,12 @@ namespace vFlash.ViewModels
             }
 
             TextBoxList = new ObservableCollection<TextBoxStrings>();
-            LoadInitialTBox();
+            LoadInitialTBox("Biology, Calculus, etc");
             AddTextBoxCommand.RaiseCanExecuteChanged();
 
 
             Views.Busy.SetBusy(false);
         }
-
-        #endregion
 
 
     }

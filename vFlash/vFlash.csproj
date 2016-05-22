@@ -120,6 +120,7 @@
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
     <Compile Include="Utils\AuthHandler.cs" />
     <Compile Include="Utils\SavedLogin.cs" />
+    <Compile Include="ViewModels\BaseAddPageViewModel.cs" />
     <Compile Include="ViewModels\ClassAddPageViewModel.cs" />
     <Compile Include="ViewModels\ClassPageViewModel.cs" />
     <Compile Include="ViewModels\FCStackPageViewModel.cs" />
