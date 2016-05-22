@@ -21,6 +21,7 @@ namespace vFlash.ViewModels
         {
             TextBoxList = new ObservableCollection<TextBoxStrings>();
             LoadInitialTBox("Biology, Calculus, etc.");
+            maxBoxes = 7;
 
             AddTextBoxCommand = new DelegateCommand(AddNewTextBox, CanAddTextBox);
             SaveClassesCommand = new DelegateCommand(async delegate ()

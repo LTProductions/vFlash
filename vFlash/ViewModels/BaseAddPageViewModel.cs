@@ -14,9 +14,10 @@ using Windows.UI.Xaml.Controls;
 
 namespace vFlash.ViewModels
 {
-    public class BaseAddPageViewModel : Template10.Mvvm.ViewModelBase
+    public abstract class BaseAddPageViewModel : Template10.Mvvm.ViewModelBase
     {
 
+        #region Fields/Properties
 
         private ObservableCollection<TextBoxStrings> _textBoxList;
         public ObservableCollection<TextBoxStrings> TextBoxList
@@ -32,6 +33,9 @@ namespace vFlash.ViewModels
             }
         }
 
+        public int maxBoxes;
+
+        #endregion
 
         #region Commands
 
@@ -83,7 +87,7 @@ namespace vFlash.ViewModels
 
         public bool CanAddTextBox()
         {
-            return TextBoxList.Count() < 7;
+            return TextBoxList.Count() < maxBoxes;
         }
 
         public void DeleteTBox(TextBoxStrings tb)
@@ -97,10 +101,7 @@ namespace vFlash.ViewModels
             return tb != TextBoxList.ElementAt(0);
         }
 
-        public virtual async Task SaveItem()
-        {
-            
-        }
+        public abstract Task SaveItem();
 
         #endregion
 
