@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <controls:PageHeader x:Name="pageHeader" Text="Classes"/>
+        <controls:PageHeader x:Name="pageHeader" Text="Add Subclass"/>
 
         <RelativePanel Grid.Row="1">
 
@@ -84,7 +84,7 @@
 
         <Grid x:Name="BottomBar" Grid.Row="2">
             <CommandBar ClosedDisplayMode="Compact">
-                <AppBarButton Icon="Save" Label="Save" Command="{Binding SaveClassesCommand}" />
+                <AppBarButton Icon="Save" Label="Save" Command="{Binding SaveItemsCommand}" />
             </CommandBar>
         </Grid>
     </Grid>

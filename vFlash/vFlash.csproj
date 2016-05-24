@@ -111,6 +111,7 @@
     <Compile Include="Models\ClassData.cs" />
     <Compile Include="Models\FCStackData.cs" />
     <Compile Include="Models\FlashcardData.cs" />
+    <Compile Include="Models\NamesAndIDs.cs" />
     <Compile Include="Models\ScoreData.cs" />
     <Compile Include="Models\StudySessionData.cs" />
     <Compile Include="Models\StudySessionNames.cs" />
@@ -123,10 +124,12 @@
     <Compile Include="ViewModels\BaseAddPageViewModel.cs" />
     <Compile Include="ViewModels\ClassAddPageViewModel.cs" />
     <Compile Include="ViewModels\ClassPageViewModel.cs" />
+    <Compile Include="ViewModels\FCStackAddPageViewModel.cs" />
     <Compile Include="ViewModels\FCStackPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\DetailPageViewModel.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
+    <Compile Include="ViewModels\SubclassAddPageViewModel.cs" />
     <Compile Include="ViewModels\SubclassPageViewModel.cs" />
     <Compile Include="Views\Busy.xaml.cs">
       <DependentUpon>Busy.xaml</DependentUpon>
@@ -139,6 +142,9 @@
     </Compile>
     <Compile Include="Views\DetailPage.xaml.cs">
       <DependentUpon>DetailPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FCStackAddPage.xaml.cs">
+      <DependentUpon>FCStackAddPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FCStackPage.xaml.cs">
       <DependentUpon>FCStackPage.xaml</DependentUpon>
@@ -157,6 +163,9 @@
     </Compile>
     <Compile Include="Views\Splash.xaml.cs">
       <DependentUpon>Splash.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SubclassAddPage.xaml.cs">
+      <DependentUpon>SubclassAddPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SubclassPage.xaml.cs">
       <DependentUpon>SubclassPage.xaml</DependentUpon>
@@ -219,6 +228,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\FCStackAddPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FCStackPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -240,6 +253,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Splash.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SubclassAddPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

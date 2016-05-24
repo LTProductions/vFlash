@@ -63,7 +63,9 @@
             </controls:PageHeader>-->
 
 
-            <ListBox x:Name="Subclasses" ItemsSource="{Binding SubclassList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+            <TextBlock x:Name="ClassName" Text="{Binding ClassName}" FontSize="30" RelativePanel.AlignTopWithPanel="True" Margin="12,8,0,0" Padding="4"/>
+            
+            <ListBox x:Name="Subclasses" ItemsSource="{Binding SubclassList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" RelativePanel.Below="ClassName">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <RelativePanel>

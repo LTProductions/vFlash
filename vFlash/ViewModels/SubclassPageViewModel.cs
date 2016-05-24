@@ -42,13 +42,39 @@ namespace vFlash.ViewModels
                     _selectedItem = value;
                     RaisePropertyChanged();
                     // Navigate.
-                    this.NavigationService.Navigate(typeof(Views.FCStackPage), SelectedItem);
+                    passedItem.SubclassID = value.Id;
+                    passedItem.SubclassName = value.Name;
+                    this.NavigationService.Navigate(typeof(Views.FCStackPage), passedItem);
+                }
+            }
+        }
+
+        private string _className;
+        public string ClassName
+        {
+            get { return _className; }
+            set
+            {
+                if (_className != value)
+                {
+                    _className = value;
+                    RaisePropertyChanged();
                 }
             }
         }
 
         // Item passed when navigating from ClassPage.
-        private ClassData passedItem;
+        private NamesAndIDs passedItem;
+
+        #endregion
+
+        #region Commands
+
+        private DelegateCommand _addSubclassNavCommand;
+        public DelegateCommand AddSubclassNavCommand
+        {
+            get { return _addSubclassNavCommand; }
+        }
 
         #endregion
 
@@ -56,7 +82,10 @@ namespace vFlash.ViewModels
 
         public SubclassPageViewModel()
         {
-            
+            _addSubclassNavCommand = new DelegateCommand(delegate ()
+            {
+                this.NavigationService.Navigate(typeof(Views.SubclassAddPage), passedItem);
+            });
         }
 
         #endregion
@@ -65,6 +94,8 @@ namespace vFlash.ViewModels
 
         public async Task LoadData()
         {
+            ClassName = passedItem.ClassName;
+
             //var scd = new SubclassData();
             //var list = await scd.GetList<SubclassData>();
             //var queriedList = list.Where(p => p.Class_ID == passedItem.Id);
@@ -72,7 +103,7 @@ namespace vFlash.ViewModels
 
             var scd = new SubclassData();
             var query = App.MobileService.GetTable<SubclassData>().CreateQuery();
-            var list = await scd.GetQueriedList<SubclassData>(query.Where(p => p.Class_ID == passedItem.Id));
+            var list = await scd.GetQueriedList<SubclassData>(query.Where(p => p.Class_ID == passedItem.ClassID));
             SubclassList = new ObservableCollection<SubclassData>(list);
         }
 
@@ -85,7 +116,7 @@ namespace vFlash.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {
-            passedItem = (ClassData)parameter;
+            passedItem = (NamesAndIDs)parameter;
             await LoadData();
             Value = (suspensionState.ContainsKey(nameof(Value))) ? suspensionState[nameof(Value)]?.ToString() : parameter?.ToString();
             await Task.CompletedTask;

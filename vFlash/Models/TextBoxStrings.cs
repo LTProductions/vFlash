@@ -26,6 +26,20 @@ namespace vFlash.Models
             }
         }
 
+        private string _placeholder2;
+        public string PlaceHolder2
+        {
+            get { return _placeholder2; }
+            set
+            {
+                if (_placeholder2 != value)
+                {
+                    _placeholder2 = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
         private string _boxText;
         public string BoxText
         {
@@ -46,6 +60,20 @@ namespace vFlash.Models
         {
             var r = new Regex("[^a-zA-Z0-9]+");
             return r.Replace(val, "");
+        }
+
+        private string _box2Text;
+        public string Box2Text
+        {
+            get { return _box2Text; }
+            set
+            {
+                if (_box2Text != value)
+                {
+                    _box2Text = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
 

@@ -1,6 +1,6 @@
 ﻿<Page
-    x:Class="vFlash.Views.FCStackPage"
-   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Class="vFlash.Views.SubclassAddPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:Behaviors="using:Template10.Behaviors"
       xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
@@ -12,7 +12,7 @@
       xmlns:vm="using:vFlash.ViewModels" mc:Ignorable="d">
 
     <Page.DataContext>
-        <vm:FCStackPageViewModel x:Name="FCStackPageViewModel" />
+        <vm:SubclassAddPageViewModel x:Name="SubclassAddPageViewModel" />
     </Page.DataContext>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <controls:PageHeader x:Name="pageHeader" Text="Groups"/>
+        <controls:PageHeader x:Name="pageHeader" Text="Add Subclass"/>
 
         <RelativePanel Grid.Row="1">
 
@@ -62,24 +62,31 @@
 
             </controls:PageHeader> -->
 
-            <TextBlock x:Name="ClassName" Text="{Binding ClassName}" FontSize="25" RelativePanel.AlignTopWithPanel="True" Margin="12,8,0,0" Padding="4"/>
-            <TextBlock x:Name="SubclassName" Text="{Binding SubclassName}" FontSize="30" RelativePanel.Below="ClassName" Margin="16,8,0,0" Padding="4"/>
+            <TextBlock x:Name="ClassName" Text="{Binding ClassName}" FontSize="30" RelativePanel.AlignTopWithPanel="True" Margin="12,8,0,0" Padding="4"/>
 
-            <ListBox x:Name="Classes" ItemsSource="{Binding StackList}" RelativePanel.Below="SubclassName">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <RelativePanel>
-                            <TextBlock Text="{Binding Name}" />
-                        </RelativePanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <RelativePanel Padding="4" Margin="4,12,0,0" RelativePanel.Below="ClassName">
+                <TextBlock x:Name="Label" Text="Subclass Name" Margin="12,0,0,4"/>
+                <ListView x:Name="SubclassTextBoxes" ItemsSource="{Binding TextBoxList}" SelectionMode="None" RelativePanel.Below="Label">
+                    <ListView.ItemTemplate>
+                        <DataTemplate >
+                            <RelativePanel>
+                                <TextBox x:Name="tbox" PlaceholderText="{Binding PlaceHolder}" Text="{Binding BoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="4" Width="200" MaxLength="25"/>
+                                <TextBlock x:Name="errorLabel" RelativePanel.Below="tbox" Text="{Binding Error, Mode=TwoWay}" Padding="0,0,0,4"
+                                           FontSize="10" Foreground="Red"/>
+                                <Button Content="Delete" Margin="12,0,0,0" RelativePanel.RightOf="tbox" Command="{Binding ElementName=SubclassTextBoxes, Path=DataContext.DeleteTBoxCommand}" CommandParameter="{Binding}"/>
+                            </RelativePanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Button x:Name="AddTextBox" Content="Add" Margin="12,8,0,0" RelativePanel.AlignLeftWith="SubclassTextBoxes" RelativePanel.Below="SubclassTextBoxes"
+                        Command="{Binding AddTextBoxCommand}"/>
+            </RelativePanel>
 
         </RelativePanel>
 
         <Grid x:Name="BottomBar" Grid.Row="2">
             <CommandBar ClosedDisplayMode="Compact">
-                <AppBarButton Icon="Add" Label="Add Class" Command="{Binding AddFCStackCommand}" />
+                <AppBarButton Icon="Save" Label="Save" Command="{Binding SaveItemsCommand}" />
             </CommandBar>
         </Grid>
     </Grid>

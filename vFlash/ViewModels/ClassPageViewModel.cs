@@ -43,7 +43,8 @@ namespace vFlash.ViewModels
                     _selectedItem = value;
                     RaisePropertyChanged();
                     // Navigate.
-                    this.NavigationService.Navigate(typeof(Views.SubclassPage), SelectedItem);
+                    NamesAndIDs item = new NamesAndIDs { ClassName = SelectedItem.Name, ClassID = SelectedItem.Id };
+                    this.NavigationService.Navigate(typeof(Views.SubclassPage), item);
                 }
             }
         }

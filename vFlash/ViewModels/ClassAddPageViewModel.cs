@@ -21,10 +21,10 @@ namespace vFlash.ViewModels
         {
             TextBoxList = new ObservableCollection<TextBoxStrings>();
             LoadInitialTBox("Biology, Calculus, etc.");
-            maxBoxes = 7;
+            MaxBoxes = 7;
 
             AddTextBoxCommand = new DelegateCommand(AddNewTextBox, CanAddTextBox);
-            SaveClassesCommand = new DelegateCommand(async delegate ()
+            SaveItemsCommand = new DelegateCommand(async delegate ()
             {
                 Views.Busy.SetBusy(true, "Saving...");
                 await SaveItem();
@@ -71,7 +71,7 @@ namespace vFlash.ViewModels
             }
 
             TextBoxList = new ObservableCollection<TextBoxStrings>();
-            LoadInitialTBox("Biology, Calculus, etc");
+            LoadInitialTBox("Biology, Calculus, etc.");
             AddTextBoxCommand.RaiseCanExecuteChanged();
 
 

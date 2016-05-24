@@ -33,7 +33,12 @@ namespace vFlash.ViewModels
             }
         }
 
-        public int maxBoxes;
+        private int _maxBoxes = 7;
+        public int MaxBoxes
+        {
+            get { return _maxBoxes; }
+            set { _maxBoxes = value; }
+        }
 
         #endregion
 
@@ -42,21 +47,21 @@ namespace vFlash.ViewModels
         private DelegateCommand _addTextBoxCommand;
         public DelegateCommand AddTextBoxCommand
         {
-            set { }
+            set { _addTextBoxCommand = value; }
             get { return _addTextBoxCommand; }
         }
 
-        private DelegateCommand _saveClassesCommand;
-        public DelegateCommand SaveClassesCommand
+        private DelegateCommand _saveItemsCommand;
+        public DelegateCommand SaveItemsCommand
         {
-            set { }
-            get { return _saveClassesCommand; }
+            set { _saveItemsCommand = value; }
+            get { return _saveItemsCommand; }
         }
 
         private DelegateCommand<TextBoxStrings> _deleteTBoxCommand;
         public DelegateCommand<TextBoxStrings> DeleteTBoxCommand
         {
-            set { }
+            set { _deleteTBoxCommand = value; }
             get { return _deleteTBoxCommand; }
         }
         #endregion
@@ -78,6 +83,12 @@ namespace vFlash.ViewModels
             TextBoxList.Add(tboxValues);
         }
 
+        public void LoadInitialTBoxes(string ph, string ph2)
+        {
+            var tboxValues = new TextBoxStrings() { PlaceHolder = ph, PlaceHolder2 = ph2 };
+            TextBoxList.Add(tboxValues);
+        }
+
         public void AddNewTextBox()
         {
             var tboxValues = new TextBoxStrings();
@@ -87,7 +98,7 @@ namespace vFlash.ViewModels
 
         public bool CanAddTextBox()
         {
-            return TextBoxList.Count() < maxBoxes;
+            return TextBoxList.Count() < MaxBoxes;
         }
 
         public void DeleteTBox(TextBoxStrings tb)
