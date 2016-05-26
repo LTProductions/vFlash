@@ -14,8 +14,6 @@ namespace vFlash.ViewModels
     public class SubclassAddPageViewModel : BaseAddPageViewModel
     {
 
-        private NamesAndIDs passedItem;
-
         private string _className;
         public string ClassName
         {
@@ -42,7 +40,6 @@ namespace vFlash.ViewModels
             AddTextBoxCommand = new DelegateCommand(AddNewTextBox, CanAddTextBox);
             SaveItemsCommand = new DelegateCommand(async delegate ()
             {
-                Views.Busy.SetBusy(true, "Saving...");
                 await SaveItem();
             });
 
@@ -56,22 +53,22 @@ namespace vFlash.ViewModels
             // Create a new ClassData item to be used for inserting.
             SubclassData Item;
 
-            foreach (var item in TextBoxList)
+            if (CanSave())
             {
-                if (!string.IsNullOrWhiteSpace(item.BoxText))
+                if (isBusy != true)
                 {
-                    if (isBusy != true)
-                    {
-                        Views.Busy.SetBusy(true, "Saving...");
-                    }
+                    Views.Busy.SetBusy(true, "Saving...");
+                    isBusy = true;
+                }
 
+                foreach (var item in TextBoxList)
+                {
                     try
                     {
                         // Set the properties of the classitem.
-                        Item = new SubclassData() { Name = item.BoxText, Class_ID = passedItem.ClassID};
+                        Item = new SubclassData() { Name = item.BoxText, Class_ID = passedItem.ClassID };
 
                         await Item.InsertItem(Item);
-                        item.BoxText = string.Empty;
                     }
 
                     catch (Exception e)
@@ -80,18 +77,13 @@ namespace vFlash.ViewModels
                     }
                 }
 
-                else
-                {
-                    item.Error = "Item not saved: Can't save empty text box.";
-                }
+                TextBoxList = new ObservableCollection<TextBoxStrings>();
+                LoadInitialTBox("Chapter 1, Chapter 2, etc.");
+                AddTextBoxCommand.RaiseCanExecuteChanged();
             }
 
-            TextBoxList = new ObservableCollection<TextBoxStrings>();
-            LoadInitialTBox("Chapter 1, Chapter 2, etc.");
-            AddTextBoxCommand.RaiseCanExecuteChanged();
-
-
-            Views.Busy.SetBusy(false);
+            if (isBusy)
+                Views.Busy.SetBusy(false);
         }
 
 

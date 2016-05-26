@@ -16,7 +16,7 @@ namespace vFlash.ViewModels
 
         #region Fields/Properties
 
-        private NamesAndIDs passedItem;
+        
 
         private string _className;
         public string ClassName
@@ -90,11 +90,60 @@ namespace vFlash.ViewModels
             AddTextBoxCommand = new DelegateCommand(AddNewTextBox, CanAddTextBox);
             SaveItemsCommand = new DelegateCommand(async delegate ()
             {
-                Views.Busy.SetBusy(true, "Saving...");
                 await SaveItem();
             });
 
             DeleteTBoxCommand = new DelegateCommand<TextBoxStrings>(DeleteTBox, CanDeleteTextBox);
+        }
+
+        public bool CanSaveStackName()
+        {
+            bool canSave = false;
+
+            if (FCStackCanSave && string.IsNullOrWhiteSpace(FCStackName))
+            {
+                canSave = false;
+            }
+
+            else if (FCStackCanSave && !string.IsNullOrWhiteSpace(FCStackName))
+            {
+                canSave = true;
+            }
+
+            else
+            {
+                canSave = false;
+            }
+
+            return canSave;
+        }
+
+        public override bool CanSave()
+        {
+            bool canSave = true;
+
+            if (TextBoxList != null)
+            {
+                foreach (var item in TextBoxList)
+                {
+                    if (string.IsNullOrWhiteSpace(item.BoxText))
+                    {
+                        item.Error = "Cannot save empty text.";
+                        canSave = false;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(item.Box2Text))
+                    {
+                        item.Error2 = "Cannot save empty text.";
+                        canSave = false;
+                    }
+                }
+            }
+
+            else
+                canSave = false;
+
+            return canSave;
         }
 
         public override async Task SaveItem()
@@ -105,43 +154,46 @@ namespace vFlash.ViewModels
             FCStackData StackItem;
             FlashcardData FCItem;
 
-            if (FCStackCanSave)
+            if (CanSaveStackName())
             {
-                if (!string.IsNullOrWhiteSpace(FCStackName))
+                DateTime now = DateTime.Now;
+                StackItem = new FCStackData() { Name = FCStackName, CreatedAt = now, Subclass_ID = passedItem.SubclassID };
+                if (!isBusy)
                 {
-                    DateTime now = DateTime.Now;
-                    StackItem = new FCStackData() { Name = FCStackName, CreatedAt = now, Subclass_ID = passedItem.SubclassID };
                     Views.Busy.SetBusy(true, "Saving...");
                     isBusy = true;
-                    try
-                    {
-                        await StackItem.InsertItem(StackItem);
-                        FCStackCanSave = false;
-                        var query = App.MobileService.GetTable<FCStackData>().CreateQuery();
-                        var listOfOne = await StackItem.GetQueriedList<FCStackData>(query.Where(p => p.Name == StackItem.Name && p.CreatedAt == StackItem.CreatedAt));
-                        fcItemForID = listOfOne.ElementAt(0);
-                    }
-
-                    catch
-                    {
-                        return;
-                    }
                 }
+                try
+                {
+                    await StackItem.InsertItem(StackItem);
+                    FCStackCanSave = false;
+                    var query = App.MobileService.GetTable<FCStackData>().CreateQuery();
+                    var listOfOne = await StackItem.GetQueriedList<FCStackData>(query.Where(p => p.Name == StackItem.Name && p.CreatedAt == StackItem.CreatedAt));
+                    fcItemForID = listOfOne.ElementAt(0);
+                }
+
+                catch
+                {
+                    return;
+                }
+
             }
 
-            foreach (var item in TextBoxList)
+            if (CanSave())
             {
-                if (!string.IsNullOrWhiteSpace(item.BoxText))
+                if (isBusy != true)
                 {
-                    if (isBusy != true)
-                    {
-                        Views.Busy.SetBusy(true, "Saving...");
-                    }
+                    Views.Busy.SetBusy(true, "Saving...");
+                    isBusy = true;
+                }
+
+                foreach (var item in TextBoxList)
+                {
 
                     try
                     {
                         // Set the properties of the FCStackData item.
-                        FCItem = new FlashcardData() {FCStack_ID = fcItemForID.Id, Word_Side1 = item.BoxText, Definition_Side2 = item.Box2Text  };
+                        FCItem = new FlashcardData() { FCStack_ID = fcItemForID.Id, Word_Side1 = item.BoxText, Definition_Side2 = item.Box2Text };
 
                         await FCItem.InsertItem(FCItem);
                         FCStackCanSave = false;
@@ -153,18 +205,13 @@ namespace vFlash.ViewModels
                     }
                 }
 
-                else
-                {
-                    item.Error = "Item not saved: Can't save empty text box.";
-                }
+                TextBoxList = new ObservableCollection<TextBoxStrings>();
+                LoadInitialTBoxes("Word, Name, etc.", "Definition, Description, etc.");
+                AddTextBoxCommand.RaiseCanExecuteChanged();
             }
 
-            TextBoxList = new ObservableCollection<TextBoxStrings>();
-            LoadInitialTBoxes("Word, Name, etc.", "Definition, Description, etc.");
-            AddTextBoxCommand.RaiseCanExecuteChanged();
-
-
-            Views.Busy.SetBusy(false);
+            if (isBusy)
+                Views.Busy.SetBusy(false);
         }
 
         #endregion

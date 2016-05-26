@@ -26,7 +26,6 @@ namespace vFlash.ViewModels
             AddTextBoxCommand = new DelegateCommand(AddNewTextBox, CanAddTextBox);
             SaveItemsCommand = new DelegateCommand(async delegate ()
             {
-                Views.Busy.SetBusy(true, "Saving...");
                 await SaveItem();
             });
 
@@ -40,14 +39,16 @@ namespace vFlash.ViewModels
             // Create a new ClassData item to be used for inserting.
             ClassData classItem;
 
-            foreach (var item in TextBoxList)
+            if (CanSave())
             {
-                if (!string.IsNullOrWhiteSpace(item.BoxText))
+                if (!isBusy)
                 {
-                    if (isBusy != true)
-                    {
-                        Views.Busy.SetBusy(true, "Saving...");
-                    }
+                    Views.Busy.SetBusy(true, "Saving...");
+                    isBusy = true;
+                }
+
+                foreach (var item in TextBoxList)
+                {
 
                     try
                     {
@@ -55,7 +56,6 @@ namespace vFlash.ViewModels
                         classItem = new ClassData() { Name = item.BoxText };
 
                         await classItem.InsertItem(classItem);
-                        item.BoxText = string.Empty;
                     }
 
                     catch (Exception e)
@@ -64,18 +64,13 @@ namespace vFlash.ViewModels
                     }
                 }
 
-                else
-                {
-                    item.Error = "Item not saved: Can't save empty text box.";
-                }
+                TextBoxList = new ObservableCollection<TextBoxStrings>();
+                LoadInitialTBox("Biology, Calculus, etc.");
+                AddTextBoxCommand.RaiseCanExecuteChanged();
             }
 
-            TextBoxList = new ObservableCollection<TextBoxStrings>();
-            LoadInitialTBox("Biology, Calculus, etc.");
-            AddTextBoxCommand.RaiseCanExecuteChanged();
-
-
-            Views.Busy.SetBusy(false);
+            if (isBusy)
+                Views.Busy.SetBusy(false);
         }
 
 

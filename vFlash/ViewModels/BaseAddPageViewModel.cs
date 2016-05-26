@@ -19,6 +19,8 @@ namespace vFlash.ViewModels
 
         #region Fields/Properties
 
+        public NamesAndIDs passedItem;
+
         private ObservableCollection<TextBoxStrings> _textBoxList;
         public ObservableCollection<TextBoxStrings> TextBoxList
         {
@@ -110,6 +112,28 @@ namespace vFlash.ViewModels
         public bool CanDeleteTextBox(TextBoxStrings tb)
         {
             return tb != TextBoxList.ElementAt(0);
+        }
+
+        public virtual bool CanSave()
+        {
+            bool canSave = true;
+
+            if (TextBoxList != null)
+            {
+                foreach (var item in TextBoxList)
+                {
+                    if (string.IsNullOrWhiteSpace(item.BoxText))
+                    {
+                        canSave = false;
+                        item.Error = "Cannot save empty text.";
+                    }
+                }
+            }
+
+            else
+                canSave = false;
+
+            return canSave;
         }
 
         public abstract Task SaveItem();

@@ -52,6 +52,9 @@ namespace vFlash.Models
                     // _boxText = tmp;
                     _boxText = value;
                     NotifyPropertyChanged();
+
+                    if (Error != "")
+                        Error = "";
                 }
             } 
         }
@@ -72,6 +75,9 @@ namespace vFlash.Models
                 {
                     _box2Text = value;
                     NotifyPropertyChanged();
+
+                    if (Error2 != "")
+                        Error2 = "";
                 }
             }
         }
@@ -86,6 +92,20 @@ namespace vFlash.Models
                 if (_error != value)
                 {
                     _error = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        private string _error2;
+        public string Error2
+        {
+            get { return _error2; }
+            set
+            {
+                if (_error2 != value)
+                {
+                    _error2 = value;
                     NotifyPropertyChanged();
                 }
             }
