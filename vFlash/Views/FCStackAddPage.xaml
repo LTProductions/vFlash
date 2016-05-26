@@ -66,8 +66,10 @@
             <TextBlock x:Name="SubclassName" Text="{Binding SubclassName}" FontSize="25" RelativePanel.Below="ClassName" Margin="16,4,0,0"/>
             <TextBox x:Name="FCStackName" Text="{Binding FCStackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" RelativePanel.Below="SubclassName" Header="Stack Name" Width="200" Margin="20,8,0,0"
                      IsEnabled="{Binding FCStackCanSave, Mode=TwoWay}"/>
+            <TextBlock x:Name="StackNameError" Text="{Binding StackNameError}" FontSize="10" RelativePanel.Below="FCStackName" Margin="20,0,0,0"
+                       Foreground="Red"/>
 
-            <RelativePanel Padding="4" Margin="4,32,0,0" RelativePanel.Below="FCStackName">
+            <RelativePanel Padding="4" Margin="4,32,0,0" RelativePanel.Below="StackNameError">
                 <TextBlock x:Name="Label" Text="Word + Definition" Margin="12,0,0,4"/>
                 <ListView x:Name="FCStackTextBoxes" ItemsSource="{Binding TextBoxList}" SelectionMode="None" RelativePanel.Below="Label">
                     <ListView.ItemTemplate>

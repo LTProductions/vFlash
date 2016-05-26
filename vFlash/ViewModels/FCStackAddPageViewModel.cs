@@ -56,6 +56,9 @@ namespace vFlash.ViewModels
                 {
                     _fcStackName = value;
                     RaisePropertyChanged();
+
+                    if (StackNameError != "")
+                        StackNameError = "";
                 }
             }
         }
@@ -69,6 +72,20 @@ namespace vFlash.ViewModels
                 if (_fcStackCanSave != value)
                 {
                     _fcStackCanSave = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string _stackNameError;
+        public string StackNameError
+        {
+            get { return _stackNameError; }
+            set
+            {
+                if (_stackNameError != value)
+                {
+                    _stackNameError = value;
                     RaisePropertyChanged();
                 }
             }
@@ -103,6 +120,7 @@ namespace vFlash.ViewModels
             if (FCStackCanSave && string.IsNullOrWhiteSpace(FCStackName))
             {
                 canSave = false;
+                StackNameError = "Cannot save empty text.";
             }
 
             else if (FCStackCanSave && !string.IsNullOrWhiteSpace(FCStackName))
