@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <controls:PageHeader x:Name="pageHeader" Text="Add Subclass"/>
+        <controls:PageHeader x:Name="pageHeader" Text="Add Class"/>
 
         <RelativePanel Grid.Row="1">
 
@@ -62,13 +62,20 @@
 
             </controls:PageHeader> -->
 
-            <RelativePanel Padding="4" Margin="4,12,0,0">
+            <RelativePanel x:Name="rPanel" Padding="4" Margin="4,12,0,0">
                 <TextBlock x:Name="Label" Text="Class Name" Margin="12,0,0,4"/>
                 <ListView x:Name="ClassTextBoxes" ItemsSource="{Binding TextBoxList}" SelectionMode="None" RelativePanel.Below="Label">
                     <ListView.ItemTemplate>
-                        <DataTemplate >
+                        <DataTemplate>
                             <RelativePanel>
-                                <TextBox x:Name="tbox" PlaceholderText="{Binding PlaceHolder}" Text="{Binding BoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="4" Width="200" MaxLength="25"/>
+                                <TextBox x:Name="tbox" PlaceholderText="{Binding PlaceHolder}" Text="{Binding BoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Padding="4" Width="200" MaxLength="25" SelectionStart="{Binding ElementName=rPanel, Path=DataContext.CaretPosition, Mode=TwoWay}">
+                                    <Interactivity:Interaction.Behaviors>
+                                        <Behaviors:EventTriggerBehaviorBase EventName="TextChanged">
+                                            <Core:InvokeCommandAction Command="{Binding ElementName=rPanel, Path=DataContext.TextChangedCommand}" CommandParameter="{Binding}"/>
+                                        </Behaviors:EventTriggerBehaviorBase>
+                                    </Interactivity:Interaction.Behaviors>
+                                </TextBox>
                                 <TextBlock x:Name="errorLabel" RelativePanel.Below="tbox" Text="{Binding Error, Mode=TwoWay}" Padding="0,0,0,4"
                                            FontSize="10" Foreground="Red"/>
                                 <Button Content="Delete" Margin="12,0,0,0" RelativePanel.RightOf="tbox" Command="{Binding ElementName=ClassTextBoxes, Path=DataContext.DeleteTBoxCommand}" CommandParameter="{Binding}"/>

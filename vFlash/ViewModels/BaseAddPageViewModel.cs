@@ -42,6 +42,20 @@ namespace vFlash.ViewModels
             set { _maxBoxes = value; }
         }
 
+        private int _caretPosition;
+        public int CaretPosition
+        {
+            get { return _caretPosition; }
+            set
+            {
+                if (_caretPosition != value)
+                {
+                    _caretPosition = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -66,12 +80,29 @@ namespace vFlash.ViewModels
             set { _deleteTBoxCommand = value; }
             get { return _deleteTBoxCommand; }
         }
+
+        private DelegateCommand<TextBoxStrings> _textChangedCommand;
+        public DelegateCommand<TextBoxStrings> TextChangedCommand
+        {
+            set { _textChangedCommand = value; }
+            get { return _textChangedCommand; }
+        }
+
+        private DelegateCommand<TextBoxStrings> _textChanged2Command;
+        public DelegateCommand<TextBoxStrings> TextChanged2Command
+        {
+            set { _textChanged2Command = value; }
+            get { return _textChanged2Command; }
+        }
+
         #endregion
 
         #region Constructor
 
         public BaseAddPageViewModel()
         {
+            TextChangedCommand = new DelegateCommand<TextBoxStrings>(BoxTextChanged);
+            TextChanged2Command = new DelegateCommand<TextBoxStrings>(Box2TextChanged);
         }
 
         #endregion
@@ -134,6 +165,68 @@ namespace vFlash.ViewModels
                 canSave = false;
 
             return canSave;
+        }
+
+        public void BoxTextChanged(TextBoxStrings item)
+        {
+            if (TextBoxList != null)
+            {
+                int i = TextBoxList.IndexOf(item);
+                var temp = CheckBoxText(item.BoxText);
+                if (temp != item.BoxText)
+                {
+                    
+                    if (CaretPosition != item.BoxText.Count())
+                    { 
+                        int index = CaretPosition > 0 ? CaretPosition - 1 : CaretPosition;
+                        TextBoxList.ElementAt(i).BoxText = temp;
+                        CaretPosition = index;
+                    }
+                    else
+                    {
+                        TextBoxList.ElementAt(i).BoxText = temp;
+                        CaretPosition = temp.Count() >= 0 ? temp.Count() : 0;
+                    }
+                }
+            }
+            
+        }
+
+        public void Box2TextChanged(TextBoxStrings item)
+        {
+            if (TextBoxList != null)
+            {
+                int i = TextBoxList.IndexOf(item);
+                var temp = CheckBoxText(item.Box2Text);
+                if (temp != item.Box2Text)
+                {
+
+                    if (CaretPosition != item.Box2Text.Count())
+                    {
+                        int index = CaretPosition > 0 ? CaretPosition - 1 : CaretPosition;
+                        TextBoxList.ElementAt(i).Box2Text = temp;
+                        CaretPosition = index;
+                    }
+                    else
+                    {
+                        TextBoxList.ElementAt(i).Box2Text = temp;
+                        CaretPosition = temp.Count() >= 0 ? temp.Count() : 0;
+                    }
+                }
+            }
+
+        }
+
+        public string CheckBoxText(string val)
+        {
+            var r = new Regex("[^\\w #-]+");
+            return r.Replace(val, "");
+        }
+
+        public string CheckBox2Text(string val)
+        {
+            var r = new Regex("[^\\w !@#$%^&*()-+={}\\|[];:\"\'?/.,<>]+");
+            return r.Replace(val, "");
         }
 
         public abstract Task SaveItem();

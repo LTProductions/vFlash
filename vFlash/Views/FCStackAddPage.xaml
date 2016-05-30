@@ -65,22 +65,34 @@
             <TextBlock x:Name="ClassName" Text="{Binding ClassName}" FontSize="20" RelativePanel.AlignTopWithPanel="True" Margin="12,4,0,0"/>
             <TextBlock x:Name="SubclassName" Text="{Binding SubclassName}" FontSize="25" RelativePanel.Below="ClassName" Margin="16,4,0,0"/>
             <TextBox x:Name="FCStackName" Text="{Binding FCStackName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" RelativePanel.Below="SubclassName" Header="Stack Name" Width="200" Margin="20,8,0,0"
-                     IsEnabled="{Binding FCStackCanSave, Mode=TwoWay}"/>
+                     IsEnabled="{Binding FCStackCanSave, Mode=TwoWay}" TextChanged="FCStackName_TextChanged"/>
             <TextBlock x:Name="StackNameError" Text="{Binding StackNameError}" FontSize="10" RelativePanel.Below="FCStackName" Margin="20,0,0,0"
                        Foreground="Red"/>
 
-            <RelativePanel Padding="4" Margin="4,32,0,0" RelativePanel.Below="StackNameError">
+            <RelativePanel x:Name="rPanel" Padding="4" Margin="4,32,0,0" RelativePanel.Below="StackNameError">
                 <TextBlock x:Name="Label" Text="Word + Definition" Margin="12,0,0,4"/>
                 <ListView x:Name="FCStackTextBoxes" ItemsSource="{Binding TextBoxList}" SelectionMode="None" RelativePanel.Below="Label">
                     <ListView.ItemTemplate>
                         <DataTemplate >
                             <RelativePanel>
                                 <TextBox x:Name="tbox" PlaceholderText="{Binding PlaceHolder}" Text="{Binding BoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="4" Width="200" MaxLength="25"
-                                         Margin="0,8,0,0"/>
+                                         Margin="0,8,0,0" SelectionStart="{Binding ElementName=rPanel, Path=DataContext.CaretPosition, Mode=TwoWay}">
+                                    <Interactivity:Interaction.Behaviors>
+                                        <Behaviors:EventTriggerBehaviorBase EventName="TextChanged">
+                                            <Core:InvokeCommandAction Command="{Binding ElementName=rPanel, Path=DataContext.TextChangedCommand}" CommandParameter="{Binding}"/>
+                                        </Behaviors:EventTriggerBehaviorBase>
+                                    </Interactivity:Interaction.Behaviors>
+                                </TextBox>
                                 <TextBlock x:Name="errorLabel" RelativePanel.Below="tbox" Text="{Binding Error, Mode=TwoWay}"
                                            FontSize="10" Foreground="Red"/>
                                 <TextBox x:Name="tbox2" PlaceholderText="{Binding PlaceHolder2}" Text="{Binding Box2Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="4" Width="200" MaxLength="200"
-                                         Height="150" RelativePanel.Below="errorLabel" Margin="0,8,0,0"/>
+                                         Height="150" RelativePanel.Below="errorLabel" Margin="0,8,0,0" SelectionStart="{Binding ElementName=rPanel, Path=DataContext.CaretPosition, Mode=TwoWay}">
+                                    <Interactivity:Interaction.Behaviors>
+                                        <Behaviors:EventTriggerBehaviorBase EventName="TextChanged">
+                                            <Core:InvokeCommandAction Command="{Binding ElementName=rPanel, Path=DataContext.TextChanged2Command}" CommandParameter="{Binding}"/>
+                                        </Behaviors:EventTriggerBehaviorBase>
+                                    </Interactivity:Interaction.Behaviors>
+                                </TextBox>
                                 <TextBlock x:Name="errorLabel2" RelativePanel.Below="tbox2" Text="{Binding Error2, Mode=TwoWay}" Padding="0,0,0,4"
                                            FontSize="10" Foreground="Red"/>
                                 <Button Content="Delete" Margin="12,0,0,0" RelativePanel.RightOf="tbox" Command="{Binding ElementName=FCStackTextBoxes, Path=DataContext.DeleteTBoxCommand}" CommandParameter="{Binding}"/>

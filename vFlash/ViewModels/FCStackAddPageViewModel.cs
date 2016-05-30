@@ -54,7 +54,8 @@ namespace vFlash.ViewModels
             {
                 if (_fcStackName != value)
                 {
-                    _fcStackName = value;
+                    var temp = CheckBoxText(value);
+                    _fcStackName = temp;
                     RaisePropertyChanged();
 
                     if (StackNameError != "")

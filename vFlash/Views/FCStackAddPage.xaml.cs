@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -25,6 +26,22 @@ namespace vFlash.Views
         public FCStackAddPage()
         {
             this.InitializeComponent();
+        }
+
+        private void FCStackName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (FCStackName.Text != CheckBoxText(FCStackName.Text))
+            {
+                int CaretPosition = FCStackName.SelectionStart - 1;
+                FCStackName.Text = CheckBoxText(FCStackName.Text);
+                FCStackName.SelectionStart = CaretPosition;
+            }
+        }
+
+        public string CheckBoxText(string val)
+        {
+            var r = new Regex("[^\\w #-]+");
+            return r.Replace(val, "");
         }
     }
 }
