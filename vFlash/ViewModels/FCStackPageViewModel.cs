@@ -92,7 +92,6 @@ namespace vFlash.ViewModels
 
         public FCStackPageViewModel()
         {
-            LoadData().ConfigureAwait(false);
             _addFCStackCommand = new DelegateCommand(delegate ()
             {
                 this.NavigationService.Navigate(typeof(Views.FCStackAddPage), passedItem);
