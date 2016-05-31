@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
-    public class StudySessionNames : BaseModel
+    public class StudySessionNames : BaseAzureModel
     {
 
         private string _name;

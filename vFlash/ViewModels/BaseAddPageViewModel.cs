@@ -81,15 +81,15 @@ namespace vFlash.ViewModels
             get { return _deleteTBoxCommand; }
         }
 
-        private DelegateCommand<TextBoxStrings> _textChangedCommand;
-        public DelegateCommand<TextBoxStrings> TextChangedCommand
+        private DelegateCommand<object> _textChangedCommand;
+        public DelegateCommand<object> TextChangedCommand
         {
             set { _textChangedCommand = value; }
             get { return _textChangedCommand; }
         }
 
-        private DelegateCommand<TextBoxStrings> _textChanged2Command;
-        public DelegateCommand<TextBoxStrings> TextChanged2Command
+        private DelegateCommand<object> _textChanged2Command;
+        public DelegateCommand<object> TextChanged2Command
         {
             set { _textChanged2Command = value; }
             get { return _textChanged2Command; }
@@ -101,8 +101,8 @@ namespace vFlash.ViewModels
 
         public BaseAddPageViewModel()
         {
-            TextChangedCommand = new DelegateCommand<TextBoxStrings>(BoxTextChanged);
-            TextChanged2Command = new DelegateCommand<TextBoxStrings>(Box2TextChanged);
+            TextChangedCommand = new DelegateCommand<object>(BoxTextChanged);
+            TextChanged2Command = new DelegateCommand<object>(Box2TextChanged);
         }
 
         #endregion
@@ -167,9 +167,19 @@ namespace vFlash.ViewModels
             return canSave;
         }
 
-        public void BoxTextChanged(TextBoxStrings item)
+        public void BoxTextChanged(object itemPassed)
         {
-            if (TextBoxList != null)
+            TextBoxStrings item;
+            try
+            {
+                item = (TextBoxStrings)itemPassed;
+            }
+            catch(InvalidCastException)
+            {
+                item = null;
+            }
+
+            if (TextBoxList != null && item != null)
             {
                 int i = TextBoxList.IndexOf(item);
                 var temp = CheckBoxText(item.BoxText);
@@ -192,9 +202,20 @@ namespace vFlash.ViewModels
             
         }
 
-        public void Box2TextChanged(TextBoxStrings item)
+        public void Box2TextChanged(object itemPassed)
         {
-            if (TextBoxList != null)
+            TextBoxStrings item;
+
+            try
+            {
+                item = (TextBoxStrings)itemPassed;
+            }
+            catch
+            {
+                item = null;
+            }
+
+            if (TextBoxList != null && item != null)
             {
                 int i = TextBoxList.IndexOf(item);
                 var temp = CheckBoxText(item.Box2Text);

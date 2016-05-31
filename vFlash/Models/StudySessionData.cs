@@ -7,24 +7,8 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
-    public class StudySessionData : BaseModel
+    public class StudySessionData : BaseAzureModel
     {
-
-        private string _name;
-
-        [JsonProperty(PropertyName = "name")]
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
 
         private string _sessionname_id;
 

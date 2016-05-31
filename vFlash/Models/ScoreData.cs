@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
-    public class ScoreData : BaseModel
+    public class ScoreData : BaseAzureModel
     {
         
-        private string _name;
+        private bool _correct;
 
-        [JsonProperty(PropertyName = "name")]
-        public string Name
+        [JsonProperty(PropertyName = "correct")]
+        public bool Correct
         {
-            get { return _name; }
+            get { return _correct; }
             set
             {
-                if (_name != value)
+                if (_correct != value)
                 {
-                    _name = value;
+                    _correct = value;
                     NotifyPropertyChanged();
                 }
             }
