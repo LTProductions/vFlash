@@ -210,7 +210,7 @@ namespace vFlash.ViewModels
             {
                 item = (TextBoxStrings)itemPassed;
             }
-            catch(InvalidCastException)
+            catch
             {
                 item = null;
             }
