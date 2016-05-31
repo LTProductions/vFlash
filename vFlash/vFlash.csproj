@@ -112,6 +112,7 @@
     <Compile Include="Models\FCStackData.cs" />
     <Compile Include="Models\FlashcardData.cs" />
     <Compile Include="Models\NamesAndIDs.cs" />
+    <Compile Include="Models\QuizModel.cs" />
     <Compile Include="Models\ScoreData.cs" />
     <Compile Include="Models\StudySessionData.cs" />
     <Compile Include="Models\StudySessionNames.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
     <Compile Include="Utils\AuthHandler.cs" />
+    <Compile Include="Utils\Randomizer.cs" />
     <Compile Include="Utils\SavedLogin.cs" />
     <Compile Include="ViewModels\BaseAddPageViewModel.cs" />
     <Compile Include="ViewModels\ClassAddPageViewModel.cs" />
@@ -128,6 +130,7 @@
     <Compile Include="ViewModels\FCStackPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\DetailPageViewModel.cs" />
+    <Compile Include="ViewModels\QuizViewModel.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
     <Compile Include="ViewModels\SubclassAddPageViewModel.cs" />
     <Compile Include="ViewModels\SubclassPageViewModel.cs" />

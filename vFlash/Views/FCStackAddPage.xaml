@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <controls:PageHeader x:Name="pageHeader" Text="Add Subclass"/>
+        <controls:PageHeader x:Name="pageHeader" Text="Add Flashcards"/>
 
         <RelativePanel Grid.Row="1">
 
