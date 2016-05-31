@@ -86,6 +86,12 @@ namespace vFlash.ViewModels
             get { return _addFCStackCommand; }
         }
 
+        private DelegateCommand<FCStackData> _navQuizCommand;
+        public DelegateCommand<FCStackData> NavQuizCommand
+        {
+            get { return _navQuizCommand; }
+        }
+
         #endregion
 
         #region Constructor
@@ -95,6 +101,12 @@ namespace vFlash.ViewModels
             _addFCStackCommand = new DelegateCommand(delegate ()
             {
                 this.NavigationService.Navigate(typeof(Views.FCStackAddPage), passedItem);
+            });
+
+            _navQuizCommand = new DelegateCommand<FCStackData>(delegate (FCStackData item)
+            {
+                passedItem.FCStackID = item.Id;
+                this.NavigationService.Navigate(typeof(Views.QuizPage), passedItem);
             });
         }
 

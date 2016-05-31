@@ -175,26 +175,16 @@ namespace vFlash.ViewModels
 
             if (CanSaveStackName())
             {
-                DateTime now = DateTime.Now;
-                StackItem = new FCStackData() { Name = FCStackName, CreatedAt = now, Subclass_ID = passedItem.SubclassID };
+                StackItem = new FCStackData() { Name = FCStackName, Subclass_ID = passedItem.SubclassID };
                 if (!isBusy)
                 {
                     Views.Busy.SetBusy(true, "Saving...");
                     isBusy = true;
                 }
-                try
-                {
-                    await StackItem.InsertItem(StackItem);
-                    FCStackCanSave = false;
-                    var query = App.MobileService.GetTable<FCStackData>().CreateQuery();
-                    var listOfOne = await StackItem.GetQueriedList<FCStackData>(query.Where(p => p.Name == StackItem.Name && p.CreatedAt == StackItem.CreatedAt));
-                    fcItemForID = listOfOne.ElementAt(0);
-                }
 
-                catch
-                {
-                    return;
-                }
+                await StackItem.InsertItem(StackItem);
+                FCStackCanSave = false;
+                fcItemForID = StackItem;
 
             }
 

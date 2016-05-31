@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Prism.Commands;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +26,20 @@ namespace vFlash.ViewModels
         private List<FlashcardData> flashCards;
 
         private List<string> potentialAnswers;
+
+        private ObservableCollection<QuizModel> _quizObjectList = new ObservableCollection<QuizModel>();
+        public ObservableCollection<QuizModel> QuizObjectList
+        {
+            get { return _quizObjectList; }
+            set
+            {
+                if (_quizObjectList != value)
+                {
+                    _quizObjectList = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         private QuizModel _quizObject;
         public QuizModel QuizObject
@@ -53,14 +69,94 @@ namespace vFlash.ViewModels
             }
         }
 
+        private string _selectedItem;
+        public string SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private int index = 0;
+
+        private int _finalScore;
+        public int FinalScore
+        {
+            get { return _finalScore; }
+            set
+            {
+                if (_finalScore != value)
+                {
+                    _finalScore = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int _totalQuestions;
+        public int TotalQuestions
+        {
+            get { return _totalQuestions; }
+            set
+            {
+                if (_totalQuestions != value)
+                {
+                    _totalQuestions = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private float _finalPercentage;
+        public float FinalPercentage
+        {
+            get { return _finalPercentage; }
+            set
+            {
+                if (_finalPercentage != value)
+                {
+                    _finalPercentage = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool _quizFinished = false;
+        public bool QuizFinished
+        {
+            get { return _quizFinished; }
+            set
+            {
+                if (_quizFinished != value)
+                {
+                    _quizFinished = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
 
         #endregion
 
         #region Commands
 
+        private DelegateCommand _submitAnswerCommand;
+        public DelegateCommand SubmitAnswerCommand
+        {
+            get { return _submitAnswerCommand; }
+        }
 
+        private DelegateCommand _showFinishedQuizCommand;
+        public DelegateCommand ShowFinishedQuizCommand
+        {
+            get { return _showFinishedQuizCommand; }
+        }
 
 
         #endregion
@@ -74,69 +170,140 @@ namespace vFlash.ViewModels
 
         #region Methods
 
-        public async void LoadData()
+        private async Task SubmitAnswer()
         {
+            if (SelectedItem != null)
+            {
+                bool isCorrect = SelectedItem == flashCards[index].Word_Side1;
+                ScoreData score = new ScoreData() { SessionData_ID = studySession.Id, FCData_ID = flashCards[index].Id, Correct = isCorrect };
+                scoreList.Add(score);
+
+                if (index < flashCards.Count - 1)
+                {
+                    index++;
+                    LoadRandomAnswers();
+                    SetQuizModel();
+                }
+
+                else
+                {
+                    if (scoreList != null && scoreList.Count > 0)
+                    {
+                        QuizFinished = true;
+
+                        Views.Busy.SetBusy(true, "Saving your score...");
+                        foreach (var item in scoreList)
+                        {
+                            bool success = await item.InsertItem(item);
+                            if (!success)
+                            {
+                                // **HANDLE ERROR** An item has failed to be inserted, delete saved data and don't save any more.
+                                return;
+                            }
+                        }
+                        Views.Busy.SetBusy(false);
+
+                        FinalScore = scoreList.Count(p => p.Correct == true);
+                        TotalQuestions = flashCards.Count;
+                        FinalPercentage = FinalScore / TotalQuestions;
+                    }
+                }
+            }
+        }
+
+        private bool CanSubmitCheck()
+        {
+            return SelectedItem != null;
+        }
+
+        private async void LoadData()
+        {
+            Views.Busy.SetBusy(true, "Generating...");
             await LoadStudySessionData();
             await LoadFCardData();
             LoadRandomAnswers();
             SetQuizModel();
+            Views.Busy.SetBusy(false);
         }
 
-        public async Task LoadStudySessionData()
+        private async Task LoadStudySessionData()
         {
-            DateTime now = DateTime.Now;
-            studySession = new StudySessionData() { CreatedAt = now };
+            string quizNameID = "979E4989-21DF-450F-A2A6-05634C4F87BA";
+            studySession = new StudySessionData() { SessionName_ID = quizNameID };
             await studySession.InsertItem(studySession);
-            var ssQuery = App.MobileService.GetTable<StudySessionData>().CreateQuery();
-            var listOfOne = await studySession.GetQueriedList(ssQuery.Where(p => p.CreatedAt == now));
-
-            if (listOfOne != null)
-                studySession = listOfOne[0];
         }
 
-        public async Task LoadFCardData()
+        private async Task LoadFCardData()
         {
             FlashcardData fc = new FlashcardData();
             var fcQuery = App.MobileService.GetTable<FlashcardData>().CreateQuery();
             var fcards = await fc.GetQueriedList<FlashcardData>(fcQuery.Where(p => p.FCStack_ID == passedItem.FCStackID));
 
-            if (fcards != null)
+            if (fcards != null && fcards.Count >= 1)
             {
                 var randomizedList = Randomizer.Shuffle1<FlashcardData>(fcards);
                 flashCards = randomizedList.ToList();
             }
         }
 
-        public void LoadRandomAnswers()
+        private void LoadRandomAnswers()
         {
-            if (flashCards != null)
+            if (flashCards != null && flashCards.Count >= 1)
             {
                 var rnd = new Random(DateTime.Now.Millisecond);
+                List<int> potentialIndexes = new List<int>();
+                for (int i = 0; i < flashCards.Count; i++)
+                {
+                    if (i != index)
+                        potentialIndexes.Add(i);
+                }
+
+                var indexTemp = Randomizer.Shuffle1(potentialIndexes);
+                potentialIndexes = indexTemp.ToList();
+
                 potentialAnswers = new List<string>();
-                potentialAnswers[0] = flashCards.ElementAt(index).Word_Side1;
+                potentialAnswers.Add(flashCards.ElementAt(index).Word_Side1);
+
                 if (flashCards.Count() >= 2)
-                    potentialAnswers[1] = flashCards.ElementAt(rnd.Next(0, flashCards.Count())).Word_Side1;
+                    potentialAnswers.Add(flashCards.ElementAt(potentialIndexes[0]).Word_Side1);
+                else
+                    potentialAnswers.Add("");
+
                 if (flashCards.Count() >= 3)
-                    potentialAnswers[2] = flashCards.ElementAt(rnd.Next(0, flashCards.Count())).Word_Side1;
+                    potentialAnswers.Add(flashCards.ElementAt(potentialIndexes[1]).Word_Side1);
+                else
+                    potentialAnswers.Add("");
+
                 if (flashCards.Count() >= 4)
-                    potentialAnswers[3] = flashCards.ElementAt(rnd.Next(0, flashCards.Count())).Word_Side1;
+                    potentialAnswers.Add(flashCards.ElementAt(potentialIndexes[2]).Word_Side1);
+                else
+                    potentialAnswers.Add("");
 
                 var temp = Randomizer.Shuffle1(potentialAnswers);
                 potentialAnswers = temp.ToList();
             }
         }
 
-        public void SetQuizModel()
+        private void SetQuizModel()
         {
-            QuizObject = new QuizModel()
+            try
             {
-                ID = index,
-                Question = flashCards.ElementAt(index).Definition_Side2 != null ? flashCards.ElementAt(index).Definition_Side2 : string.Empty,
-                A = potentialAnswers[0] != null ? potentialAnswers[0] : string.Empty,
-                B = potentialAnswers[1] != null ? potentialAnswers[1] : string.Empty,
-                C = potentialAnswers[2] != null ? potentialAnswers[2] : string.Empty,
-                D = potentialAnswers[3] != null ? potentialAnswers[3] : string.Empty
-            };
+                QuizObject = new QuizModel()
+                {
+                    ID = index,
+                    Question = flashCards.ElementAt(index).Definition_Side2 != null ? flashCards.ElementAt(index).Definition_Side2 : string.Empty,
+                    A = potentialAnswers[0],
+                    B = potentialAnswers[1],
+                    C = potentialAnswers[2],
+                    D = potentialAnswers[3]
+                };
+
+                QuizObjectList.Add(QuizObject);
+            }
+            catch(ArgumentNullException)
+            {
+                QuizObject = null;
+            }
         }
 
 
@@ -152,6 +319,7 @@ namespace vFlash.ViewModels
         {
             passedItem = (NamesAndIDs)parameter;
             FCStackName = passedItem.FCStackName;
+            LoadData();
             Value = (suspensionState.ContainsKey(nameof(Value))) ? suspensionState[nameof(Value)]?.ToString() : parameter?.ToString();
             await Task.CompletedTask;
         }

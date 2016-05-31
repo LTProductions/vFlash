@@ -1,6 +1,6 @@
 ﻿<Page
-    x:Class="vFlash.Views.FCStackPage"
-   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Class="vFlash.Views.QuizPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:Behaviors="using:Template10.Behaviors"
       xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
@@ -12,7 +12,7 @@
       xmlns:vm="using:vFlash.ViewModels" mc:Ignorable="d">
 
     <Page.DataContext>
-        <vm:FCStackPageViewModel x:Name="FCStackPageViewModel" />
+        <vm:QuizViewModel x:Name="QuizViewModel" />
     </Page.DataContext>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <controls:PageHeader x:Name="pageHeader" Text="Groups"/>
+        <controls:PageHeader x:Name="pageHeader" Text="Quiz"/>
 
         <RelativePanel Grid.Row="1">
 
@@ -62,26 +62,20 @@
 
             </controls:PageHeader> -->
 
-            <TextBlock x:Name="ClassName" Text="{Binding ClassName}" FontSize="25" RelativePanel.AlignTopWithPanel="True" Margin="12,8,0,0" Padding="4"/>
-            <TextBlock x:Name="SubclassName" Text="{Binding SubclassName}" FontSize="30" RelativePanel.Below="ClassName" Margin="16,8,0,0" Padding="4"/>
 
-            <ListBox x:Name="Classes" ItemsSource="{Binding StackList}" RelativePanel.Below="SubclassName">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <RelativePanel>
-                            <TextBlock x:Name="NameTBox" Text="{Binding Name}" />
-                            <Button RelativePanel.RightOf="NameTBox" Content="Quiz" Command="{Binding ElementName=Classes, Path=DataContext.NavQuizCommand}" CommandParameter="{Binding}"
-                                    Margin="24,0,0,0"/>
-                        </RelativePanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <TextBlock x:Name="QuestionTBox" Text="{Binding QuizObject.Question}"/>
+            <TextBlock x:Name="answerA" Text="{Binding QuizObject.A}" RelativePanel.Below="QuestionTBox"/>
+            <TextBlock x:Name="answerB" Text="{Binding QuizObject.B}" RelativePanel.RightOf="answerA" RelativePanel.Below="QuestionTBox" Margin="20,0,0,0"/>
+            <TextBlock x:Name="answerC" Text="{Binding QuizObject.C}" RelativePanel.Below="answerA"/>
+            <TextBlock x:Name="answerD" Text="{Binding QuizObject.D}" RelativePanel.Below="answerB" Margin="200,0,0,0"/>
+
+
 
         </RelativePanel>
 
         <Grid x:Name="BottomBar" Grid.Row="2">
             <CommandBar ClosedDisplayMode="Compact">
-                <AppBarButton Icon="Add" Label="Add Class" Command="{Binding AddFCStackCommand}" />
+                
             </CommandBar>
         </Grid>
     </Grid>
