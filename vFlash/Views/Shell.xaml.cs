@@ -14,6 +14,7 @@ namespace vFlash.Views
     {
         public static Shell Instance { get; set; }
         public static HamburgerMenu HamburgerMenu => Instance.MyHamburgerMenu;
+        
 
         public Shell()
         {

@@ -6,6 +6,7 @@
       xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
       xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
       xmlns:controls="using:Template10.Controls"
+    xmlns:myControls="using:vFlash.Controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="using:vFlash.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -63,11 +64,29 @@
             </controls:PageHeader> -->
 
 
-            <TextBlock x:Name="QuestionTBox" Text="{Binding QuizObject.Question}"/>
-            <TextBlock x:Name="answerA" Text="{Binding QuizObject.A}" RelativePanel.Below="QuestionTBox"/>
-            <TextBlock x:Name="answerB" Text="{Binding QuizObject.B}" RelativePanel.RightOf="answerA" RelativePanel.Below="QuestionTBox" Margin="20,0,0,0"/>
-            <TextBlock x:Name="answerC" Text="{Binding QuizObject.C}" RelativePanel.Below="answerA"/>
-            <TextBlock x:Name="answerD" Text="{Binding QuizObject.D}" RelativePanel.Below="answerB" Margin="200,0,0,0"/>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="QuestionTBox" Text="{Binding QuizObject.Question}" Grid.ColumnSpan="2"/>
+                <RadioButton x:Name="answerA" Content="{Binding QuizObject.A}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="1"/>
+                <RadioButton x:Name="answerB" Content="{Binding QuizObject.B}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="2"/>
+                <RadioButton x:Name="answerC" Content="{Binding QuizObject.C}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="1" Grid.Column="1"/>
+                <RadioButton x:Name="answerD" Content="{Binding QuizObject.D}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="2" Grid.Column="1"/>
+            </Grid>
+
+            <Button x:Name="SubmitAnswerButton" Content="Submit" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
+                            Margin="0,0,0,20" Command="{Binding SubmitAnswerCommand}"/>
 
 
 

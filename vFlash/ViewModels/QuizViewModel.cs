@@ -21,7 +21,7 @@ namespace vFlash.ViewModels
 
         private StudySessionData studySession;
 
-        private List<ScoreData> scoreList;
+        private List<ScoreData> scoreList = new List<ScoreData>();
 
         private List<FlashcardData> flashCards;
 
@@ -79,49 +79,36 @@ namespace vFlash.ViewModels
                 {
                     _selectedItem = value;
                     RaisePropertyChanged();
+                    SubmitAnswerCommand.RaiseCanExecuteChanged();
                 }
             }
         }
 
         private int index = 0;
 
-        private int _finalScore;
-        public int FinalScore
+        private string _finalScoreString;
+        public string FinalScoreString
         {
-            get { return _finalScore; }
+            get { return _finalScoreString; }
             set
             {
-                if (_finalScore != value)
+                if (_finalScoreString != value)
                 {
-                    _finalScore = value;
+                    _finalScoreString = value;
                     RaisePropertyChanged();
                 }
             }
         }
 
-        private int _totalQuestions;
-        public int TotalQuestions
+        private string _finalPercentageString;
+        public string FinalPercentageString
         {
-            get { return _totalQuestions; }
+            get { return _finalPercentageString; }
             set
             {
-                if (_totalQuestions != value)
+                if (_finalPercentageString != value)
                 {
-                    _totalQuestions = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private float _finalPercentage;
-        public float FinalPercentage
-        {
-            get { return _finalPercentage; }
-            set
-            {
-                if (_finalPercentage != value)
-                {
-                    _finalPercentage = value;
+                    _finalPercentageString = value;
                     RaisePropertyChanged();
                 }
             }
@@ -141,6 +128,19 @@ namespace vFlash.ViewModels
             }
         }
 
+        private bool _showScoreModal = true;
+        public bool ShowScoreModal
+        {
+            get { return _showScoreModal; }
+            set
+            {
+                if (_showScoreModal != value)
+                {
+                    _showScoreModal = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         #endregion
 
@@ -158,15 +158,40 @@ namespace vFlash.ViewModels
             get { return _showFinishedQuizCommand; }
         }
 
+        private DelegateCommand<string> _rButtonCheckedCommand;
+        public DelegateCommand<string> RButtonCheckedCommand
+        {
+            get { return _rButtonCheckedCommand; }
+        }
+
 
         #endregion
 
         #region Constructor
 
+        public QuizViewModel()
+        {
+
+            #region Command Initializers
+
+            _submitAnswerCommand = new DelegateCommand(async delegate () {
+                await SubmitAnswer();
+            }, CanSubmitCheck);
+
+            // _showFinishedQuizCommand = new DelegateCommand(null); // Method not made yet.
+
+            _rButtonCheckedCommand = new DelegateCommand<string>(SetSelectedItem);
+
+            // Views.Shell.Instance.SetScoreModal(true);
+
+            #endregion
 
 
 
-        #endregion
+
+            #endregion
+
+        }
 
         #region Methods
 
@@ -174,13 +199,16 @@ namespace vFlash.ViewModels
         {
             if (SelectedItem != null)
             {
-                bool isCorrect = SelectedItem == flashCards[index].Word_Side1;
+                bool isCorrect = String.Equals(SelectedItem, flashCards[index].Word_Side1);
                 ScoreData score = new ScoreData() { SessionData_ID = studySession.Id, FCData_ID = flashCards[index].Id, Correct = isCorrect };
                 scoreList.Add(score);
 
-                if (index < flashCards.Count - 1)
+                index++;
+
+                if (index < flashCards.Count)
                 {
-                    index++;
+                    SelectedItem = null;
+                    SubmitAnswerCommand.RaiseCanExecuteChanged();
                     LoadRandomAnswers();
                     SetQuizModel();
                 }
@@ -190,6 +218,9 @@ namespace vFlash.ViewModels
                     if (scoreList != null && scoreList.Count > 0)
                     {
                         QuizFinished = true;
+
+                        SelectedItem = null;
+                        SubmitAnswerCommand.RaiseCanExecuteChanged();
 
                         Views.Busy.SetBusy(true, "Saving your score...");
                         foreach (var item in scoreList)
@@ -203,9 +234,10 @@ namespace vFlash.ViewModels
                         }
                         Views.Busy.SetBusy(false);
 
-                        FinalScore = scoreList.Count(p => p.Correct == true);
-                        TotalQuestions = flashCards.Count;
-                        FinalPercentage = FinalScore / TotalQuestions;
+                        int finalCorrect = scoreList.Count(p => p.Correct == true);
+                        int totalQuestions = flashCards.Count;
+                        FinalScoreString = ($"Total: {finalCorrect.ToString()} / {totalQuestions.ToString()} ");
+                        FinalPercentageString = ($"Score: {((finalCorrect / totalQuestions) * 100).ToString()}%");
                     }
                 }
             }
@@ -214,6 +246,11 @@ namespace vFlash.ViewModels
         private bool CanSubmitCheck()
         {
             return SelectedItem != null;
+        }
+
+        private void SetSelectedItem(string s)
+        {
+            SelectedItem = s;
         }
 
         private async void LoadData()

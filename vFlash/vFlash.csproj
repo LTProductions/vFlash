@@ -103,6 +103,9 @@
     <Compile Include="Controls\LoginPart.xaml.cs">
       <DependentUpon>LoginPart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\QuizScorePart.xaml.cs">
+      <DependentUpon>QuizScorePart.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\RegisterPart.xaml.cs">
       <DependentUpon>RegisterPart.xaml</DependentUpon>
     </Compile>
@@ -206,6 +209,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\LoginPart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\QuizScorePart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
