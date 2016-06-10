@@ -26,5 +26,13 @@ namespace vFlash.Views
         {
             this.InitializeComponent();
         }
+
+        private void SubmitAnswerButton_Click(object sender, RoutedEventArgs e)
+        {
+            answerA.IsChecked = false;
+            answerB.IsChecked = false;
+            answerC.IsChecked = false;
+            answerD.IsChecked = false;
+        }
     }
 }

@@ -12,12 +12,19 @@ using Windows.UI.Xaml.Navigation;
 
 namespace vFlash.ViewModels
 {
+    /// <summary>
+    /// ViewModel used for viewing SubclassData from the Azure database.
+    /// Corresponding View: SubclassPage.xaml
+    /// </summary>
     class SubclassPageViewModel : ViewModelBase
     {
 
         #region Properties and Fields
 
         private ObservableCollection<SubclassData> _subclassList;
+        /// <summary>
+        /// Holds the list of SubclassData items.
+        /// </summary>
         public ObservableCollection<SubclassData> SubclassList
         {
             get { return _subclassList; }
@@ -32,6 +39,9 @@ namespace vFlash.ViewModels
         }
 
         private SubclassData _selectedItem;
+        /// <summary>
+        /// Holds the SubclassData item selected by the user.
+        /// </summary>
         public SubclassData SelectedItem
         {
             get { return _selectedItem; }
@@ -41,15 +51,19 @@ namespace vFlash.ViewModels
                 {
                     _selectedItem = value;
                     RaisePropertyChanged();
-                    // Navigate.
+                    // Set the values of the passedItem.
                     passedItem.SubclassID = value.Id;
                     passedItem.SubclassName = value.Name;
+                    // Navigate and pass the item to the next ViewModel with the updated data.
                     this.NavigationService.Navigate(typeof(Views.FCStackPage), passedItem);
                 }
             }
         }
 
         private string _className;
+        /// <summary>
+        /// Holds the name of the ClassData that the Subclasses live in.
+        /// </summary>
         public string ClassName
         {
             get { return _className; }
@@ -82,25 +96,31 @@ namespace vFlash.ViewModels
 
         public SubclassPageViewModel()
         {
+            #region Command Initializers
+
             _addSubclassNavCommand = new DelegateCommand(delegate ()
             {
+                // Navigate and pass passedItem.
                 this.NavigationService.Navigate(typeof(Views.SubclassAddPage), passedItem);
             });
+
+            #endregion
         }
 
         #endregion
 
         #region Methods
 
-        public async Task LoadData()
+        /// <summary>
+        /// Load the data from the Azure database.
+        /// </summary>
+        /// <returns></returns>
+        private async Task LoadData()
         {
+            // Set the ClassName these Subclasses live in.
             ClassName = passedItem.ClassName;
 
-            //var scd = new SubclassData();
-            //var list = await scd.GetList<SubclassData>();
-            //var queriedList = list.Where(p => p.Class_ID == passedItem.Id);
-            //SubclassList = new ObservableCollection<SubclassData>(queriedList);
-
+            // Load the data based on the ClassID.
             var scd = new SubclassData();
             var query = App.MobileService.GetTable<SubclassData>().CreateQuery();
             var list = await scd.GetQueriedList<SubclassData>(query.Where(p => p.Class_ID == passedItem.ClassID));

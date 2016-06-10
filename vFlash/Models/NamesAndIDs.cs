@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
+
+    /// <summary>
+    /// Represents data combined from several Azure tables.
+    /// </summary>
     public class NamesAndIDs : BaseModel
     {
         private string _className;

@@ -11,10 +11,17 @@ using Windows.UI.Xaml.Navigation;
 
 namespace vFlash.ViewModels
 {
+    /// <summary>
+    /// ViewModel that adds SubclassData to the Azure database.
+    /// Corresponding View: SubclassAddPage.xaml
+    /// </summary>
     public class SubclassAddPageViewModel : BaseAddPageViewModel
     {
 
         private string _className;
+        /// <summary>
+        /// Holds the name of the ClassData that the added Subclasses will live in.
+        /// </summary>
         public string ClassName
         {
             get { return _className; }
@@ -32,10 +39,12 @@ namespace vFlash.ViewModels
 
         public SubclassAddPageViewModel()
         {
-
+            // Load the initial data.
             TextBoxList = new ObservableCollection<TextBoxStrings>();
             LoadInitialTBox("Chapter 1, Chapter 2, etc.");
             MaxBoxes = 7;
+
+            #region Command Initializers
 
             AddTextBoxCommand = new DelegateCommand(AddNewTextBox, CanAddTextBox);
             SaveItemsCommand = new DelegateCommand(async delegate ()
@@ -44,8 +53,14 @@ namespace vFlash.ViewModels
             });
 
             DeleteTBoxCommand = new DelegateCommand<TextBoxStrings>(DeleteTBox, CanDeleteTextBox);
+
+            #endregion
         }
 
+        /// <summary>
+        /// Save the items into the Database.
+        /// </summary>
+        /// <returns></returns>
         public override async Task SaveItem()
         {
             bool isBusy = false;
@@ -53,14 +68,17 @@ namespace vFlash.ViewModels
             // Create a new ClassData item to be used for inserting.
             SubclassData Item;
 
+            // Make sure saving is possible.
             if (CanSave())
             {
+                // If the BusyModal isn't active...
                 if (isBusy != true)
                 {
                     Views.Busy.SetBusy(true, "Saving...");
                     isBusy = true;
                 }
 
+                // Save each item into the DB.
                 foreach (var item in TextBoxList)
                 {
                     try
@@ -77,6 +95,7 @@ namespace vFlash.ViewModels
                     }
                 }
 
+                // Reset/reload the data.
                 TextBoxList = new ObservableCollection<TextBoxStrings>();
                 LoadInitialTBox("Chapter 1, Chapter 2, etc.");
                 AddTextBoxCommand.RaiseCanExecuteChanged();

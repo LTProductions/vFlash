@@ -11,11 +11,18 @@ using Windows.UI.Xaml.Navigation;
 
 namespace vFlash.ViewModels
 {
+    /// <summary>
+    /// ViewModel used for viewing FCStackData from the Azure database.
+    /// Corresponding View: FCStackPage.xaml
+    /// </summary>
     public class FCStackPageViewModel : Template10.Mvvm.ViewModelBase
     {
         #region Properties and Fields
 
         private ObservableCollection<FCStackData> _stackList;
+        /// <summary>
+        /// List of FCStackData items.
+        /// </summary>
         public ObservableCollection<FCStackData> StackList
         {
             get { return _stackList; }
@@ -49,6 +56,9 @@ namespace vFlash.ViewModels
         private NamesAndIDs passedItem;
 
         private string _className;
+        /// <summary>
+        /// Holds the name of the corresponding ClassName that the FCStacks live in.
+        /// </summary>
         public string ClassName
         {
             get { return _className; }
@@ -63,6 +73,9 @@ namespace vFlash.ViewModels
         }
 
         private string _subclassName;
+        /// <summary>
+        /// Holds the name of the corresponding SubclassName that the FCStacks live in.
+        /// </summary>
         public string SubclassName
         {
             get { return _subclassName; }
@@ -98,26 +111,39 @@ namespace vFlash.ViewModels
 
         public FCStackPageViewModel()
         {
+
+            #region Command Initializers
+
             _addFCStackCommand = new DelegateCommand(delegate ()
             {
+                // Navigate and pass an item of type NamesAndIDs.
                 this.NavigationService.Navigate(typeof(Views.FCStackAddPage), passedItem);
             });
 
             _navQuizCommand = new DelegateCommand<FCStackData>(delegate (FCStackData item)
             {
+                // Navigate to a quiz of the selected FlashCard item.
                 passedItem.FCStackID = item.Id;
                 this.NavigationService.Navigate(typeof(Views.QuizPage), passedItem);
             });
+
+            #endregion
         }
 
         #endregion
 
         #region Methods
 
-        public async Task LoadData()
+        /// <summary>
+        /// Load the data from the Azure database.
+        /// </summary>
+        /// <returns></returns>
+        private async Task LoadData()
         {
+            // Set the (sub)class name based on the passed item from the previous ViewModel.
             ClassName = passedItem.ClassName;
             SubclassName = passedItem.SubclassName;
+            // Load the correct data based on SubclassID.
             var fcsd = new FCStackData();
             var query = App.MobileService.GetTable<FCStackData>().CreateQuery();
             var list = await fcsd.GetQueriedList<FCStackData>(query.Where(p => p.Subclass_ID == passedItem.SubclassID));

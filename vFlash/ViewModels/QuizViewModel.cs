@@ -27,6 +27,8 @@ namespace vFlash.ViewModels
 
         private List<string> potentialAnswers;
 
+        private List<string> selectedAnswers = new List<string>();
+
         private ObservableCollection<QuizModel> _quizObjectList = new ObservableCollection<QuizModel>();
         public ObservableCollection<QuizModel> QuizObjectList
         {
@@ -114,29 +116,43 @@ namespace vFlash.ViewModels
             }
         }
 
-        private bool _quizFinished = false;
-        public bool QuizFinished
+        private bool _showQuizBool = true;
+        public bool ShowQuizBool
         {
-            get { return _quizFinished; }
+            get { return _showQuizBool; }
             set
             {
-                if (_quizFinished != value)
+                if (_showQuizBool != value)
                 {
-                    _quizFinished = value;
+                    _showQuizBool = value;
                     RaisePropertyChanged();
                 }
             }
         }
 
-        private bool _showScoreModal = true;
-        public bool ShowScoreModal
+        private bool _showReviewBool = false;
+        public bool ShowReviewBool
         {
-            get { return _showScoreModal; }
+            get { return _showReviewBool; }
             set
             {
-                if (_showScoreModal != value)
+                if (_showReviewBool != value)
                 {
-                    _showScoreModal = value;
+                    _showReviewBool = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool _showScoreBool = true;
+        public bool ShowScoreBool
+        {
+            get { return _showScoreBool; }
+            set
+            {
+                if (_showScoreBool != value)
+                {
+                    _showScoreBool = value;
                     RaisePropertyChanged();
                 }
             }
@@ -152,10 +168,10 @@ namespace vFlash.ViewModels
             get { return _submitAnswerCommand; }
         }
 
-        private DelegateCommand _showFinishedQuizCommand;
-        public DelegateCommand ShowFinishedQuizCommand
+        private DelegateCommand _showQuizReviewCommand;
+        public DelegateCommand ShowQuizReviewCommand
         {
-            get { return _showFinishedQuizCommand; }
+            get { return _showQuizReviewCommand; }
         }
 
         private DelegateCommand<string> _rButtonCheckedCommand;
@@ -164,6 +180,11 @@ namespace vFlash.ViewModels
             get { return _rButtonCheckedCommand; }
         }
 
+        private DelegateCommand _endSessionGoBackCommand;
+        public DelegateCommand EndSessionGoBackCommand
+        {
+            get { return _endSessionGoBackCommand; }
+        }
 
         #endregion
 
@@ -174,24 +195,27 @@ namespace vFlash.ViewModels
 
             #region Command Initializers
 
-            _submitAnswerCommand = new DelegateCommand(async delegate () {
+            _submitAnswerCommand = new DelegateCommand(async delegate ()
+            {
                 await SubmitAnswer();
             }, CanSubmitCheck);
 
-            // _showFinishedQuizCommand = new DelegateCommand(null); // Method not made yet.
+            _showQuizReviewCommand = new DelegateCommand(ReviewQuiz);
 
             _rButtonCheckedCommand = new DelegateCommand<string>(SetSelectedItem);
 
-            // Views.Shell.Instance.SetScoreModal(true);
+            _endSessionGoBackCommand = new DelegateCommand(delegate ()
+            {
+                NavigationService.GoBack();
+            });
 
             #endregion
 
 
-
-
-            #endregion
 
         }
+
+       #endregion
 
         #region Methods
 
@@ -202,6 +226,7 @@ namespace vFlash.ViewModels
                 bool isCorrect = String.Equals(SelectedItem, flashCards[index].Word_Side1);
                 ScoreData score = new ScoreData() { SessionData_ID = studySession.Id, FCData_ID = flashCards[index].Id, Correct = isCorrect };
                 scoreList.Add(score);
+                selectedAnswers.Add(SelectedItem);
 
                 index++;
 
@@ -217,7 +242,7 @@ namespace vFlash.ViewModels
                 {
                     if (scoreList != null && scoreList.Count > 0)
                     {
-                        QuizFinished = true;
+                        ShowQuizBool = false;
 
                         SelectedItem = null;
                         SubmitAnswerCommand.RaiseCanExecuteChanged();
@@ -234,8 +259,8 @@ namespace vFlash.ViewModels
                         }
                         Views.Busy.SetBusy(false);
 
-                        int finalCorrect = scoreList.Count(p => p.Correct == true);
-                        int totalQuestions = flashCards.Count;
+                        float finalCorrect = scoreList.Count(p => p.Correct == true);
+                        float totalQuestions = flashCards.Count;
                         FinalScoreString = ($"Total: {finalCorrect.ToString()} / {totalQuestions.ToString()} ");
                         FinalPercentageString = ($"Score: {((finalCorrect / totalQuestions) * 100).ToString()}%");
                     }
@@ -245,7 +270,7 @@ namespace vFlash.ViewModels
 
         private bool CanSubmitCheck()
         {
-            return SelectedItem != null;
+            return SelectedItem != null && SelectedItem != string.Empty;
         }
 
         private void SetSelectedItem(string s)
@@ -287,7 +312,6 @@ namespace vFlash.ViewModels
         {
             if (flashCards != null && flashCards.Count >= 1)
             {
-                var rnd = new Random(DateTime.Now.Millisecond);
                 List<int> potentialIndexes = new List<int>();
                 for (int i = 0; i < flashCards.Count; i++)
                 {
@@ -327,7 +351,7 @@ namespace vFlash.ViewModels
             {
                 QuizObject = new QuizModel()
                 {
-                    ID = index,
+                    ID = index + 1,
                     Question = flashCards.ElementAt(index).Definition_Side2 != null ? flashCards.ElementAt(index).Definition_Side2 : string.Empty,
                     A = potentialAnswers[0],
                     B = potentialAnswers[1],
@@ -337,10 +361,89 @@ namespace vFlash.ViewModels
 
                 QuizObjectList.Add(QuizObject);
             }
-            catch(ArgumentNullException)
+            catch (ArgumentNullException)
             {
                 QuizObject = null;
             }
+        }
+
+        private void ReviewQuiz()
+        {
+            index = 0;
+            ShowScoreBool = false;
+            ShowReviewBool = true;
+
+            QuizObject = new QuizModel()
+            {
+                ID = index + 1,
+                Question = QuizObjectList.ElementAt(index).Question,
+                A = QuizObjectList.ElementAt(index).A,
+                B = QuizObjectList.ElementAt(index).B,
+                C = QuizObjectList.ElementAt(index).C,
+                D = QuizObjectList.ElementAt(index).D
+            };
+
+            if (string.Equals(QuizObjectList.ElementAt(index).A, selectedAnswers.ElementAt(index)))
+            {
+                if (string.Equals(QuizObjectList.ElementAt(index).A, flashCards.ElementAt(index).Word_Side1))
+                    QuizObject.ABG = "GREEN";
+                else
+                    QuizObject.ABG = "RED";
+            }
+
+            if (string.Equals(QuizObjectList.ElementAt(index).B, selectedAnswers.ElementAt(index)))
+            {
+                if (string.Equals(QuizObjectList.ElementAt(index).B, flashCards.ElementAt(index).Word_Side1))
+                    QuizObject.BBG = "GREEN";
+                else
+                    QuizObject.BBG = "RED";
+            }
+
+            if (string.Equals(QuizObjectList.ElementAt(index).C, selectedAnswers.ElementAt(index)))
+            {
+                if (string.Equals(QuizObjectList.ElementAt(index).C, flashCards.ElementAt(index).Word_Side1))
+                    QuizObject.CBG = "GREEN";
+                else
+                    QuizObject.CBG = "RED";
+            }
+
+            if (string.Equals(QuizObjectList.ElementAt(index).D, selectedAnswers.ElementAt(index)))
+            {
+                if (string.Equals(QuizObjectList.ElementAt(index).D, flashCards.ElementAt(index).Word_Side1))
+                    QuizObject.DBG = "GREEN";
+                else
+                    QuizObject.DBG = "RED";
+            }
+        }
+    
+
+        private void NextReviewQuestion()
+        {
+            if (index < QuizObjectList.Count())
+            {
+                index++;
+
+                QuizObject = new QuizModel()
+                {
+                    ID = index + 1,
+                    Question = QuizObjectList.ElementAt(index).Question,
+                    A = QuizObjectList.ElementAt(index).A,
+                    ABG = string.Equals(QuizObjectList.ElementAt(index).A, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
+                    B = QuizObjectList.ElementAt(index).B,
+                    BBG = string.Equals(QuizObjectList.ElementAt(index).B, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
+                    C = QuizObjectList.ElementAt(index).C,
+                    CBG = string.Equals(QuizObjectList.ElementAt(index).C, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
+                    D = QuizObjectList.ElementAt(index).D,
+                    DBG = string.Equals(QuizObjectList.ElementAt(index).D, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED"
+                };
+            }
+
+            else
+            {
+                ShowReviewBool = false;
+                ShowScoreBool = true;
+            }
+            
         }
 
 

@@ -99,7 +99,11 @@ namespace vFlash.Models
 
         // Generic methods for querying Azure data.
 
-            // List of all.
+        /// <summary>
+        /// Returns a list of Azure Items of type T.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public async Task<IList<T>> GetList<T>()
         {
             try
@@ -114,7 +118,12 @@ namespace vFlash.Models
             }
         }
 
-        // Queried list.
+        /// <summary>
+        /// Returns a quieried list of Azure data items of type T.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <returns>List(T)"/></returns>
         public async Task<IList<T>> GetQueriedList<T>(IMobileServiceTableQuery<T> query)
         {
             try
@@ -129,6 +138,13 @@ namespace vFlash.Models
             }
         }
 
+
+        /// <summary>
+        /// Inserts the passed item from the linked Azure database.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public async Task<Boolean> InsertItem<T>(T item)
         {
             try
@@ -144,6 +160,12 @@ namespace vFlash.Models
             }
         }
 
+        /// <summary>
+        /// Deletes the passed item from the linked Azure database.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public async Task<Boolean> DeleteItem<T>(T item)
         {
             try

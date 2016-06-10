@@ -9,9 +9,16 @@ using Windows.Storage;
 
 namespace vFlash.Utils
 {
+    /// <summary>
+    /// Holds the method for logging a usser in with saved data.
+    /// </summary>
     public static class SavedLogin
     {
-
+        /// <summary>
+        /// Login to a Microsoft account. If loginClicked is true, don't load user from storage.
+        /// </summary>
+        /// <param name="loginClicked"></param>
+        /// <returns></returns>
         public static async Task MSLogin(Boolean loginClicked)
         {
 
@@ -43,17 +50,20 @@ namespace vFlash.Utils
                     }
                 }
 
-                // Views.Busy.SetBusy(true, "Logging In...");
                 var table = client.GetTable<ClassData>();
                 var items = await table.Take(3).ToEnumerableAsync();
-                // Views.Busy.SetBusy(false);
             }
-            catch (Exception ex)
+            catch
             {
-                //error, don't log in.
+                throw new UnauthorizedAccessException();
             }
         }
 
+        /// <summary>
+        /// Out the user from storage.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         private static bool TryLoadUser(out MobileServiceUser user)
         {
             object userId, authToken;

@@ -8,6 +8,10 @@ using vFlash.Utils;
 
 namespace vFlash.Utils
 {
+
+    /// <summary>
+    /// Extension method for shuffling a list of type T.
+    /// </summary>
     public static class Randomizer
     {
         public static IEnumerable<T> Shuffle1<T>(this IEnumerable<T> source)

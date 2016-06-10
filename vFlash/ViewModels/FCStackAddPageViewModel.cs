@@ -11,14 +11,20 @@ using Windows.UI.Xaml.Navigation;
 
 namespace vFlash.ViewModels
 {
+    /// <summary>
+    /// ViewModel used for adding FCStackData to the Azure database.
+    /// Corresponding View: FCStackAddPage.xaml
+    /// </summary>
     public class FCStackAddPageViewModel : BaseAddPageViewModel
     {
 
         #region Fields/Properties
-
         
 
         private string _className;
+        /// <summary>
+        /// String that will hold the name of the Class that this Stack will live in.
+        /// </summary>
         public string ClassName
         {
             get { return _className; }
@@ -33,6 +39,9 @@ namespace vFlash.ViewModels
         }
 
         private string _subclassName;
+        /// <summary>
+        /// String that will hold the name of the Subclass that this Stack will live in.
+        /// </summary>
         public string SubclassName
         {
             get { return _subclassName; }
@@ -47,6 +56,9 @@ namespace vFlash.ViewModels
         }
 
         private string _fcStackName;
+        /// <summary>
+        /// The name of the Stack.
+        /// </summary>
         public string FCStackName
         {
             get { return _fcStackName; }
@@ -54,10 +66,12 @@ namespace vFlash.ViewModels
             {
                 if (_fcStackName != value)
                 {
+                    // Make sure it doesn't contain any unwanted characters.
                     var temp = CheckBoxText(value);
                     _fcStackName = temp;
                     RaisePropertyChanged();
 
+                    // Reset the error whenever text is changed.
                     if (StackNameError != "")
                         StackNameError = "";
                 }
@@ -65,6 +79,9 @@ namespace vFlash.ViewModels
         }
 
         private bool _fcStackCanSave = true;
+        /// <summary>
+        /// Holds the bool for whether or not the name of the Stack has been saved already.
+        /// </summary>
         public bool FCStackCanSave
         {
             get { return _fcStackCanSave; }
@@ -79,6 +96,9 @@ namespace vFlash.ViewModels
         }
 
         private string _stackNameError;
+        /// <summary>
+        /// Holds the error string used when trying to save a Stack and the name has an invalid string.
+        /// </summary>
         public string StackNameError
         {
             get { return _stackNameError; }
@@ -92,6 +112,7 @@ namespace vFlash.ViewModels
             }
         }
 
+        // Flashcard item used to hold the stack's ID.
         private FCStackData fcItemForID;
 
         #endregion
@@ -100,10 +121,12 @@ namespace vFlash.ViewModels
 
         public FCStackAddPageViewModel()
         {
-
+            // Initialize the collection and load the items with placeholder text.
             TextBoxList = new ObservableCollection<TextBoxStrings>();
             LoadInitialTBoxes("Word, Name, etc.", "Definition, Description, etc.");
             MaxBoxes = 50;
+
+            #region Command initializers
 
             AddTextBoxCommand = new DelegateCommand(AddNewTextBox, CanAddTextBox);
             SaveItemsCommand = new DelegateCommand(async delegate ()
@@ -112,14 +135,22 @@ namespace vFlash.ViewModels
             });
 
             DeleteTBoxCommand = new DelegateCommand<TextBoxStrings>(DeleteTBox, CanDeleteTextBox);
+
+            #endregion
         }
 
-        public bool CanSaveStackName()
+        /// <summary>
+        /// Determines whether or not the Stack name can be saved based on if the text is empty or if the item has already been saved.
+        /// </summary>
+        /// <returns>bool</returns>
+        private bool CanSaveStackName()
         {
             bool canSave = false;
 
+
             if (FCStackCanSave && string.IsNullOrWhiteSpace(FCStackName))
             {
+                // If the text is empty, can't save and set the error.
                 canSave = false;
                 StackNameError = "Cannot save empty text.";
             }
@@ -129,6 +160,7 @@ namespace vFlash.ViewModels
                 canSave = true;
             }
 
+            // If the previous else is not true, can't save.
             else
             {
                 canSave = false;
@@ -137,22 +169,29 @@ namespace vFlash.ViewModels
             return canSave;
         }
 
+        /// <summary>
+        /// Determines whether or not all of the items in TextBoxList can be saved.
+        /// </summary>
+        /// <returns>bool</returns>
         public override bool CanSave()
         {
             bool canSave = true;
 
             if (TextBoxList != null)
             {
+                // Save each item.
                 foreach (var item in TextBoxList)
                 {
                     if (string.IsNullOrWhiteSpace(item.BoxText))
                     {
+                        // If an item is empty, it can't be saved. Show an error.
                         item.Error = "Cannot save empty text.";
                         canSave = false;
                     }
 
                     if (string.IsNullOrWhiteSpace(item.Box2Text))
                     {
+                        // Stacks use two text boxes; one for Word and one for Definition. If any are empty, can't save. Show error.
                         item.Error2 = "Cannot save empty text.";
                         canSave = false;
                     }
@@ -165,6 +204,11 @@ namespace vFlash.ViewModels
             return canSave;
         }
 
+
+        /// <summary>
+        /// Save items to the Azure database.
+        /// </summary>
+        /// <returns></returns>
         public override async Task SaveItem()
         {
             bool isBusy = false;
@@ -173,29 +217,37 @@ namespace vFlash.ViewModels
             FCStackData StackItem;
             FlashcardData FCItem;
 
+            // Check to see if the StackName can be saved.
             if (CanSaveStackName())
             {
                 StackItem = new FCStackData() { Name = FCStackName, Subclass_ID = passedItem.SubclassID };
                 if (!isBusy)
                 {
+                    // Set the ViewModal to busy.
                     Views.Busy.SetBusy(true, "Saving...");
                     isBusy = true;
                 }
 
+                // Insert the item.
                 await StackItem.InsertItem(StackItem);
+                // The StackName is saved, so set CanSave to false.
                 FCStackCanSave = false;
+                // Save the StackItem to fcItemForID to retain the ID of the item, used for inserting other data.
                 fcItemForID = StackItem;
 
             }
 
+            // Check to make sure all items can be saved.
             if (CanSave())
             {
+                // If the BusyModal isn't already active
                 if (isBusy != true)
                 {
                     Views.Busy.SetBusy(true, "Saving...");
                     isBusy = true;
                 }
 
+                // Save each item
                 foreach (var item in TextBoxList)
                 {
 
@@ -214,6 +266,7 @@ namespace vFlash.ViewModels
                     }
                 }
 
+                // Reset the ObservableCollection.
                 TextBoxList = new ObservableCollection<TextBoxStrings>();
                 LoadInitialTBoxes("Word, Name, etc.", "Definition, Description, etc.");
                 AddTextBoxCommand.RaiseCanExecuteChanged();

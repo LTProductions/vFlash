@@ -13,17 +13,37 @@ using Windows.Storage;
 
 namespace vFlash.Utils
 {
+
+    /// <summary>
+    /// Handles authentication for a Microsoft Azure account.
+    /// </summary>
     class AuthHandler : DelegatingHandler
     {
+        /// <summary>
+        /// Client used for logging in.
+        /// </summary>
         public IMobileServiceClient Client { get; set; }
 
+        /// <summary>
+        /// Delegate to save the user into storage.
+        /// </summary>
         private Action<MobileServiceUser> saveUserDelegate;
 
+        /// <summary>
+        /// Method to save the user into storage.
+        /// </summary>
+        /// <param name="saveUserDelegate"></param>
         public AuthHandler(Action<MobileServiceUser> saveUserDelegate)
         {
             this.saveUserDelegate = saveUserDelegate;
         }
 
+        /// <summary>
+        /// Try to log the user into their Microsoft account.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (this.Client == null)
@@ -74,6 +94,11 @@ namespace vFlash.Utils
             return response;
         }
 
+        /// <summary>
+        /// Clones the request incase it's needed again.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         private async Task<HttpRequestMessage> CloneRequest(HttpRequestMessage request)
         {
             var result = new HttpRequestMessage(request.Method, request.RequestUri);

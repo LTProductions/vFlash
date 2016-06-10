@@ -10,7 +10,6 @@ namespace vFlash.Models
 {
     public class BaseModel : INotifyPropertyChanged
     {
-        // hello
 
         #region NotifyPropertyChanged members
 

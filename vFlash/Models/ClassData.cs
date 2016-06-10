@@ -9,13 +9,14 @@ using vFlash.Utils;
 
 namespace vFlash.Models
 {
+    /// <summary>
+    /// Represents a table from the Azure database.
+    /// </summary>
     public class ClassData : BaseAzureModel
     {
         // Inherits all typical Azure columns from BaseDataModel.
 
-
-        // public IMobileServiceTable<ClassData> classDataTable;
-
+        
         private string _name;
 
         [JsonProperty(PropertyName = "name")]

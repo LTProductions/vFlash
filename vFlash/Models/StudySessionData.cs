@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
+
+    /// <summary>
+    /// Represents a table from the Azure database.
+    /// </summary>
     public class StudySessionData : BaseAzureModel
     {
 

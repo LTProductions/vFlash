@@ -5,6 +5,7 @@
       xmlns:Behaviors="using:Template10.Behaviors"
       xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
       xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+     xmlns:converters="using:Template10.Converters"
       xmlns:controls="using:Template10.Controls"
     xmlns:myControls="using:vFlash.Controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -16,7 +17,22 @@
         <vm:QuizViewModel x:Name="QuizViewModel" />
     </Page.DataContext>
 
+    <Page.Resources>
+        <converters:ValueWhenConverter x:Key="VisibleWhenTrueConverter">
+            <converters:ValueWhenConverter.When>
+                <x:Boolean>True</x:Boolean>
+            </converters:ValueWhenConverter.When>
+            <converters:ValueWhenConverter.Value>
+                <Visibility>Visible</Visibility>
+            </converters:ValueWhenConverter.Value>
+            <converters:ValueWhenConverter.Otherwise>
+                <Visibility>Collapsed</Visibility>
+            </converters:ValueWhenConverter.Otherwise>
+        </converters:ValueWhenConverter>
+    </Page.Resources>
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -65,7 +81,7 @@
 
 
 
-            <Grid>
+            <Grid Visibility="{Binding ShowQuizBool,Converter={StaticResource VisibleWhenTrueConverter},Mode=TwoWay}"> 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
@@ -78,6 +94,7 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
 
+                
                 <TextBlock x:Name="QuestionTBox" Text="{Binding QuizObject.Question}" Grid.ColumnSpan="2"/>
                 <RadioButton x:Name="answerA" Content="{Binding QuizObject.A}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="1"/>
                 <RadioButton x:Name="answerB" Content="{Binding QuizObject.B}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="2"/>
@@ -85,9 +102,21 @@
                 <RadioButton x:Name="answerD" Content="{Binding QuizObject.D}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="2" Grid.Column="1"/>
             </Grid>
 
-            <Button x:Name="SubmitAnswerButton" Content="Submit" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
+            <Button x:Name="SubmitAnswerButton" Click="SubmitAnswerButton_Click" Content="Submit" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
                             Margin="0,0,0,20" Command="{Binding SubmitAnswerCommand}"/>
+            
 
+         <RelativePanel Visibility="{Binding ShowScoreBool,Converter={StaticResource VisibleWhenTrueConverter},Mode=TwoWay}">
+
+                
+                <StackPanel>
+                    <TextBlock Text="{Binding FinalScoreString}"/>
+                    <TextBlock Text="{Binding FinalPercentageString}"/>
+                </StackPanel>
+
+                    <Button x:Name="ReviewButton" Content="Review" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"/>
+                
+            </RelativePanel>
 
 
         </RelativePanel>

@@ -21,12 +21,21 @@ namespace vFlash.Controls
             this.InitializeComponent();
         }
 
+        /// <summary>
+        /// Event handler; listened to by Shell.xaml.cs
+        /// </summary>
         public event EventHandler LoggedIn;
         
-
+        /// <summary>
+        /// Fires when the user clicks "Login with Microsoft Account" button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void LoginMSButton_Click(object sender, RoutedEventArgs e)
         {
+            // Pass true so the method knows the user initiated the login and the login data is not coming from storage.
             await SavedLogin.MSLogin(true);
+            // Fire the event!
             LoggedIn.Invoke(this, EventArgs.Empty);
         }
     }

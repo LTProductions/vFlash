@@ -13,12 +13,19 @@ using Windows.UI.Xaml.Navigation;
 
 namespace vFlash.ViewModels
 {
+    /// <summary>
+    /// ViewModel used for loading ClassData from the Azure database.
+    /// Corresponding View: ClassPage.xaml
+    /// </summary>
     public class ClassPageViewModel : ViewModelBase
     {
 
         #region Properties and Fields
 
         private ObservableCollection<ClassData> _classList;
+        /// <summary>
+        /// List of ClassData.
+        /// </summary>
         public ObservableCollection<ClassData> ClassList
         {
             get { return _classList; }
@@ -33,6 +40,9 @@ namespace vFlash.ViewModels
         }
 
         private ClassData _selectedItem;
+        /// <summary>
+        /// Item selected by the user.
+        /// </summary>
         public ClassData SelectedItem
         {
             get { return _selectedItem; }
@@ -42,8 +52,9 @@ namespace vFlash.ViewModels
                 {
                     _selectedItem = value;
                     RaisePropertyChanged();
-                    // Navigate.
+                    // Store data that needs to be passed to the next ViewModel.
                     NamesAndIDs item = new NamesAndIDs { ClassName = SelectedItem.Name, ClassID = SelectedItem.Id };
+                    // Navigate.
                     this.NavigationService.Navigate(typeof(Views.SubclassPage), item);
                 }
             }
@@ -54,6 +65,9 @@ namespace vFlash.ViewModels
         #region Commands
 
         private DelegateCommand _addClassNavCommand;
+        /// <summary>
+        /// Command used for adding navigating to the View ClassAddPage.xaml
+        /// </summary>
         public DelegateCommand AddClassNavCommand
         {
             get { return _addClassNavCommand; }
@@ -65,12 +79,14 @@ namespace vFlash.ViewModels
 
         public ClassPageViewModel()
         {
+            // Load the data. ConfigureAwait since we can't await from the constructor.
             LoadData().ConfigureAwait(false);
 
             #region Command Initializers
 
             _addClassNavCommand = new DelegateCommand(delegate ()
             {
+                // Navigate.
                 this.NavigationService.Navigate(typeof(Views.ClassAddPage));
 
             });
@@ -82,38 +98,14 @@ namespace vFlash.ViewModels
 
         #region Methods
 
-        public async Task LoadData()
+        /// <summary>
+        /// Load the initial data.
+        /// </summary>
+        /// <returns></returns>
+        private async Task LoadData()
         {
             var cd = new ClassData();
             ClassList = new ObservableCollection<ClassData>(await cd.GetList<ClassData>());
-        }
-
-        #endregion
-
-        #region Navigation
-
-        private string _Value = "Default";
-        public string Value { get { return _Value; } set { Set(ref _Value, value); } }
-
-        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
-        {
-            Value = (suspensionState.ContainsKey(nameof(Value))) ? suspensionState[nameof(Value)]?.ToString() : parameter?.ToString();
-            await Task.CompletedTask;
-        }
-
-        public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
-        {
-            if (suspending)
-            {
-                suspensionState[nameof(Value)] = Value;
-            }
-            await Task.CompletedTask;
-        }
-
-        public override async Task OnNavigatingFromAsync(NavigatingEventArgs args)
-        {
-            args.Cancel = false;
-            await Task.CompletedTask;
         }
 
         #endregion
