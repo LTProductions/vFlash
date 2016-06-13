@@ -85,6 +85,7 @@ namespace vFlash.ViewModels
                     catch (Exception e)
                     {
                         //   break;
+                        Debug.WriteLine(e.ToString());
                     }
                 }
 

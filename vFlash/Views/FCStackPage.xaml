@@ -70,8 +70,9 @@
                     <DataTemplate>
                         <RelativePanel>
                             <TextBlock x:Name="NameTBox" Text="{Binding Name}" />
-                            <Button RelativePanel.RightOf="NameTBox" Content="Quiz" Command="{Binding ElementName=Classes, Path=DataContext.NavQuizCommand}" CommandParameter="{Binding}"
+                            <Button x:Name="QuizButton"  RelativePanel.RightOf="NameTBox" Content="Quiz" Command="{Binding ElementName=Classes, Path=DataContext.NavQuizCommand}" CommandParameter="{Binding}"
                                     Margin="24,0,0,0"/>
+                            <Button x:Name="InteractiveVoiceutton" RelativePanel.RightOf="QuizButton" Content="Voice" Command="{Binding ElementName=Classes, Path=DataContext.NavInteractiveVoiceCommand}" CommandParameter="{Binding}" Margin="8,0,0,0"/>
                         </RelativePanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

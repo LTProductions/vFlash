@@ -16,7 +16,7 @@ namespace vFlash.ViewModels
     /// ViewModel used for viewing SubclassData from the Azure database.
     /// Corresponding View: SubclassPage.xaml
     /// </summary>
-    class SubclassPageViewModel : ViewModelBase
+    class SubclassPageViewModel : BaseDataPage
     {
 
         #region Properties and Fields
@@ -59,26 +59,6 @@ namespace vFlash.ViewModels
                 }
             }
         }
-
-        private string _className;
-        /// <summary>
-        /// Holds the name of the ClassData that the Subclasses live in.
-        /// </summary>
-        public string ClassName
-        {
-            get { return _className; }
-            set
-            {
-                if (_className != value)
-                {
-                    _className = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        // Item passed when navigating from ClassPage.
-        private NamesAndIDs passedItem;
 
         #endregion
 

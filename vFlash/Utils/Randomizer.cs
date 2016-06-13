@@ -16,7 +16,7 @@ namespace vFlash.Utils
     {
         public static IEnumerable<T> Shuffle1<T>(this IEnumerable<T> source)
         {
-            Random random = new Random();
+            Random random = new Random(DateTime.Now.Millisecond);
             T[] copy = source.ToArray();
 
             for (int i = copy.Length - 1; i >= 0; i--)
@@ -25,13 +25,6 @@ namespace vFlash.Utils
                 yield return copy[index];
                 copy[index] = copy[i];
             }
-        }
-
-
-        public static int RandomNumber()
-        {
-            var rnd = new Random(DateTime.Now.Millisecond);
-            return 1;
         }
     }
 }

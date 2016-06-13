@@ -63,16 +63,7 @@
                                   HorizontalAlignment="Stretch"
                                   VerticalAlignment="Stretch"
                                   LoggedIn="LoginLoggedIn" />
-                                
-            </Controls:ModalDialog.ModalContent>
-        </Controls:ModalDialog>
 
-        <Controls:ModalDialog x:Name="ScoreModal" Grid.RowSpan="3"
-                              CanBackButtonDismiss="False"
-                              DisableBackButtonWhenModal="True">
-            <Controls:ModalDialog.ModalContent>
-                <myControls:QuizScorePart
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             </Controls:ModalDialog.ModalContent>
         </Controls:ModalDialog>
 

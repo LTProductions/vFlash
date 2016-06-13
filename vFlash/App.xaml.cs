@@ -56,7 +56,14 @@ namespace vFlash
             {
                 // create a new frame 
                 var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);
-                await SavedLogin.MSLogin(false);
+                try
+                {
+                    await SavedLogin.MSLogin(false);
+                }
+                catch
+                {
+
+                }
                 // create modal root
                 Window.Current.Content = new ModalDialog
                 {

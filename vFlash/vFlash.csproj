@@ -120,11 +120,14 @@
     <Compile Include="Utils\AuthHandler.cs" />
     <Compile Include="Utils\Randomizer.cs" />
     <Compile Include="Utils\SavedLogin.cs" />
+    <Compile Include="Utils\SpeechConstants.cs" />
     <Compile Include="ViewModels\BaseAddPageViewModel.cs" />
+    <Compile Include="ViewModels\BaseDataPage.cs" />
     <Compile Include="ViewModels\ClassAddPageViewModel.cs" />
     <Compile Include="ViewModels\ClassPageViewModel.cs" />
     <Compile Include="ViewModels\FCStackAddPageViewModel.cs" />
     <Compile Include="ViewModels\FCStackPageViewModel.cs" />
+    <Compile Include="ViewModels\InteractiveVoiceViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\DetailPageViewModel.cs" />
     <Compile Include="ViewModels\QuizViewModel.cs" />
@@ -148,6 +151,9 @@
     </Compile>
     <Compile Include="Views\FCStackPage.xaml.cs">
       <DependentUpon>FCStackPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\InteractiveVoicePage.xaml.cs">
+      <DependentUpon>InteractiveVoicePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginRegisterMain.xaml.cs">
       <DependentUpon>LoginRegisterMain.xaml</DependentUpon>
@@ -235,6 +241,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\InteractiveVoicePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LoginRegisterMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -268,7 +278,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Converters\" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

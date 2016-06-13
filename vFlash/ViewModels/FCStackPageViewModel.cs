@@ -15,7 +15,7 @@ namespace vFlash.ViewModels
     /// ViewModel used for viewing FCStackData from the Azure database.
     /// Corresponding View: FCStackPage.xaml
     /// </summary>
-    public class FCStackPageViewModel : Template10.Mvvm.ViewModelBase
+    public class FCStackPageViewModel : BaseDataPage
     {
         #region Properties and Fields
 
@@ -50,44 +50,7 @@ namespace vFlash.ViewModels
         //            this.NavigationService.Navigate(typeof(Views.SubclassPage), SelectedItem);
         //        }
         //    }
-        //}
-
-        // Item passed when navigating from SubclassPage.
-        private NamesAndIDs passedItem;
-
-        private string _className;
-        /// <summary>
-        /// Holds the name of the corresponding ClassName that the FCStacks live in.
-        /// </summary>
-        public string ClassName
-        {
-            get { return _className; }
-            set
-            {
-                if (_className != value)
-                {
-                    _className = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private string _subclassName;
-        /// <summary>
-        /// Holds the name of the corresponding SubclassName that the FCStacks live in.
-        /// </summary>
-        public string SubclassName
-        {
-            get { return _subclassName; }
-            set
-            {
-                if (_subclassName != value)
-                {
-                    _subclassName = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
+        //
 
         #endregion
 
@@ -103,6 +66,12 @@ namespace vFlash.ViewModels
         public DelegateCommand<FCStackData> NavQuizCommand
         {
             get { return _navQuizCommand; }
+        }
+
+        private DelegateCommand<FCStackData> _navInteractiveVoiceCommand;
+        public DelegateCommand<FCStackData> NavInteractiveVoiceCommand
+        {
+            get { return _navInteractiveVoiceCommand; }
         }
 
         #endregion
@@ -122,9 +91,17 @@ namespace vFlash.ViewModels
 
             _navQuizCommand = new DelegateCommand<FCStackData>(delegate (FCStackData item)
             {
-                // Navigate to a quiz of the selected FlashCard item.
+                // Navigate to a quiz of the selected FlashCardStack item.
                 passedItem.FCStackID = item.Id;
                 this.NavigationService.Navigate(typeof(Views.QuizPage), passedItem);
+            });
+
+            _navInteractiveVoiceCommand = new DelegateCommand<FCStackData>(delegate (FCStackData item)
+            {
+                // Navigate to an Interactive Voice session of the selected FlashCardStack item.
+                passedItem.FCStackName = item.Name;
+                passedItem.FCStackID = item.Id;
+                this.NavigationService.Navigate(typeof(Views.InteractiveVoicePage), passedItem);
             });
 
             #endregion
