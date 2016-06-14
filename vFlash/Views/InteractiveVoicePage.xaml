@@ -58,6 +58,6 @@
         <ContentControl x:Name="SpeakQuestionMediaXAML"  Content="{Binding SpeakMedia}"/>
         <ContentControl x:Name="ListeningSoundMediaXAML" Content="{Binding ListeningSoundMedia}"/>
 
-        <Button Command="{Binding PlaySpeakQuestionCommand}" Content="Play" RelativePanel.AlignHorizontalCenterWith="pageHeader" RelativePanel.AlignBottomWithPanel="True"/>
+        <Button Command="{Binding StartSessionCommand}" Content="Play" RelativePanel.AlignHorizontalCenterWith="pageHeader" RelativePanel.AlignBottomWithPanel="True"/>
     </RelativePanel>
 </Page>

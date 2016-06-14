@@ -16,6 +16,8 @@ using Prism.Commands;
 using System.Net;
 using System.Diagnostics;
 using Windows.UI.Xaml.Controls;
+using System.Collections.ObjectModel;
+using Windows.UI.Xaml.Media;
 
 namespace vFlash.ViewModels
 {
@@ -85,11 +87,10 @@ namespace vFlash.ViewModels
 
         #endregion
 
-        // Keep track of how many times the user has failed a question; only allow one retry.
-        private int tryAgainAttempts = 0;
-
         #endregion
 
+        // Keep track of how many times the user has failed a question; only allow one retry.
+        private int tryAgainAttempts = 0;
 
         private string _currentDefinition;
         /// <summary>
@@ -100,8 +101,11 @@ namespace vFlash.ViewModels
             get { return _currentDefinition; }
             set
             {
-                _currentDefinition = value;
-                RaisePropertyChanged();
+                if (_currentDefinition != value)
+                {
+                    _currentDefinition = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -114,44 +118,178 @@ namespace vFlash.ViewModels
             get { return _currentWord; }
             set
             {
-                _currentWord = value;
-                RaisePropertyChanged();
+                if (_currentWord != value)
+                {
+                    _currentWord = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 
         // Index used for keeping track of the position in the flashCard list.
-        private int index = 0;
+        private int index = 2;
+
+        private ObservableCollection<VoiceReviewModel> _reviewCardList = new ObservableCollection<VoiceReviewModel>();
+        /// <summary>
+        /// Collection that holds the list of Flashcards for this session.
+        /// </summary>
+        public ObservableCollection<VoiceReviewModel> ReviewCardList
+        {
+            get { return _reviewCardList; }
+            set
+            {   if (_reviewCardList != value)
+                {
+                    _reviewCardList = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+
+        private bool _inSession;
+        /// <summary>
+        /// Boolean for determining if there is currently a study session running.
+        /// </summary>
+        public bool InSession
+        {
+            get { return _inSession; }
+            set
+            {
+                if (_inSession != value)
+                {
+                    _inSession = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        //// Not needed thanks to the ShowScoreEvent??
+        //private bool _showScore;
+        ///// <summary>
+        ///// Boolean to determine if the Score should be shown.
+        ///// </summary>
+        //public bool ShowScore
+        //{
+        //    get { return _showScore; }
+        //    set
+        //    {
+        //        if (_showScore != value)
+        //        {
+        //            _showScore = value;
+        //            RaisePropertyChanged();
+        //        }
+        //    }
+        //}
+
+        //// Not needed thanks to the HideScoreEvent??
+        //private bool _showReview;
+        ///// <summary>
+        ///// Boolean for determining if the Review should be shown.
+        ///// </summary>
+        //public bool ShowReview
+        //{
+        //    get { return _showReview; }
+        //    set
+        //    {
+        //        if (_showReview != value)
+        //        {
+        //            _showReview = value;
+        //            RaisePropertyChanged();
+        //        }
+        //    }
+        //}
+
 
         #endregion
 
-
         #region Commands
 
-        private DelegateCommand _playSpeakQuestionCommand;
-        public DelegateCommand PlaySpeakQuestionCommand
+        private DelegateCommand _startSessionCommand;
+        public DelegateCommand StartSessionCommand
         {
-            get { return _playSpeakQuestionCommand; }
+            get { return _startSessionCommand; }
+        }
+
+        private DelegateCommand _reviewCommand;
+        public DelegateCommand ReviewCommand
+        {
+            get { return _reviewCommand; }
+        }
+
+        private DelegateCommand _endAndGoBackCommand;
+        public DelegateCommand EndAndGoBackCommand
+        {
+            get { return _endAndGoBackCommand; }
+        }
+
+        private DelegateCommand _pauseSessionCommand;
+        public DelegateCommand PauseSessionCommand
+        {
+            get { return _pauseSessionCommand; }
+        }
+
+        private DelegateCommand _unpauseSessionCommand;
+        public DelegateCommand UnpauseSessionCommand
+        {
+            get { return _unpauseSessionCommand; }
         }
 
         #endregion
 
+        #region Events
 
+        // Events used to trigger storyboards.
+
+        // Fire this when the session is beginning.
+        public event EventHandler BeginSessionEvent;
+        // Fire this when the answer is guessed correctly or being told.
+        public event EventHandler FlipCardEvent;
+        // Fire this when a new card is being read.
+        public event EventHandler NextCardEvent;
+        // Fire this when the score needs to be shown.
+        public event EventHandler ShowScoreHideSessionEvent;
+        // Fire this event when the score is being hidden.
+        public event EventHandler HideScoreShowReviewEvent;
+
+        #endregion
 
         #region Constructor
 
         public InteractiveVoiceViewModel()
         {
+            // Set busy while waiting for data to load.
+            Views.Busy.SetBusy(true, "Generating...");
 
-            _playSpeakQuestionCommand = new DelegateCommand(async delegate ()
+            _startSessionCommand = new DelegateCommand(async delegate ()
             {
                 await ReadCurrentQuestion();
             });
+
+            _reviewCommand = new DelegateCommand(delegate ()
+            {
+                // ShowReview = true;
+                HideScoreShowReviewEvent.Invoke(this, EventArgs.Empty);
+            });
+
+            _endAndGoBackCommand = new DelegateCommand(delegate ()
+            {
+                NavigationService.GoBack();
+            });
+
+            _pauseSessionCommand = new DelegateCommand(PauseSession, CanPauseSession);
         }
 
         #endregion
 
-
         #region Methods
+
+        /// <summary>
+        /// Initialize the commands.
+        /// </summary>
+        private void LoadCommands()
+        {
+
+        }
 
         /// <summary>
         /// Load all of the data!
@@ -164,6 +302,9 @@ namespace vFlash.ViewModels
             SubclassName = passedItem.SubclassName;
             FCStackName = passedItem.FCStackName;
 
+            // Load the commands
+            LoadCommands();
+
             // Load the study session data.
             await LoadStudySessionData();
 
@@ -171,6 +312,7 @@ namespace vFlash.ViewModels
             SpeechConstants.LoadData();
             LoadMediaElements();
             await LoadFlashcards();
+            Views.Busy.SetBusy(false);
         }
 
         /// <summary>
@@ -242,194 +384,274 @@ namespace vFlash.ViewModels
             // Make sure the index is less than the total number of cards and that flashcards isn't null.
             if (index < flashCards.Count() && flashCards != null)
             {
+                // Fire the event to move to the next card if the index isn't 0.
+                // if (index > 0)
+                    // NextCardEvent.Invoke(this, EventArgs.Empty);
+
                 // Speak the current definition and wait for the MediaEnded event to fire.
                 await SpeakAndAwaitMediaEnded(flashCards[index].Definition_Side2);
 
                 // Wait for the user to answer and then store their response.
                 string userAnswer = await ListenForAnswer(null);
 
-                // If the user gave the correct answer...
-                if (string.Equals(userAnswer, flashCards[index].Word_Side1))
-                {
-                    // String that contains a random response from speechCorrectResponses list.
-                    string correctResponses = Utils.SpeechConstants.speechCorrectResponses[GetRandom0To10()];
-
-                    // Let the user know they were correct and move on.
-                    await SpeakAndAwaitMediaEnded(correctResponses);
-
-                    // Increment the index because this card is finished.
-                    index++;
-                    // Set tryAgainAttempts back to 0 because we are moving onto a new card.
-                    if (tryAgainAttempts != 0)
-                        tryAgainAttempts = 0;
-
-                    // Save the score for this question.
-                    SaveOneQuestionScore(true);
-
-                    // Read the new card, if there is one.
-                    await ReadCurrentQuestion();
-                }
-                // If the user says "I don't know" [the answer]...
-                else if (string.Equals(userAnswer, "I don't know."))
-                {
-                    // Load the strings containing the words to tell the user the correct answer.
-                    string movingOn = Utils.SpeechConstants.speechNextCardResponses[GetRandom0To10()];
-                    string okay = "Okay, the answer is ";
-                    string finalString = $"{okay} {flashCards[index].Word_Side1}. {movingOn}";
-                    // Give answer and move on, incrementing index and resetting tryAgainAttempts.
-                    await SpeakAndAwaitMediaEnded(finalString);
-                    index++;
-                    // Set tryAgainAttempts back to 0 because we are moving onto a new card.
-                    if (tryAgainAttempts != 0)
-                        tryAgainAttempts = 0;
-
-                    // Save the score for this question.
-                    SaveOneQuestionScore(false);
-
-                    // Read the new card, if there is one.
-                    await ReadCurrentQuestion();
-                }
-                else
-                {
-                    // If the user can try again...
-                    if (tryAgainAttempts == 0)
-                    {
-                        // User is being asked to try again; increment!
-                        tryAgainAttempts++;
-
-                        // Load the strings that be used for TTS to ask the user to try again.
-                        string incorrectResponse = Utils.SpeechConstants.speechIncorrectResponses[GetRandom0To10()];
-                        string finalString = $"{incorrectResponse} Want to try again?";
-                        // Ask if the user would like to try again.
-                        await SpeakAndAwaitMediaEnded(finalString);
-
-                        // Get the user's response and pass a list containing all of the possible ways they can say "yes."
-                        string userResponse = await ListenForAnswer(Utils.SpeechConstants.speechYesVersions);
-                        // Check to see if the user says "yes".
-                        bool userSaidYes = Utils.SpeechConstants.CheckForYes(userResponse);
-
-                        // User gave the correct answer instead of just saying they want to try again.
-                        if (string.Equals(userResponse, flashCards[index].Word_Side1))
-                        {
-                            // String that will be spoken to the user to let them know they have the correct answer.
-                            string correctResponses = Utils.SpeechConstants.speechCorrectResponses[GetRandom0To10()];
-
-                            // Speak to the user and let them know they're correct.
-                            await SpeakAndAwaitMediaEnded(correctResponses);
-                            index++;
-                            // Set tryAgainAttempts back to 0 because we are moving onto a new card.
-                            if (tryAgainAttempts != 0)
-                                tryAgainAttempts = 0;
-
-                            // Save the score for this question.
-                            SaveOneQuestionScore(true);
-
-                            // Read the next card, if there is one.
-                            await ReadCurrentQuestion();
-                        }
-
-                        // User wants to try again.
-                        else if (userSaidYes)
-                        {
-                            // TTS, tell the user to give their answser.
-                            await SpeakAndAwaitMediaEnded("Okay, go ahead.");
-
-                            // Listen for the user's answer.
-                            string userResponse2 = await ListenForAnswer(null);
-
-                            if (string.Equals(userResponse2, flashCards[index].Word_Side1))
-                            {
-                                // String that will be spoken to the user to let them know they have the correct answer.
-                                string correctResponses = Utils.SpeechConstants.speechCorrectResponses[GetRandom0To10()];
-
-                                // Speak to the user and let them know they're correct.
-                                await SpeakAndAwaitMediaEnded(correctResponses);
-                                index++;
-                                // Set tryAgainAttempts back to 0 because we are moving onto a new card.
-                                if (tryAgainAttempts != 0)
-                                    tryAgainAttempts = 0;
-
-                                // Save the score for this question.
-                                SaveOneQuestionScore(true);
-
-                                // Read the next card, if there is one.
-                                await ReadCurrentQuestion();
-                            }
-                            // User did not get the answer correct.
-                            else
-                            {
-                                // Incorrect, answer is, moving on...
-                                string movingOn = Utils.SpeechConstants.speechNextCardResponses[GetRandom0To10()];
-                                string incorrectResponse2 = Utils.SpeechConstants.speechIncorrectResponses[GetRandom0To10()];
-                                string okay = "The answer is ";
-                                string finalString2 = $"{incorrectResponse2} {okay} {flashCards[index].Word_Side1}. {movingOn}";
-                                // Give answer and move on.
-                                await SpeakAndAwaitMediaEnded(finalString);
-                                index++;
-                                // Set tryAgainAttempts back to 0 because we are moving onto a new card.
-                                if (tryAgainAttempts != 0)
-                                    tryAgainAttempts = 0;
-
-                                // Save the score for this question.
-                                SaveOneQuestionScore(false);
-
-                                // Read the next card, if there is one.
-                                await ReadCurrentQuestion();
-                            }
-                        } // end if (userSaidYes)
-                        
-                        // User doesn't want to try again.
-                        else
-                        {
-                            // Okay, moving on...
-                            string movingOn = Utils.SpeechConstants.speechNextCardResponses[GetRandom0To10()];
-                            string okay = "Okay, the answer is ";
-                            string finalString2 = $"{okay} {flashCards[index].Word_Side1}. {movingOn}";
-                            // Give answer and move on.
-                            await SpeakAndAwaitMediaEnded(finalString2);
-                            index++;
-                            // Set tryAgainAttempts back to 0 because we are moving onto a new card.
-                            if (tryAgainAttempts != 0)
-                                tryAgainAttempts = 0;
-
-                            // Save the score for this question.
-                            SaveOneQuestionScore(false);
-
-                            await ReadCurrentQuestion();
-                        }
-                    }
-
-                    // User can't try again...
-                    else
-                    {
-                        // Okay, moving on...
-                        string movingOn = Utils.SpeechConstants.speechNextCardResponses[GetRandom0To10()];
-                        string incorrectResponse = Utils.SpeechConstants.speechIncorrectResponses[GetRandom0To10()];
-                        string okay = "The answer is ";
-                        string finalString = $"{incorrectResponse} {okay} {flashCards[index].Word_Side1}. {movingOn}";
-                        // Give answer and move on.
-                        await SpeakAndAwaitMediaEnded(finalString);
-                        index++;
-                        // Set tryAgainAttempts back to 0 because we are moving onto a new card.
-                        if (tryAgainAttempts != 0)
-                            tryAgainAttempts = 0;
-
-                        // Save the score for this question.
-                        SaveOneQuestionScore(false);
-
-                        await ReadCurrentQuestion();
-                    }
-
-                }
+                await CheckUserAnswer(userAnswer);
             }
 
             // Session is over.
             else
             {
-                await SpeakAndAwaitMediaEnded("Good job; let's look at your score.");
+                await SpeakAndAwaitMediaEnded("Okay, let's look at your score.");
                 // save and show score.
                 await SaveScoreList();
             }
+        }
+
+        /// <summary>
+        /// Checks the user's answer and determine what should be done.
+        /// </summary>
+        /// <param name="userAnswer"></param>
+        /// <returns></returns>
+        private async Task CheckUserAnswer(string userAnswer)
+        {
+            // If the user gave the correct answer...
+            if (string.Equals(userAnswer, flashCards[index].Word_Side1))
+            {
+                // String that contains a random response from speechCorrectResponses list.
+                string correctResponses = Utils.SpeechConstants.speechCorrectResponses[GetRandom0To10()];
+
+                // Fire FlipCardEvent, speak, save one card's score, increment the index, reset tryAgainAttempts, and move onto the next card.
+                await SaveIncrementResetRead(correctResponses, true);
+            }
+
+            // If the user says "I don't know" [the answer]...
+            else if (string.Equals(userAnswer, "I don't know."))
+            {
+                // Load the strings containing the words to tell the user the correct answer.
+                string movingOn = Utils.SpeechConstants.speechNextCardResponses[GetRandom0To10()];
+                string okay = "Okay, the answer is ";
+                string finalString = "";
+
+                // If there isn't another card, don't say moving on. Else, do.
+                if (index == flashCards.Count() - 1)
+                {
+                    finalString = $"{okay} {flashCards[index].Word_Side1}.";
+                }
+                else
+                {
+                    finalString = $"{okay} {flashCards[index].Word_Side1}. {movingOn}";
+                }
+
+                // Fire FlipCardEvent, speak, save one card's score, increment the index, reset tryAgainAttempts, and move onto the next card.
+                await SaveIncrementResetRead(finalString, false);
+            }
+
+            // User got the answer wrong; if they can try again, try again. Else ...
+            else
+            {
+                await TryAgainOrMoveOn();
+            }
+        }
+
+        /// <summary>
+        /// Method used for determining if the current card can be tried again; if so, ask "try again".
+        /// </summary>
+        /// <returns></returns>
+        private async Task TryAgainOrMoveOn()
+        {
+            // If the user can try again...
+            if (tryAgainAttempts == 0)
+            {
+                // User is being asked to try again; increment!
+                tryAgainAttempts++;
+
+                // Load the strings that be used for TTS to ask the user to try again.
+                string incorrectResponse = Utils.SpeechConstants.speechIncorrectResponses[GetRandom0To10()];
+                string finalString = $"{incorrectResponse} Want to try again?";
+
+                // Ask if the user would like to try again.
+                await SpeakAndAwaitMediaEnded(finalString);
+
+                // Get the user's response and pass a list containing all of the possible ways they can say "yes."
+                string userResponse = await ListenForAnswer(Utils.SpeechConstants.speechYesVersions);
+
+                await CheckTryAgainAnswer(userResponse);
+            }
+
+            // User can't try again...
+            else
+            {
+                // Okay, moving on...
+                string movingOn = Utils.SpeechConstants.speechNextCardResponses[GetRandom0To10()];
+                string incorrectResponse = Utils.SpeechConstants.speechIncorrectResponses[GetRandom0To10()];
+                string okay = "The answer is ";
+                string finalString = "";
+
+                // If there isn't another card in the list, don't say a "moving on" phrase.
+                if (index == flashCards.Count() - 1)
+                {
+                    finalString = $"{incorrectResponse} {okay} {flashCards[index].Word_Side1}. {movingOn}";
+                }
+                else
+                {
+                    finalString = $"{incorrectResponse} {okay} {flashCards[index].Word_Side1}. {movingOn}";
+                }
+
+                // Fire FlipCardEvent, speak, save one card's score, increment the index, reset tryAgainAttempts, and move onto the next card.
+                await SaveIncrementResetRead(finalString, false);
+            }
+        }
+
+        /// <summary>
+        /// Check the user's answer when coming from the TryAgainOrMoveOn Task.
+        /// </summary>
+        /// <param name="userResponse"></param>
+        /// <returns></returns>
+        private async Task CheckTryAgainAnswer(string userResponse)
+        {
+            // Check to see if the user says "yes".
+            bool userSaidYes = Utils.SpeechConstants.CheckForYes(userResponse);
+
+            // User gave the correct answer instead of just saying they want to try again.
+            if (string.Equals(userResponse, flashCards[index].Word_Side1))
+            {
+                // String that will be spoken to the user to let them know they have the correct answer.
+                string correctResponses = Utils.SpeechConstants.speechCorrectResponses[GetRandom0To10()];
+
+                // Fire FlipCardEvent, speak, save one card's score, increment the index, reset tryAgainAttempts, and move onto the next card.
+                await SaveIncrementResetRead(correctResponses, true);
+            }
+
+            // User wants to try again.
+            else if (userSaidYes)
+            {
+                // TTS, tell the user to give their answser.
+                await SpeakAndAwaitMediaEnded("Okay, go ahead.");
+
+                // Listen for the user's answer.
+                string userResponse2 = await ListenForAnswer(null);
+
+                if (string.Equals(userResponse2, flashCards[index].Word_Side1))
+                {
+                    // String that will be spoken to the user to let them know they have the correct answer.
+                    string correctResponses = Utils.SpeechConstants.speechCorrectResponses[GetRandom0To10()];
+
+                    // Fire FlipCardEvent, speak, save one card's score, increment the index, reset tryAgainAttempts, and move onto the next card.
+                    await SaveIncrementResetRead(correctResponses, true);
+                }
+                // User did not get the answer correct.
+                else
+                {
+                    // Incorrect, answer is, moving on...
+                    string movingOn = Utils.SpeechConstants.speechNextCardResponses[GetRandom0To10()];
+                    string incorrectResponse2 = Utils.SpeechConstants.speechIncorrectResponses[GetRandom0To10()];
+                    string okay = "The answer is ";
+                    string finalString2 = "";
+
+                    // If there isn't another card in the list, don't say a "moving on" phrase.
+                    if (index == flashCards.Count() - 1)
+                    {
+                        finalString2 = $"{incorrectResponse2} {okay} {flashCards[index].Word_Side1}.";
+                    }
+                    else
+                    {
+                        finalString2 = $"{incorrectResponse2} {okay} {flashCards[index].Word_Side1}. {movingOn}";
+                    }
+
+                    // Fire FlipCardEvent, speak, save one card's score, increment the index, reset tryAgainAttempts, and move onto the next card.
+                    await SaveIncrementResetRead(finalString2, false);
+                }
+            } // end if (userSaidYes)
+
+            // User doesn't want to try again.
+            else
+            {
+                // Okay, moving on...
+                string movingOn = Utils.SpeechConstants.speechNextCardResponses[GetRandom0To10()];
+                string okay = "Okay, the answer is ";
+                string finalString3 = "";
+
+                // If there isn't another card in the list, don't say a "moving on" phrase.
+                if (index == flashCards.Count() - 1)
+                {
+                    finalString3 = $"{okay} {flashCards[index].Word_Side1}.";
+                }
+                else
+                {
+                    finalString3 = $"{okay} {flashCards[index].Word_Side1}. {movingOn}";
+                }
+
+                // Fire FlipCardEvent, speak, save one card's score, increment the index, reset tryAgainAttempts, and move onto the next card.
+                await SaveIncrementResetRead(finalString3, false);
+            }
+        }
+
+        /// <summary>
+        /// Task used to fire FlipCardEvent, speak, save one card's score, increment the index, reset tryAgainAttempts, and move onto the next card.
+        /// </summary>
+        /// <param name="score"></param>
+        /// <returns></returns>
+        private async Task SaveIncrementResetRead(string speak, bool score)
+        {
+            // Fire the event to flip the card.
+            // FlipCardEvent.Invoke(this, EventArgs.Empty);
+
+            await SpeakAndAwaitMediaEnded(speak);
+
+            // Save the score for this question.
+            await SaveOneQuestionScore(score);
+            index++;
+            // Set tryAgainAttempts back to 0 because we are moving onto a new card.
+            if (tryAgainAttempts != 0)
+                tryAgainAttempts = 0;
+
+            await ReadCurrentQuestion();
+        }
+
+        /// <summary>
+        /// Pauses any playing MediaElements. The command that calls this method with not be enabled
+        /// when no MediaElements are playing.
+        /// </summary>
+        /// <returns></returns>
+        private void PauseSession()
+        {
+            // Pause any playing MediaElements. 
+            if (SpeakMedia.CanPause)
+                SpeakMedia.Pause();
+
+            if (ListeningSoundMedia.CanPause)
+                ListeningSoundMedia.Pause();
+        }
+
+        /// <summary>
+        /// Used for the PauseSessionCommand -- determines if the Command is enabled.
+        /// </summary>
+        /// <returns></returns>
+        private bool CanPauseSession()
+        {
+            // If either element can pause, return true.
+            return SpeakMedia.CanPause || ListeningSoundMedia.CanPause;
+        }
+
+        /// <summary>
+        /// If a MediaElement is paused, play it.
+        /// </summary>
+        private void UnpauseSession()
+        {
+            // If the Media Element is paused, play it. Only one *should* be paused at a time; just in case, if, else if.
+            if (SpeakMedia.CurrentState == MediaElementState.Paused)
+                SpeakMedia.Play();
+            else if (ListeningSoundMedia.CurrentState == MediaElementState.Paused)
+                ListeningSoundMedia.Play();
+        }
+
+        /// <summary>
+        /// Used for the UnpauseSessionCommand -- determines if the command is enabled.
+        /// </summary>
+        /// <returns></returns>
+        private bool CanUnpauseSession()
+        {
+            // If either MediaElement is paused, return true.
+            return SpeakMedia.CurrentState == MediaElementState.Paused || ListeningSoundMedia.CurrentState == MediaElementState.Paused;
         }
 
         #region Speech Methods
@@ -592,17 +814,23 @@ namespace vFlash.ViewModels
         private int GetRandom0To10()
         {
             Random rnd = new Random(DateTime.Now.Millisecond);
-            return rnd.Next(0, 10);
+            return rnd.Next(0, 11);
         }
 
         /// <summary>
-        /// Save one question's score.
+        /// Save one question's score and add the item to the review list.
         /// </summary>
         /// <param name="score"></param>
-        private void SaveOneQuestionScore(bool score)
+        private async Task SaveOneQuestionScore(bool score)
         {
             ScoreData scoreItem = new ScoreData() { SessionData_ID = studySession.Id, FCData_ID = flashCards[index].Id, Correct = score };
             scoreList.Add(scoreItem);
+            // If the user got the answer correct, set Color to green; else, red.
+            string color = score == true ? "GREEN" : "RED";
+            var reviewItem = new VoiceReviewModel() { Word = flashCards[index].Word_Side1, Definition = flashCards[index].Definition_Side2, Color = color };
+            ReviewCardList.Add(reviewItem);
+
+            await Task.CompletedTask;
         }
 
         /// <summary>
@@ -611,10 +839,12 @@ namespace vFlash.ViewModels
         /// <returns></returns>
         private async Task SaveScoreList()
         {
+            Views.Busy.SetBusy(true, "Saving your score...");
             foreach (var item in scoreList)
             {
                 await item.InsertItem(item);
             }
+            Views.Busy.SetBusy(false);
         }
 
         #endregion

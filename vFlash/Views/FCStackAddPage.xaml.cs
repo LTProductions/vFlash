@@ -40,7 +40,7 @@ namespace vFlash.Views
 
         public string CheckBoxText(string val)
         {
-            var r = new Regex("[^\\w #-]+");
+            var r = new Regex("[^a-zA-Z0-9-_]+");
             return r.Replace(val, "");
         }
     }
