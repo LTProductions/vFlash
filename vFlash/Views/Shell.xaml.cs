@@ -34,12 +34,15 @@ namespace vFlash.Views
             MyHamburgerMenu.NavigationService = navigationService;
         }
 
-        #region Login
+        #region Login & User Info
 
         private void LoginLoggedIn(object sender, EventArgs e)
         {
            MyHamburgerMenu.NavigationService.Navigate(typeof(Views.MainPage));
            LoginModal.IsModal = false;
+
+          
+           
         }
 
         #endregion

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Prism.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -71,6 +72,28 @@ namespace vFlash.ViewModels
 
         #endregion
 
+        #region Commands
+
+        private DelegateCommand<object> _deleteItemCommand;
+        /// <summary>
+        /// Used to delete an item from the database / list. Takes an object which must be casted to the proper type.
+        /// </summary>
+        public DelegateCommand<object> DeleteItemCommand
+        {
+            set { _deleteItemCommand = value; }
+            get { return _deleteItemCommand; }
+        }
+
+        private DelegateCommand<object> _navEditItemCommand;
+        /// <summary>
+        /// Used to edit an item from the database / list. Takes an object which must be casted to the proper type.
+        /// </summary>
+        public DelegateCommand<object> NavEditItemCommand
+        {
+            set { _navEditItemCommand = value; }
+            get { return _navEditItemCommand; }
+        }
+        #endregion
 
 
     }

@@ -12,7 +12,9 @@ namespace vFlash.Models
     public class VoiceReviewModel : BaseModel
     {
         private string _word;
-
+        /// <summary>
+        /// Holds the Word value from a FlashcardData object.
+        /// </summary>
         public string Word
         {
             get { return _word; }
@@ -27,7 +29,9 @@ namespace vFlash.Models
         }
 
         private string _definition;
-
+        /// <summary>
+        /// Holds the Definitio value from a FlashcardData object.
+        /// </summary>
         public string Definition
         {
             get { return _word; }
@@ -42,7 +46,9 @@ namespace vFlash.Models
         }
 
         private string _color;
-
+        /// <summary>
+        /// Holds the color value used when reviewing a voice session; based on a correct or incorrect answer.
+        /// </summary>
         public string Color
         {
             get { return _color; }

@@ -30,9 +30,6 @@ namespace vFlash.ViewModels
 
         #region Fields/Properties
 
-        // Required field for speech.
-        private static uint HResultPrivacyStatementDeclined = 0x80045509;
-
         // Holds the flashcards for this group.
         private List<FlashcardData> flashCards;
 
@@ -47,6 +44,9 @@ namespace vFlash.ViewModels
         // Fields used for Speech Recognition
         IAsyncOperation<SpeechRecognitionResult> recognitionOperation;
         SpeechRecognizer speechRecognizer;
+
+        // Required field for speech.
+        private static uint HResultPrivacyStatementDeclined = 0x80045509;
 
         #region MediaElements (breaking MVVM)
 
@@ -127,7 +127,7 @@ namespace vFlash.ViewModels
         }
 
         // Index used for keeping track of the position in the flashCard list.
-        private int index = 2;
+        private int index = 0;
 
         private ObservableCollection<VoiceReviewModel> _reviewCardList = new ObservableCollection<VoiceReviewModel>();
         /// <summary>
@@ -234,6 +234,12 @@ namespace vFlash.ViewModels
             get { return _unpauseSessionCommand; }
         }
 
+        public DelegateCommand _stopSessionCommand;
+        public DelegateCommand StopSessionCommand
+        {
+            get { return _stopSessionCommand; }
+        }
+
         #endregion
 
         #region Events
@@ -260,6 +266,8 @@ namespace vFlash.ViewModels
             // Set busy while waiting for data to load.
             Views.Busy.SetBusy(true, "Generating...");
 
+            #region Command Initializers
+
             _startSessionCommand = new DelegateCommand(async delegate ()
             {
                 await ReadCurrentQuestion();
@@ -277,19 +285,23 @@ namespace vFlash.ViewModels
             });
 
             _pauseSessionCommand = new DelegateCommand(PauseSession, CanPauseSession);
+
+            _unpauseSessionCommand = new DelegateCommand(UnpauseSession, CanUnpauseSession);
+
+            _stopSessionCommand = new DelegateCommand(async delegate ()
+            {
+                await StopSession();
+            }
+            , CanStopSession);
+
+            #endregion
         }
 
         #endregion
 
         #region Methods
 
-        /// <summary>
-        /// Initialize the commands.
-        /// </summary>
-        private void LoadCommands()
-        {
-
-        }
+        #region Data Loading Methods
 
         /// <summary>
         /// Load all of the data!
@@ -301,9 +313,6 @@ namespace vFlash.ViewModels
             ClassName = passedItem.ClassName;
             SubclassName = passedItem.SubclassName;
             FCStackName = passedItem.FCStackName;
-
-            // Load the commands
-            LoadCommands();
 
             // Load the study session data.
             await LoadStudySessionData();
@@ -357,6 +366,10 @@ namespace vFlash.ViewModels
             await studySession.InsertItem(studySession);
         }
 
+        #endregion
+
+        #region Voice Interaction Methods
+
         /// <summary>
         /// Method used to await the MediaEnded event.
         /// </summary>
@@ -403,6 +416,7 @@ namespace vFlash.ViewModels
                 await SpeakAndAwaitMediaEnded("Okay, let's look at your score.");
                 // save and show score.
                 await SaveScoreList();
+                // ShowScoreHideSessionEvent.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -607,6 +621,10 @@ namespace vFlash.ViewModels
             await ReadCurrentQuestion();
         }
 
+        #endregion
+
+        #region Pause/Play/Stop Methods
+
         /// <summary>
         /// Pauses any playing MediaElements. The command that calls this method with not be enabled
         /// when no MediaElements are playing.
@@ -654,7 +672,55 @@ namespace vFlash.ViewModels
             return SpeakMedia.CurrentState == MediaElementState.Paused || ListeningSoundMedia.CurrentState == MediaElementState.Paused;
         }
 
-        #region Speech Methods
+        /// <summary>
+        /// If a MediaElement is playing, stop it. If a recognition is happening, stop it.
+        /// This will also be called when the user tries to go back from this page.
+        /// </summary>
+        /// <returns></returns>
+        private async Task StopSession()
+        {
+            if (SpeakMedia.CanPause)
+                SpeakMedia.Stop();
+            if (ListeningSoundMedia.CanPause)
+                ListeningSoundMedia.Stop();
+
+            if (recognitionOperation != null)
+            {
+                if (recognitionOperation.Status != AsyncStatus.Completed)
+                {
+                    try
+                    {
+                        recognitionOperation.Cancel();
+                        recognitionOperation.Close();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e.ToString());
+                    }
+                }
+            }
+
+            if (speechRecognizer != null)
+                await speechRecognizer.StopRecognitionAsync();
+            
+
+            // Show modal dialog and ask the user if they're sure they want to cancel; data will be lost.
+            // If yes, go back.
+        }
+
+        /// <summary>
+        /// Used to determine if the user can stop the current session based on playing media.
+        /// </summary>
+        /// <returns></returns>
+        private bool CanStopSession()
+        {
+            return (SpeakMedia.CurrentState == MediaElementState.Playing || SpeakMedia.CurrentState == MediaElementState.Paused) ||
+                (ListeningSoundMedia.CurrentState == MediaElementState.Playing || ListeningSoundMedia.CurrentState == MediaElementState.Paused);
+        }
+
+        #endregion
+
+        #region Speak / Listen Methods
 
         /// <summary>
         /// Speaks the passed string via TTS and SpeakMedia.
@@ -807,6 +873,8 @@ namespace vFlash.ViewModels
 
         #endregion
 
+        #region Other Methods
+
         /// <summary>
         /// Returns a random number between 0 and 10.
         /// </summary>
@@ -849,6 +917,8 @@ namespace vFlash.ViewModels
 
         #endregion
 
+        #endregion
+
 
         #region Navigation
 
@@ -857,10 +927,17 @@ namespace vFlash.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {
+            this.NavigationService.FrameFacade.BackRequested += FrameFacade_BackRequested;
             passedItem = parameter as NamesAndIDs;
             await LoadData();
             Value = (suspensionState.ContainsKey(nameof(Value))) ? suspensionState[nameof(Value)]?.ToString() : parameter?.ToString();
             await Task.CompletedTask;
+        }
+
+        private async void FrameFacade_BackRequested(object sender, Template10.Common.HandledEventArgs e)
+        {
+            e.Handled = true;
+            await StopSession();
         }
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
@@ -877,6 +954,8 @@ namespace vFlash.ViewModels
             args.Cancel = false;
             await Task.CompletedTask;
         }
+
+        
 
         #endregion
 
