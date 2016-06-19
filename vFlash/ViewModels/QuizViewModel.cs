@@ -277,7 +277,7 @@ namespace vFlash.ViewModels
                     // Make sure there's a score to save.
                     if (scoreList != null && scoreList.Count > 0)
                     {
-                        // Hide the quiz and show the score.
+                        // Hide the quiz and show the score. *** CHANGE TO EVENTS*
                         ShowQuizBool = false;
                         ShowScoreBool = true;
 
@@ -285,19 +285,7 @@ namespace vFlash.ViewModels
                         SelectedItem = null;
                         SubmitAnswerCommand.RaiseCanExecuteChanged();
 
-                        // Show BusyModal to indicate the user's score is being saved.
-                        Views.Busy.SetBusy(true, "Saving your score...");
-                        // Save each score into the database.
-                        foreach (var item in scoreList)
-                        {
-                            bool success = await item.InsertItem(item);
-                            if (!success)
-                            {
-                                // **HANDLE ERROR** An item has failed to be inserted, delete saved data and don't save any more.
-                                return;
-                            }
-                        }
-                        Views.Busy.SetBusy(false);
+                        await SaveScore();
 
                         // Determine how many answers the user got correct and format this information into a string.
                         float finalCorrect = scoreList.Count(p => p.Correct == true);
@@ -307,6 +295,18 @@ namespace vFlash.ViewModels
                     }
                 }
             }
+        }
+
+        private async Task SaveScore()
+        {
+            // Show BusyModal to indicate the user's score is being saved.
+            Views.Busy.SetBusy(true, "Saving your score...");
+            // Save each score into the database.
+            foreach (var item in scoreList)
+            {
+                await item.InsertItem(item);
+            }
+            Views.Busy.SetBusy(false);
         }
 
         /// <summary>
