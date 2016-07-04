@@ -78,8 +78,15 @@ namespace vFlash
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
             // long-running startup tasks go here
-            if (MobileService.CurrentUser!= null)
+            if (MobileService.CurrentUser != null)
+            {
                 NavigationService.Navigate(typeof(Views.MainPage));
+            }
+            else
+            {
+                Views.Shell.SetLoginModal();
+            }
+
             await Task.CompletedTask;
         }
     }

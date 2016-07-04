@@ -190,9 +190,10 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Book-icon.png" />
+    <Content Include="Assets\CardStack.png" />
     <Content Include="Assets\cortanaListen.wav" />
     <Content Include="Assets\FlashcardBG.png" />
-    <Content Include="Assets\FlashCardStackPNG.png" />
     <Content Include="Assets\msLogo.png" />
     <Content Include="Help.htm" />
     <None Include="Package.StoreAssociation.xml" />
