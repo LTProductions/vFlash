@@ -103,6 +103,9 @@
     <Compile Include="Controls\LoginPart.xaml.cs">
       <DependentUpon>LoginPart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RecentCardsControl.xaml.cs">
+      <DependentUpon>RecentCardsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\BaseAzureModel.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\ClassData.cs" />
@@ -111,6 +114,7 @@
     <Compile Include="Models\NamesAndIDs.cs" />
     <Compile Include="Models\QuizModel.cs" />
     <Compile Include="Models\ScoreData.cs" />
+    <Compile Include="Models\StacksNamesView.cs" />
     <Compile Include="Models\StudySessionData.cs" />
     <Compile Include="Models\StudySessionNames.cs" />
     <Compile Include="Models\SubclassData.cs" />
@@ -194,7 +198,12 @@
     <Content Include="Assets\CardStack.png" />
     <Content Include="Assets\cortanaListen.wav" />
     <Content Include="Assets\FlashcardBG.png" />
+    <Content Include="Assets\KeyboardIconPNG.png" />
+    <Content Include="Assets\MicrophoneIcon.png" />
+    <Content Include="Assets\MicSpeakerIconPNG.png" />
     <Content Include="Assets\msLogo.png" />
+    <Content Include="Assets\QuizIcon2PNG.png" />
+    <Content Include="Assets\QuizIconPNG.png" />
     <Content Include="Help.htm" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
@@ -214,6 +223,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\LoginPart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RecentCardsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

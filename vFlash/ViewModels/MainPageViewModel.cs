@@ -15,11 +15,11 @@ namespace vFlash.ViewModels
 
         #region Fields/Properties
 
-        private ObservableCollection<FCStackData> _fcStacks;
+        private ObservableCollection<StacksNamesView> _fcStacks;
         /// <summary>
-        /// List of FCStackData; used to hold the 10 most-recently created stacks.
+        /// List of StacksNamesView Data; used to hold the 10 most-recently created stacks.
         /// </summary>
-        public ObservableCollection<FCStackData> FCStacks
+        public ObservableCollection<StacksNamesView> FCStacks
         {
             get { return _fcStacks; }
             set
@@ -107,10 +107,10 @@ namespace vFlash.ViewModels
         private async Task LoadRecentStacks()
         {
             // Load the 10 most recently created Flashcard Stacks.
-            var fcsd = new FCStackData();
-            var query = App.MobileService.GetTable<FCStackData>().CreateQuery();
-            var list = await fcsd.GetQueriedList<FCStackData>(query.OrderBy(p => p.CreatedAt).Take(10));
-            FCStacks = new ObservableCollection<FCStackData>(list);
+            var SNV = new StacksNamesView();
+            var query = App.MobileService.GetTable<StacksNamesView>().CreateQuery();
+            var list = await SNV.GetQueriedList(query.OrderBy(p => p.CreatedAt).Take(10));
+            FCStacks = new ObservableCollection<StacksNamesView>(list);
 
             if (FCStacks.Count() == 0)
                 NoData = true;

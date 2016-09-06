@@ -28,15 +28,18 @@ namespace vFlash.Utils
 
                 if (loginClicked)
                 {
-                    var authHandler = new AuthHandler(SaveUser);
-                    client = new MobileServiceClient(App.MobileService.MobileAppUri, authHandler);
-                    authHandler.Client = client;
-                    MobileServiceUser user;
-                    if (TryLoadUser(out user))
-                    {
-                        client.CurrentUser = user;
-                        App.MobileService.CurrentUser = client.CurrentUser;
-                    }
+                        var authHandler = new AuthHandler(SaveUser);
+                        client = new MobileServiceClient(App.MobileService.MobileAppUri, authHandler);
+                        authHandler.Client = client;
+
+                        MobileServiceUser user;
+                        if (TryLoadUser(out user))
+                        {
+                            client.CurrentUser = user;
+                            App.MobileService.CurrentUser = client.CurrentUser;
+                        }
+
+
                 }
 
                 else
@@ -53,8 +56,9 @@ namespace vFlash.Utils
                 var table = client.GetTable<ClassData>();
                 var items = await table.Take(3).ToEnumerableAsync();
             }
-            catch
+            catch(Exception e)
             {
+                App.MobileService.CurrentUser = null;
                 throw new UnauthorizedAccessException();
             }
         }
