@@ -7,6 +7,8 @@ using Template10.Services.NavigationService;
 using Windows.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
 using vFlash.Models;
+using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace vFlash.ViewModels
 {
@@ -17,7 +19,7 @@ namespace vFlash.ViewModels
 
         private ObservableCollection<StacksNamesView> _fcStacks;
         /// <summary>
-        /// List of StacksNamesView Data; used to hold the 10 most-recently created stacks.
+        /// List of StacksNamesView (FCSTackData for now) Data; used to hold the 10 most-recently created stacks.
         /// </summary>
         public ObservableCollection<StacksNamesView> FCStacks
         {
@@ -53,14 +55,14 @@ namespace vFlash.ViewModels
 
         #region Commands
 
-        private DelegateCommand<FCStackData> _navToQuizCommand;
-        public DelegateCommand<FCStackData> NavToQuizCommand
+        private DelegateCommand<StacksNamesView> _navToQuizCommand;
+        public DelegateCommand<StacksNamesView> NavToQuizCommand
         {
             get { return _navToQuizCommand; }
         }
 
-        private DelegateCommand<FCStackData> _navToIntVoiceCommand;
-        public DelegateCommand<FCStackData> NavToIntVoiceCommand
+        private DelegateCommand<StacksNamesView> _navToIntVoiceCommand;
+        public DelegateCommand<StacksNamesView> NavToIntVoiceCommand
         {
             get { return _navToIntVoiceCommand; }
         }
@@ -75,21 +77,25 @@ namespace vFlash.ViewModels
 
             #region Command Initializers
 
-            _navToQuizCommand = new DelegateCommand<FCStackData>(delegate (FCStackData stackItem)
+            _navToQuizCommand = new DelegateCommand<StacksNamesView>(delegate (StacksNamesView stackItem)
             {
                 // QuizPageViewModel needs a NameAndIDs item, so pass that instead of the FCStackData item.
                 NamesAndIDs item = new NamesAndIDs();
-                item.FCStackID = stackItem.Id;
-                item.FCStackName = stackItem.Name;
+                item.FCStackID = stackItem.StackID;
+                item.FCStackName = stackItem.StackName;
+                item.ClassName = stackItem.ClassName;
+                item.SubclassName = stackItem.SubclassName;
                 this.NavigationService.Navigate(typeof(Views.QuizPage), item);
             });
 
-            _navToIntVoiceCommand = new DelegateCommand<FCStackData>(delegate (FCStackData stackItem)
+            _navToIntVoiceCommand = new DelegateCommand<StacksNamesView>(delegate (StacksNamesView stackItem)
             {
                 // InteractiveVoiceViewModel needs a NameAndIDs item, so pass that instead of the FCStackData item.
                 NamesAndIDs item = new NamesAndIDs();
-                item.FCStackID = stackItem.Id;
-                item.FCStackID = stackItem.Name;
+                item.FCStackID = stackItem.StackID;
+                item.FCStackName = stackItem.StackName;
+                item.ClassName = stackItem.ClassName;
+                item.SubclassName = stackItem.SubclassName;
                 this.NavigationService.Navigate(typeof(Views.InteractiveVoicePage), item);
             });
 
@@ -106,11 +112,21 @@ namespace vFlash.ViewModels
         /// <returns></returns>
         private async Task LoadRecentStacks()
         {
-            // Load the 10 most recently created Flashcard Stacks.
+            //// Load the 10 most recently created Flashcard Stacks.
             var SNV = new StacksNamesView();
             var query = App.MobileService.GetTable<StacksNamesView>().CreateQuery();
             var list = await SNV.GetQueriedList(query.OrderBy(p => p.CreatedAt).Take(10));
             FCStacks = new ObservableCollection<StacksNamesView>(list);
+
+
+
+            //// Load the 10 most recently created Flashcard Stacks.
+            //var fcsd = new FCStackData();
+            //var query = App.MobileService.GetTable<FCStackData>().CreateQuery();
+            //var list = await fcsd.GetQueriedList<FCStackData>(query.OrderBy(p => p.CreatedAt).Take(10));
+            //FCStacks = new ObservableCollection<FCStackData>(list);
+
+
 
             if (FCStacks.Count() == 0)
                 NoData = true;

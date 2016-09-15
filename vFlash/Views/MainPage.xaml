@@ -21,17 +21,17 @@
             <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
             <Setter Property="BorderBrush" Value="Black"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="8,4,8,4"/>
+            <Setter Property="Padding" Value="0"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
             <Setter Property="FontWeight" Value="Normal"/>
-            <Setter Property="FontSize" Value="9"/>
+            <Setter Property="FontSize" Value="11"/>
             <Setter Property="UseSystemFocusVisuals" Value="True"/>
-            <Setter Property="Height" Value="27"/>
-            <Setter Property="Width" Value="60"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="VerticalContentAlignment" Value="Bottom"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Width" Value="44"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -44,7 +44,7 @@
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="PointerOver">
-                                        <Storyboard>
+                                        <!--<Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ContentPresenter">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}"/>
                                             </ObjectAnimationUsingKeyFrames>
@@ -52,18 +52,18 @@
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}"/>
                                             </ObjectAnimationUsingKeyFrames>
                                             <PointerUpThemeAnimation Storyboard.TargetName="RootGrid"/>
-                                        </Storyboard>
+                                        </Storyboard>-->
                                     </VisualState>
                                     <VisualState x:Name="Pressed">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="RootGrid">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseMediumLowBrush}"/>
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemAccentColor}"/>
                                             </ObjectAnimationUsingKeyFrames>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ContentPresenter">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightTransparentBrush}"/>
                                             </ObjectAnimationUsingKeyFrames>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}"/>
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Black"/>
                                             </ObjectAnimationUsingKeyFrames>
                                             <PointerDownThemeAnimation Storyboard.TargetName="RootGrid"/>
                                         </Storyboard>
@@ -162,21 +162,36 @@
             <GridView ItemsSource="{Binding FCStacks}" RelativePanel.Below="RecentTitle" x:Name="CardsGridView">
                 <GridView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Padding="12" Height="120" Width="220">
+                        <StackPanel Padding="12" Height="140" Width="240">
                             <StackPanel.Background>
                                 <ImageBrush ImageSource="/Assets/CardStack.png"/>
                             </StackPanel.Background>
-                            <StackPanel Orientation="Horizontal" Margin="4,4,0,0">
-                                <Button Margin="4,0,0,0" Style="{StaticResource RecentCardsButtonTemplate}" Command="{Binding Path=DataContext.NavToQuizCommand, ElementName=CardsGridView}" CommandParameter="{Binding}">
-                                    <Button.Background>
+                            <StackPanel>
+                                <StackPanel Margin="4,4,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding ClassName}" FontSize="10" Foreground="#696969"/>
+                                        <TextBlock Text="{Binding SubclassName}" FontSize="10" Margin="4,0,0,0" Foreground="#414141"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding StackName}" FontSize="10" Margin="4,0,0,0"/>
+                                        </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="4,4,0,0">
+                                    <Button Margin="4,0,4,0" Style="{StaticResource RecentCardsButtonTemplate}" Command="{Binding Path=DataContext.NavToQuizCommand, ElementName=CardsGridView}" CommandParameter="{Binding}">
+                                        <!--<Button.Background>
                                         <ImageBrush ImageSource="/Assets/QuizIconPNG.png"/>
-                                    </Button.Background>
-                                </Button>
-                                <Button Margin="4,0,0,0" Style="{StaticResource RecentCardsButtonTemplate}">
-                                    <Button.Background>
-                                        <ImageBrush ImageSource="/Assets/MicrophoneIconPNG.png"/>
-                                    </Button.Background>
-                                </Button>
+                                    </Button.Background>-->
+                                        <Button.Content>
+                                            <StackPanel Margin="2,0,0,0">
+                                                <TextBlock Text="Quiz"/>
+                                                <Image Source="/Assets/QuizIconPNG.png" Height="32" Width="32" HorizontalAlignment="Left"/>
+                                            </StackPanel>
+                                        </Button.Content>
+                                    </Button>
+                                    <Button Margin="4,0,0,0" Style="{StaticResource RecentCardsButtonTemplate}">
+                                        <Button.Background>
+                                            <ImageBrush ImageSource="/Assets/MicrophoneIconPNG.png"/>
+                                        </Button.Background>
+                                    </Button>
+                                </StackPanel>
                             </StackPanel>
                         </StackPanel>
                     </DataTemplate>

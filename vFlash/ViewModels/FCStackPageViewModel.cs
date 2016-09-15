@@ -93,6 +93,7 @@ namespace vFlash.ViewModels
             {
                 // Navigate to a quiz of the selected FlashCardStack item.
                 passedItem.FCStackID = item.Id;
+                passedItem.FCStackName = item.Name;
                 this.NavigationService.Navigate(typeof(Views.QuizPage), passedItem);
             });
 

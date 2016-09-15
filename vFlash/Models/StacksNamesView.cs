@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace vFlash.Models
 {
-    public class StacksNamesView : BaseModel
+    public class StacksNamesView : BaseAzureModel
     {
 
         private string _className;
@@ -46,7 +46,7 @@ namespace vFlash.Models
 
         private string _stackName;
 
-        [JsonProperty(PropertyName = "SubclassName")]
+        [JsonProperty(PropertyName = "StackName")]
         public string StackName
         {
             get { return _stackName; }
@@ -76,52 +76,52 @@ namespace vFlash.Models
             }
         }
 
-        private DateTime _createdAt;
+        //private DateTime _createdAt;
 
-        [JsonProperty(PropertyName = "CreatedAt")]
-        public DateTime CreatedAt
-        {
-            get { return _createdAt; }
-            set
-            {
-                if (_createdAt != value)
-                {
-                    _createdAt = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
+        //[JsonProperty(PropertyName = "CreatedAt")]
+        //public DateTime CreatedAt
+        //{
+        //    get { return _createdAt; }
+        //    set
+        //    {
+        //        if (_createdAt != value)
+        //        {
+        //            _createdAt = value;
+        //            NotifyPropertyChanged();
+        //        }
+        //    }
+        //}
 
 
         #region Methods
 
-        public async Task<IList<StacksNamesView>> GetList()
-        {
-            try
-            {
-                return await App.MobileService.GetTable<StacksNamesView>().ToListAsync();
-            }
+        //public async Task<IList<StackViewController>> GetList()
+        //{
+        //    try
+        //    {
+        //        return await App.MobileService.GetTable<StackViewController>().ToListAsync();
+        //    }
 
-            catch
-            {
-                //error
-                return null;
-            }
-        }
+        //    catch
+        //    {
+        //        //error
+        //        return null;
+        //    }
+        //}
 
-        public async Task<IList<StacksNamesView>> GetQueriedList(IMobileServiceTableQuery<StacksNamesView> query)
-        {
-            try
-            {
-                return await query.ToListAsync();
-            }
+        //public async Task<IList<StackViewController>> GetQueriedList(IMobileServiceTableQuery<StackViewController> query)
+        //{
+        //    try
+        //    {
+        //        return await query.ToListAsync();
+        //    }
 
-            catch
-            {
-                // error
-                return null;
-            }
-        }
+        //    catch
+        //    {
+        //        // error
+        //        return null;
+        //    }
+        //}
 
         #endregion
 

@@ -25,6 +25,14 @@ namespace vFlash.Views
         public QuizPage()
         {
             this.InitializeComponent();
+
+            // Set up the event.
+            QuizViewModel.ShowScoreEvent += (s, e) =>
+            {
+                // Begin the storyboard.
+                ShowScoreStoryboard.Begin();
+            };
+
         }
 
         private void SubmitAnswerButton_Click(object sender, RoutedEventArgs e)
@@ -34,5 +42,6 @@ namespace vFlash.Views
             answerC.IsChecked = false;
             answerD.IsChecked = false;
         }
+
     }
 }

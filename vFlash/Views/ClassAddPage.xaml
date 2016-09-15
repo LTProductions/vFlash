@@ -69,7 +69,7 @@
                         <DataTemplate>
                             <RelativePanel>
                                 <TextBox x:Name="tbox" PlaceholderText="{Binding PlaceHolder}" Text="{Binding BoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          Padding="4" Width="200" MaxLength="25" SelectionStart="{Binding ElementName=rPanel, Path=DataContext.CaretPosition, Mode=TwoWay}">
+                                          Padding="4" Width="200" MaxLength="15" SelectionStart="{Binding ElementName=rPanel, Path=DataContext.CaretPosition, Mode=TwoWay}">
                                     <Interactivity:Interaction.Behaviors>
                                         <Behaviors:EventTriggerBehaviorBase EventName="TextChanged">
                                             <Core:InvokeCommandAction Command="{Binding ElementName=rPanel, Path=DataContext.TextChangedCommand}" CommandParameter="{Binding}"/>

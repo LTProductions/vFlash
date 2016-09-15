@@ -172,6 +172,13 @@ namespace vFlash.ViewModels
 
         #endregion
 
+        #region Events
+
+        // Fire the storyboard for showing the user's score.
+        public event EventHandler ShowScoreEvent;
+
+        #endregion
+
         #region Commands
 
         private DelegateCommand _submitAnswerCommand;
@@ -277,15 +284,20 @@ namespace vFlash.ViewModels
                     // Make sure there's a score to save.
                     if (scoreList != null && scoreList.Count > 0)
                     {
-                        // Hide the quiz and show the score. *** CHANGE TO EVENTS*
+                        // Hide the quiz.
                         ShowQuizBool = false;
-                        ShowScoreBool = true;
 
                         // Reset the SelectedItem to null.
                         SelectedItem = null;
                         SubmitAnswerCommand.RaiseCanExecuteChanged();
 
                         await SaveScore();
+
+                        // Set visibility of the score panel to true.
+                        ShowScoreBool = true;
+
+                        // Fire the event that will set off the storyboard animation.
+                        ShowScoreEvent.Invoke(this, EventArgs.Empty);
 
                         // Determine how many answers the user got correct and format this information into a string.
                         float finalCorrect = scoreList.Count(p => p.Correct == true);
@@ -337,6 +349,7 @@ namespace vFlash.ViewModels
             await LoadFCardData();
             LoadRandomAnswers();
             SetQuizModel();
+            
             Views.Busy.SetBusy(false);
         }
 
@@ -559,6 +572,8 @@ namespace vFlash.ViewModels
         {
             passedItem = (NamesAndIDs)parameter;
             FCStackName = passedItem.FCStackName;
+            ClassName = passedItem.ClassName;
+            SubclassName = passedItem.SubclassName;
             LoadData();
             Value = (suspensionState.ContainsKey(nameof(Value))) ? suspensionState[nameof(Value)]?.ToString() : parameter?.ToString();
             await Task.CompletedTask;
