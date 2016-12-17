@@ -13,8 +13,8 @@ namespace vFlash.Models
     public class QuizModel : BaseModel
     {
 
-        private int _id;
-        public int ID
+        private string _id;
+        public string ID
         {
             get { return _id; }
             set
@@ -132,7 +132,7 @@ namespace vFlash.Models
 
         private string _bBG;
         /// <summary>
-        /// Holds the background color for answer A; used when reviewing the quiz. If the user selected this answer and it is the correct answer,
+        /// Holds the background color for answer B; used when reviewing the quiz. If the user selected this answer and it is the correct answer,
         /// the background should be green; else, red.
         /// </summary>
         public string BBG
@@ -150,7 +150,7 @@ namespace vFlash.Models
 
         private string _cBG;
         /// <summary>
-        /// Holds the background color for answer A; used when reviewing the quiz. If the user selected this answer and it is the correct answer,
+        /// Holds the background color for answer B; used when reviewing the quiz. If the user selected this answer and it is the correct answer,
         /// the background should be green; else, red.
         /// </summary>
         public string CBG
@@ -168,7 +168,7 @@ namespace vFlash.Models
 
         private string _dBG;
         /// <summary>
-        /// Holds the background color for answer A; used when reviewing the quiz. If the user selected this answer and it is the correct answer,
+        /// Holds the background color for answer B; used when reviewing the quiz. If the user selected this answer and it is the correct answer,
         /// the background should be green; else, red.
         /// </summary>
         public string DBG

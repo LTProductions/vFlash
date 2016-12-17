@@ -30,9 +30,19 @@
             </converters:ValueWhenConverter.Otherwise>
         </converters:ValueWhenConverter>
         <Storyboard x:Name="ShowScoreStoryboard">
-            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="grid" d:IsOptimized="True"/>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="QuestAnsGrid">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="relativePanel">
                 <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="FadeQuesAnswStoryboard">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="QuestAnsGrid">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.5"/>
                 <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
@@ -50,7 +60,9 @@
 
         <controls:PageHeader x:Name="pageHeader" Text="Quiz"/>
 
-        <RelativePanel Grid.Row="1">
+        <Grid Grid.Row="1">
+            
+        
 
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
@@ -87,17 +99,18 @@
 
             </controls:PageHeader> -->
 
-            <StackPanel>
+        
+            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
                 <StackPanel Grid.Row="0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding ClassName}" FontSize="16" Foreground="#696969"/>
-                        <TextBlock Text="{Binding SubclassName}" FontSize="16" Margin="4,0,0,0" Foreground="#414141"/>
+                        <TextBlock Text="{Binding SubclassName}" FontSize="16" Margin="8,0,0,0" Foreground="#414141"/>
                     </StackPanel>
                     <TextBlock Text="{Binding FCStackName}" FontSize="16"/>
                 </StackPanel>
 
-                <Grid x:Name="grid" Visibility="{Binding ShowQuizBool,Converter={StaticResource VisibleWhenTrueConverter},Mode=TwoWay}"
+                <Grid x:Name="QuestAnsGrid" Visibility="{Binding ShowQuizBool,Converter={StaticResource VisibleWhenTrueConverter},Mode=TwoWay}"
                   Margin="12,40,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -105,6 +118,7 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height=".5*"/>
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
@@ -115,35 +129,45 @@
 
 
 
-                    <TextBlock x:Name="QuestionTBox" Text="{Binding QuizObject.Question}" Grid.ColumnSpan="2"/>
-                    <RadioButton x:Name="answerA" Content="{Binding QuizObject.A}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="1"/>
-                    <RadioButton x:Name="answerB" Content="{Binding QuizObject.B}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="2"/>
-                    <RadioButton x:Name="answerC" Content="{Binding QuizObject.C}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="1" Grid.Column="1"/>
-                    <RadioButton x:Name="answerD" Content="{Binding QuizObject.D}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="2" Grid.Column="1"/>
+                    <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
+                        <TextBlock x:Name="QNumberTBox" Text="{Binding QuizObject.ID}"/>
+                        <TextBlock x:Name="QuestionTBox" Text="{Binding QuizObject.Question}" 
+                                   Margin="8,0,0,0"/>
+                    </StackPanel>
+
+                    <RadioButton x:Name="answerA" Content="{Binding QuizObject.A}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="1"
+                                 Background="{Binding QuizObject.ABG}" HorizontalAlignment="Stretch"/>
+                    <RadioButton x:Name="answerB" Content="{Binding QuizObject.B}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="1" Grid.Column="1"
+                                 Background="{Binding QuizObject.BBG}" HorizontalAlignment="Stretch" Margin="4,0,0,0"/>
+                    <RadioButton x:Name="answerC" Content="{Binding QuizObject.C}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="2"
+                                 Background="{Binding QuizObject.CBG}" HorizontalAlignment="Stretch"/>
+                    <RadioButton x:Name="answerD" Content="{Binding QuizObject.D}" Command="{Binding RButtonCheckedCommand}" CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}" Grid.Row="2" Grid.Column="1"
+                                 Background="{Binding QuizObject.DBG}" HorizontalAlignment="Stretch" Margin="4,0,0,0"/>
+
+                    <Button x:Name="SubmitAnswerButton" Click="SubmitAnswerButton_Click" Content="Submit" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
+                            Command="{Binding SubmitAnswerCommand}" Grid.Row="5" HorizontalAlignment="Center"
+                            Grid.ColumnSpan="2" Margin="0,12,0,0" Visibility="{Binding ShowRe}"/>
                 </Grid>
 
             </StackPanel>
 
-            <Button x:Name="SubmitAnswerButton" Click="SubmitAnswerButton_Click" Content="Submit" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
-                            Margin="0,0,0,20" Command="{Binding SubmitAnswerCommand}"/>
+
+        <RelativePanel x:Name="relativePanel" Visibility="{Binding ShowScoreBool,Converter={StaticResource VisibleWhenTrueConverter},Mode=TwoWay}"
+                           Margin="20,20,0,0" d:IsHidden="True">
 
 
-            <RelativePanel x:Name="relativePanel" Visibility="{Binding ShowScoreBool,Converter={StaticResource VisibleWhenTrueConverter},Mode=TwoWay}"
-                           Margin="20,20,0,0">
+            <StackPanel x:Name="ScoreStringsStackPanel">
+                <TextBlock Text="{Binding FinalScoreString}" FontSize="25"/>
+                <TextBlock Text="{Binding FinalPercentageString}" FontSize="25"/>
+            </StackPanel>
 
-
-                <StackPanel x:Name="ScoreStringsStackPanel">
-                    <TextBlock Text="{Binding FinalScoreString}" FontSize="25"/>
-                    <TextBlock Text="{Binding FinalPercentageString}" FontSize="25"/>
-                </StackPanel>
-
-                <Button x:Name="ReviewButton" Content="Review" RelativePanel.Below="ScoreStringsStackPanel" Height="80" Width="200"
-                        RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"/>
-
-            </RelativePanel>
-
+            <Button x:Name="ReviewButton" Content="Review" RelativePanel.Below="ScoreStringsStackPanel" Height="60" Width="175"
+                        RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
+                        Command="{Binding ShowQuizReviewCommand}"/>
 
         </RelativePanel>
+
+        </Grid>
 
         <Grid x:Name="BottomBar" Grid.Row="2">
             <CommandBar ClosedDisplayMode="Compact">

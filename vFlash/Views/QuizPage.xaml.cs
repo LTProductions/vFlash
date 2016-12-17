@@ -33,6 +33,12 @@ namespace vFlash.Views
                 ShowScoreStoryboard.Begin();
             };
 
+            QuizViewModel.FadeInQuizModelEvent += (s, e) =>
+            {
+                // Begin the storyboard.
+                FadeQuesAnswStoryboard.Begin();
+            };
+
         }
 
         private void SubmitAnswerButton_Click(object sender, RoutedEventArgs e)

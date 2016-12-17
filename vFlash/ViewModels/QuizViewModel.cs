@@ -1,7 +1,9 @@
-﻿using Prism.Commands;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -119,7 +121,7 @@ namespace vFlash.ViewModels
             }
         }
 
-        private bool _showQuizBool = true;
+        private bool _showQuizBool = false;
         /// <summary>
         /// Boolean to track whether or not the quiz should be shown.
         /// </summary>
@@ -174,8 +176,16 @@ namespace vFlash.ViewModels
 
         #region Events
 
-        // Fire the storyboard for showing the user's score.
+        /// <summary>
+        /// Event used to fire the storyboard for showing the user's score.
+        /// </summary>
         public event EventHandler ShowScoreEvent;
+
+        /// <summary>
+        /// Event used to fire the storyboard to fade in the quiz question + answers.
+        /// Should fire when the quiz begins and after each answer submission.
+        /// </summary>
+        public event EventHandler FadeInQuizModelEvent;
 
         #endregion
 
@@ -271,11 +281,16 @@ namespace vFlash.ViewModels
                 // Make sure there's another card to move onto before trying to load another question.
                 if (index < flashCards.Count)
                 {
+                    // Fire the event for fading in the question + answers.
+                    FadeInQuizModelEvent.Invoke(this, EventArgs.Empty);
+
                     // Reset the SelectedItem.
                     SelectedItem = null;
                     SubmitAnswerCommand.RaiseCanExecuteChanged();
                     LoadRandomAnswers();
                     SetQuizModel();
+
+                    
                 }
 
                 // There are no cards left in this quiz.
@@ -300,10 +315,11 @@ namespace vFlash.ViewModels
                         ShowScoreEvent.Invoke(this, EventArgs.Empty);
 
                         // Determine how many answers the user got correct and format this information into a string.
-                        float finalCorrect = scoreList.Count(p => p.Correct == true);
-                        float totalQuestions = flashCards.Count;
+                        double finalCorrect = scoreList.Count(p => p.Correct == true);
+                        double totalQuestions = flashCards.Count;
+                        double finalPercent = Math.Round((finalCorrect / totalQuestions), 2) * 100;
                         FinalScoreString = ($"Total: {finalCorrect.ToString()} / {totalQuestions.ToString()} ");
-                        FinalPercentageString = ($"Score: {((finalCorrect / totalQuestions) * 100).ToString()}%");
+                        FinalPercentageString = ($"Score: {finalPercent.ToString()}%");
                     }
                 }
             }
@@ -349,8 +365,12 @@ namespace vFlash.ViewModels
             await LoadFCardData();
             LoadRandomAnswers();
             SetQuizModel();
+            ShowQuizBool = true;
             
             Views.Busy.SetBusy(false);
+
+            // Fire the event for fading in the question + answers.
+            FadeInQuizModelEvent.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -360,7 +380,7 @@ namespace vFlash.ViewModels
         private async Task LoadStudySessionData()
         {
             // Hard coded ID; this is a quiz, so it has the Quiz ID. (See database ERD).
-            string quizNameID = "979E4989-21DF-450F-A2A6-05634C4F87BA";
+            string quizNameID = "674E630C-2EC3-40B5-B6A8-5E91BB7D78AE";
             studySession = new StudySessionData() { SessionName_ID = quizNameID };
             await studySession.InsertItem(studySession);
         }
@@ -438,7 +458,7 @@ namespace vFlash.ViewModels
             {
                 QuizObject = new QuizModel()
                 {
-                    ID = index + 1,
+                    ID = (index + 1).ToString() + ".",
                     Question = flashCards.ElementAt(index).Definition_Side2 != null ? flashCards.ElementAt(index).Definition_Side2 : string.Empty,
                     A = potentialAnswers[0],
                     B = potentialAnswers[1],
@@ -459,20 +479,23 @@ namespace vFlash.ViewModels
         /// </summary>
         private void ReviewQuiz()
         {
-            // Reset the index, hide the score, show the review.
+            // Reset the index, hide the score, show the review, hide the submit button.
             index = 0;
             ShowScoreBool = false;
-            ShowReviewBool = true;
+            ShowQuizBool = true;
 
             QuizObject = new QuizModel()
             {
-                ID = index + 1,
+                ID = (index + 1).ToString() + ".",
                 Question = QuizObjectList.ElementAt(index).Question,
                 A = QuizObjectList.ElementAt(index).A,
                 B = QuizObjectList.ElementAt(index).B,
                 C = QuizObjectList.ElementAt(index).C,
                 D = QuizObjectList.ElementAt(index).D
             };
+
+            // Check this set's answer and mark right or wrong.
+            SetBGCorrectOrIncorrect();
         }
 
         /// <summary>
@@ -537,7 +560,7 @@ namespace vFlash.ViewModels
                 // Set the object to the new question based on the index.
                 QuizObject = new QuizModel()
                 {
-                    ID = index + 1,
+                    ID = (index + 1).ToString() + ".",
                     Question = QuizObjectList.ElementAt(index).Question,
                     A = QuizObjectList.ElementAt(index).A,
                     ABG = string.Equals(QuizObjectList.ElementAt(index).A, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
