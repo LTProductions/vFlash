@@ -67,6 +67,18 @@ namespace vFlash.ViewModels
             get { return _navToIntVoiceCommand; }
         }
 
+        private DelegateCommand _navToClassesCommand;
+        public DelegateCommand NavToClassesCommand
+        {
+            get { return _navToClassesCommand; }
+        }
+
+        private DelegateCommand _navToQuickAddCommand;
+        public DelegateCommand NavToQuickAddCommand
+        {
+            get { return _navToQuickAddCommand; }
+        }
+
         #endregion
 
         #region Constructor
@@ -97,6 +109,16 @@ namespace vFlash.ViewModels
                 item.ClassName = stackItem.ClassName;
                 item.SubclassName = stackItem.SubclassName;
                 this.NavigationService.Navigate(typeof(Views.InteractiveVoicePage), item);
+            });
+
+            _navToClassesCommand = new DelegateCommand(delegate ()
+            {
+                this.NavigationService.Navigate(typeof(Views.ClassPage));
+            });
+
+            _navToQuickAddCommand = new DelegateCommand(delegate ()
+            {
+                this.NavigationService.Navigate(typeof(Views.QuickAddPage));
             });
 
             #endregion
