@@ -1,6 +1,7 @@
 ﻿using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Template10.Services.NavigationService;
 using vFlash.Models;
@@ -34,9 +35,18 @@ namespace vFlash.Controls
         private async void LoginMSButton_Click(object sender, RoutedEventArgs e)
         {
             // Pass true so the method knows the user initiated the login and the login data is not coming from storage.
-            await SavedLogin.MSLogin(true);
-            // Fire the event!
-            LoggedIn.Invoke(this, EventArgs.Empty);
+
+            try
+            {
+                await SavedLogin.MSLogin(true);
+                // Fire the event!
+                LoggedIn.Invoke(this, EventArgs.Empty);
+            }
+            catch(WebException)
+            {
+                var msgDialog = new MessageDialog("Please check your internet connection.");
+                await msgDialog.ShowAsync();
+            }
         }
     }
 }

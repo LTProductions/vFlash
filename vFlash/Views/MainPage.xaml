@@ -5,6 +5,7 @@
       xmlns:Controls="using:vFlash.Controls"
       xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
       xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+      xmlns:converters="using:Template10.Converters"
       xmlns:controls="using:Template10.Controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="using:vFlash.Views"
@@ -16,7 +17,19 @@
     </Page.DataContext>
 
     <Page.Resources>
-        <Style x:Key="RecentCardsButtonTemplate" TargetType="Button">
+        <converters:ValueWhenConverter x:Key="VisibleWhenTrueConverter">
+                <converters:ValueWhenConverter.When>
+                    <x:Boolean>True</x:Boolean>
+                </converters:ValueWhenConverter.When>
+                <converters:ValueWhenConverter.Value>
+                    <Visibility>Visible</Visibility>
+                </converters:ValueWhenConverter.Value>
+                <converters:ValueWhenConverter.Otherwise>
+                    <Visibility>Collapsed</Visibility>
+                </converters:ValueWhenConverter.Otherwise>
+            </converters:ValueWhenConverter>
+
+            <Style x:Key="RecentCardsButtonTemplate" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
             <Setter Property="BorderBrush" Value="Black"/>
@@ -156,7 +169,7 @@
 
         </RelativePanel>
 
-        <RelativePanel Grid.Row="2" Margin="4,0,0,0">
+        <RelativePanel Grid.Row="2" Margin="4,0,0,0" Visibility="{Binding DataLoaded, Converter={StaticResource VisibleWhenTrueConverter}}">
 
             <TextBlock x:Name="RecentTitle" Text="Recent" FontSize="20"/>
             <GridView ItemsSource="{Binding FCStacks}" RelativePanel.Below="RecentTitle" x:Name="CardsGridView">
@@ -202,7 +215,12 @@
             </GridView>
 
         </RelativePanel>
-            
+
+        <RelativePanel Grid.Row="2" Visibility="{Binding NoData, Converter={StaticResource ResourceKey=VisibleWhenTrueConverter}}">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20,20,0,0" Foreground="LightGray"
+                       Text="Check your internet connection or create some Flashcards to see your most recent ones here!" FontSize="25"
+                       TextWrapping="WrapWholeWords"/>
+        </RelativePanel>
 
     </Grid>
 </Page>

@@ -172,6 +172,23 @@ namespace vFlash.ViewModels
             }
         }
 
+        private bool _showSubmitBool = false;
+        /// <summary>
+        /// Bool to track whether the submit button should be shown.
+        /// </summary>
+        public bool ShowSubmitBool
+        {
+            get { return _showSubmitBool; }
+            set
+            {
+                if (_showSubmitBool != value)
+                {
+                    _showSubmitBool = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         #endregion
 
         #region Events
@@ -227,6 +244,24 @@ namespace vFlash.ViewModels
             get { return _endSessionGoBackCommand; }
         }
 
+        private DelegateCommand _nextReviewQuestionCommand;
+        /// <summary>
+        /// This command fires when the user selects to see the next review question.
+        /// </summary>
+        public DelegateCommand NextReviewQuestionCommand
+        {
+            get { return _nextReviewQuestionCommand; }
+        }
+
+        private DelegateCommand _prevReviewQuestionCommand;
+        /// <summary>
+        /// This command fires when the user selects to see the previous review question.
+        /// </summary>
+        public DelegateCommand PrevReviewQuestionCommand
+        {
+            get { return _prevReviewQuestionCommand; }
+        }
+
         #endregion
 
         #region Constructor
@@ -249,6 +284,9 @@ namespace vFlash.ViewModels
             {
                 NavigationService.GoBack();
             });
+
+            _nextReviewQuestionCommand = new DelegateCommand(NextReviewQuestion);
+            _prevReviewQuestionCommand = new DelegateCommand(PrevReviewQuestion);
 
             #endregion
 
@@ -301,6 +339,7 @@ namespace vFlash.ViewModels
                     {
                         // Hide the quiz.
                         ShowQuizBool = false;
+                        ShowSubmitBool = false;
 
                         // Reset the SelectedItem to null.
                         SelectedItem = null;
@@ -366,6 +405,7 @@ namespace vFlash.ViewModels
             LoadRandomAnswers();
             SetQuizModel();
             ShowQuizBool = true;
+            ShowSubmitBool = true;
             
             Views.Busy.SetBusy(false);
 
@@ -483,6 +523,8 @@ namespace vFlash.ViewModels
             index = 0;
             ShowScoreBool = false;
             ShowQuizBool = true;
+            ShowSubmitBool = false;
+            ShowReviewBool = true;
 
             QuizObject = new QuizModel()
             {
@@ -580,6 +622,39 @@ namespace vFlash.ViewModels
                 ShowScoreBool = true;
             }
             
+        }
+
+        /// <summary>
+        /// Move to the previous review question, if there is one. If not, show the score again.
+        /// </summary>
+        private void PrevReviewQuestion()
+        {
+            if (index > 0)
+            {
+                index--;
+
+                // Set the object to the new question based on the index.
+                QuizObject = new QuizModel()
+                {
+                    ID = (index + 1).ToString() + ".",
+                    Question = QuizObjectList.ElementAt(index).Question,
+                    A = QuizObjectList.ElementAt(index).A,
+                    ABG = string.Equals(QuizObjectList.ElementAt(index).A, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
+                    B = QuizObjectList.ElementAt(index).B,
+                    BBG = string.Equals(QuizObjectList.ElementAt(index).B, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
+                    C = QuizObjectList.ElementAt(index).C,
+                    CBG = string.Equals(QuizObjectList.ElementAt(index).C, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
+                    D = QuizObjectList.ElementAt(index).D,
+                    DBG = string.Equals(QuizObjectList.ElementAt(index).D, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED"
+                };
+            }
+
+            else
+            {
+                // Hide the review and show the score again.
+                ShowReviewBool = false;
+                ShowScoreBool = true;
+            }
         }
 
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using vFlash.Models;
@@ -58,8 +59,8 @@ namespace vFlash.Utils
             }
             catch(Exception e)
             {
-                App.MobileService.CurrentUser = null;
-                throw new UnauthorizedAccessException();
+                App.MobileService.CurrentUser = new MobileServiceUser("");
+                throw new System.Net.WebException();
             }
         }
 

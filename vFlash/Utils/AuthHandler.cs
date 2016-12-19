@@ -86,11 +86,6 @@ namespace vFlash.Utils
                 }
             }
 
-            else
-            {
-                throw new InvalidOperationException("Something went wrong. Try again.");
-            }
-
             return response;
         }
 

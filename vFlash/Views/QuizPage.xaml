@@ -146,7 +146,17 @@
 
                     <Button x:Name="SubmitAnswerButton" Click="SubmitAnswerButton_Click" Content="Submit" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
                             Command="{Binding SubmitAnswerCommand}" Grid.Row="5" HorizontalAlignment="Center"
-                            Grid.ColumnSpan="2" Margin="0,12,0,0" Visibility="{Binding ShowRe}"/>
+                            Grid.ColumnSpan="2" Margin="0,12,0,0" Visibility="{Binding ShowSubmitBool, Converter={StaticResource VisibleWhenTrueConverter}}"/>
+
+                    <Button x:Name="NextReviewQuestion" Content="Next" HorizontalAlignment="Center"
+                            Command="{Binding NextReviewQuestionCommand}" Grid.Row="5"
+                            Grid.ColumnSpan="2" Margin="0,12,0,0" Visibility="{Binding ShowReviewBool, Converter={StaticResource VisibleWhenTrueConverter}}"/>
+
+                    <Button x:Name="PrevReviewQuestion" Content="Previous" RelativePanel.LeftOf="NextReviewQuestion" HorizontalAlignment="Center"
+                            Command="{Binding PrevReviewQuestionCommand}" Grid.Row="5"
+                            Grid.ColumnSpan="2" Margin="0,12,200,0" Visibility="{Binding ShowReviewBool, Converter={StaticResource VisibleWhenTrueConverter}}"/>
+                    
+
                 </Grid>
 
             </StackPanel>
