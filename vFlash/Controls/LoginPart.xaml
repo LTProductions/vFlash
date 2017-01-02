@@ -8,7 +8,7 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              d:DesignHeight="391.094" x:Name="ThisPage"
              mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{StaticResource CustomBGColor}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -17,18 +17,29 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         </Grid.RowDefinitions>
 
         <!-- header -->
-        <Rectangle Fill="DarkBlue" />
-        <TextBlock Foreground="White" VerticalAlignment="Center" Margin="20,0" FontSize="24">Login</TextBlock>
+        <Rectangle Fill="#0209c7" />
+        <TextBlock Foreground="White" VerticalAlignment="Center" Margin="20,0" FontSize="22">Login</TextBlock>
         <!--<Button Margin="12" Foreground="White" Click="CloseClicked" VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource TextBlockButtonStyle}">
             <SymbolIcon Symbol="Clear" />
-        </Button>--> 
+        </Button>-->
+
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="vFlash" FontFamily="Georgia" Foreground="White" FontSize="100"
+                   HorizontalAlignment="Center" FontStyle="Italic"
+                   />
+            <TextBlock Text="Your very own study buddy!" FontFamily="Georgia" Foreground="White"
+                   FontSize="30" HorizontalAlignment="Center" FontStyle="Italic"
+                   />
+        </StackPanel>
 
         <!-- login form -->
         <StackPanel Grid.Row="2" Margin="20, 16" DataContext="{Binding ElementName=ThisPage}" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button x:Name="LoginMSButton" Click="LoginMSButton_Click">
+            <Button x:Name="LoginMSButton" Click="LoginMSButton_Click"
+                    Background="Transparent" BorderBrush="White" BorderThickness="1">
                 <RelativePanel>
                     <Image Source="/Assets/msLogo.png" Height="30" Width="30" x:Name="msLogo"/>
-                    <TextBlock RelativePanel.RightOf="msLogo" Text="Login with Microsoft Account" Margin="8,4,0,0"/>
+                    <TextBlock RelativePanel.RightOf="msLogo" Text="Login with Microsoft Account" Margin="8,4,0,0"
+                               FontWeight="SemiBold" Foreground="White"/>
                 </RelativePanel>
             </Button>
         </StackPanel>

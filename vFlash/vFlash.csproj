@@ -199,6 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Book-icon.png" />
+    <Content Include="Assets\Bookmark-Book-icon.png" />
     <Content Include="Assets\CardStack.png" />
     <Content Include="Assets\cortanaListen.wav" />
     <Content Include="Assets\FlashcardBG.png" />
@@ -206,8 +207,10 @@
     <Content Include="Assets\MicrophoneIcon.png" />
     <Content Include="Assets\MicSpeakerIconPNG.png" />
     <Content Include="Assets\msLogo.png" />
+    <Content Include="Assets\new-Book-icon.png" />
     <Content Include="Assets\QuizIcon2PNG.png" />
     <Content Include="Assets\QuizIconPNG.png" />
+    <Content Include="Assets\Sketch-Book-icon.png" />
     <Content Include="Help.htm" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />

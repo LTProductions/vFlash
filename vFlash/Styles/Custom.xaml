@@ -6,9 +6,26 @@
     <x:Double x:Key="NormalMinWidth">521</x:Double>
     <x:Double x:Key="WideMinWidth">1200</x:Double>
 
-    <Color x:Key="CustomColor">SteelBlue</Color>
+    <Color x:Key="CustomColor">#0209c7</Color>
     <Color x:Key="ContrastColor">White</Color>
-    <Color x:Key="SystemAccentColor">SteelBlue</Color>
+    <Color x:Key="SystemAccentColor">#0209c7</Color>
+    <SolidColorBrush x:Key="CustomBGColor">#4459e3</SolidColorBrush>
+
+    <Style TargetType="controls:CustomTitleBar">
+        <Setter Property="BackgroundColor" Value="DarkBlue" />
+        <Setter Property="ButtonBackgroundColor" Value="LightBlue" />
+        <Setter Property="ButtonForegroundColor" Value="White" />
+        <Setter Property="ButtonHoverBackgroundColor" Value="CornflowerBlue" />
+        <Setter Property="ButtonHoverForegroundColor" Value="White" />
+        <Setter Property="ButtonInactiveBackgroundColor" Value="DimGray" />
+        <Setter Property="ButtonInactiveForegroundColor" Value="White" />
+        <Setter Property="ButtonPressedBackgroundColor" Value="DarkBlue" />
+        <Setter Property="ButtonPressedForegroundColor" Value="White" />
+        <Setter Property="Extended" Value="False" />
+        <Setter Property="ForegroundColor" Value="White" />
+        <Setter Property="InactiveBackgroundColor" Value="LightBlue" />
+        <Setter Property="InactiveForegroundColor" Value="DimGray" />
+    </Style>
 
     <ResourceDictionary.ThemeDictionaries>
 

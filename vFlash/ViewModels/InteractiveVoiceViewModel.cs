@@ -937,7 +937,10 @@ namespace vFlash.ViewModels
         private async void FrameFacade_BackRequested(object sender, Template10.Common.HandledEventArgs e)
         {
             e.Handled = true;
-            await StopSession();
+            if (InSession)
+            {
+                await StopSession();
+            }
         }
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)

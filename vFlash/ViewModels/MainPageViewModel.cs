@@ -154,10 +154,9 @@ namespace vFlash.ViewModels
             // Load the 10 most recently created Flashcard Stacks.
             var SNV = new StacksNamesView();
             var query = App.MobileService.GetTable<StacksNamesView>().CreateQuery();
+            
             var list = await SNV.GetQueriedList(query.OrderBy(p => p.CreatedAt).Take(10));
             FCStacks = new ObservableCollection<StacksNamesView>(list);
-
-
 
             //// Load the 10 most recently created Flashcard Stacks.
             //var fcsd = new FCStackData();

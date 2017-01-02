@@ -15,7 +15,7 @@
         <vm:MainPageViewModel x:Name="ViewModel" />
     </Page.DataContext>
 
-    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{StaticResource CustomBGColor}">
 
 
         <VisualStateManager.VisualStateGroups>
@@ -45,13 +45,33 @@
                              RelativePanel.AlignTopWithPanel="True" Text="Login or Register">
         </controls:PageHeader>
 
-        <Button RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" MinHeight="50" MinWidth="200" Click="Button_Click">
-            <RelativePanel>
-                <Image Source="/Assets/msLogo.png" Height="40" Width="40" x:Name="msLogo"/>
-                <TextBlock RelativePanel.RightOf="msLogo" Text="Login with Microsoft Account" FontSize="20" Margin="8,4,0,0"/>
-            </RelativePanel>
-        </Button>
+        <Grid Margin="0,44,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-    </RelativePanel>
+            <RelativePanel>
+                <TextBlock x:Name="title" Grid.Row="0" Text="vFlash" FontFamily="Georgia" FontStyle="Italic"
+                       FontSize="100" Foreground="White"
+                       RelativePanel.AlignHorizontalCenterWithPanel="True"/>
+
+                <TextBlock Text="Your very own study buddy!" Foreground="White"
+                       FontSize="50" FontFamily="Georgia" FontStyle="Italic" RelativePanel.Below="title"
+                           RelativePanel.AlignHorizontalCenterWithPanel="True"/>
+
+            </RelativePanel>
+
+            <Button MinHeight="50" MinWidth="200" Click="Button_Click" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="Transparent" BorderBrush="White">
+                    <RelativePanel>
+                        <Image Source="/Assets/msLogo.png" Height="40" Width="40" x:Name="msLogo"/>
+                        <TextBlock RelativePanel.RightOf="msLogo" Text="Login with Microsoft Account" FontSize="20" Margin="8,4,0,0"/>
+                    </RelativePanel>
+                </Button>
+
+        </Grid>
+
+    </Grid>
 
 </Page>

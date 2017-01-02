@@ -50,6 +50,20 @@
 
             <Controls:HamburgerMenu.SecondaryButtons>
                 <!--  settingspage button  -->
+
+                <Controls:HamburgerButtonInfo x:Name="ProfileButton" PageParameter="0"
+                                              PageType="views:AboutPage">
+                    <Controls:HamburgerButtonInfo.NavigationTransitionInfo>
+                        <SuppressNavigationTransitionInfo />
+                    </Controls:HamburgerButtonInfo.NavigationTransitionInfo>
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Width="48" Height="48"
+                                    Symbol="Contact" />
+                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center"
+                                   Text="Profile" />
+                    </StackPanel>
+                </Controls:HamburgerButtonInfo>
+                
                 <Controls:HamburgerButtonInfo x:Name="AboutButton" PageParameter="0"
                                           PageType="views:AboutPage">
                     <Controls:HamburgerButtonInfo.NavigationTransitionInfo>

@@ -76,54 +76,6 @@ namespace vFlash.Models
             }
         }
 
-        //private DateTime _createdAt;
-
-        //[JsonProperty(PropertyName = "CreatedAt")]
-        //public DateTime CreatedAt
-        //{
-        //    get { return _createdAt; }
-        //    set
-        //    {
-        //        if (_createdAt != value)
-        //        {
-        //            _createdAt = value;
-        //            NotifyPropertyChanged();
-        //        }
-        //    }
-        //}
-
-
-        #region Methods
-
-        //public async Task<IList<StackViewController>> GetList()
-        //{
-        //    try
-        //    {
-        //        return await App.MobileService.GetTable<StackViewController>().ToListAsync();
-        //    }
-
-        //    catch
-        //    {
-        //        //error
-        //        return null;
-        //    }
-        //}
-
-        //public async Task<IList<StackViewController>> GetQueriedList(IMobileServiceTableQuery<StackViewController> query)
-        //{
-        //    try
-        //    {
-        //        return await query.ToListAsync();
-        //    }
-
-        //    catch
-        //    {
-        //        // error
-        //        return null;
-        //    }
-        //}
-
-        #endregion
 
 
     } // end class

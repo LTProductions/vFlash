@@ -111,7 +111,7 @@ namespace vFlash.Models
                 return await App.MobileService.GetTable<T>().ToListAsync();
             }
 
-            catch
+            catch(Exception e)
             {
                 //error
                 return null;

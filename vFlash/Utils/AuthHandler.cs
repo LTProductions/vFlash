@@ -64,7 +64,8 @@ namespace vFlash.Utils
                 {
                     var user = await this.Client.LoginAsync(MobileServiceAuthenticationProvider.MicrosoftAccount);
                     // we're now logged in again.
-                    
+                    App.MobileService.CurrentUser = this.Client.CurrentUser;
+
 
                     // Clone the request
                     clonedRequest = await CloneRequest(request);

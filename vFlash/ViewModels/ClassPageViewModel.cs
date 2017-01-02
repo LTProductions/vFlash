@@ -73,6 +73,16 @@ namespace vFlash.ViewModels
             get { return _addClassNavCommand; }
         }
 
+
+        private DelegateCommand<ClassData> _deleteClassCommand;
+        /// <summary>
+        /// Command used for deleting an item from the database.
+        /// </summary>
+        public DelegateCommand<ClassData> DeleteClassCommand
+        {
+            get { return _deleteClassCommand; }
+        }
+
         #endregion
 
         #region Constructor
@@ -91,6 +101,8 @@ namespace vFlash.ViewModels
 
             });
 
+            _deleteClassCommand = new DelegateCommand<ClassData>(DeleteClass);
+
             #endregion
         }
 
@@ -106,6 +118,11 @@ namespace vFlash.ViewModels
         {
             var cd = new ClassData();
             ClassList = new ObservableCollection<ClassData>(await cd.GetList<ClassData>());
+        }
+
+        private async void DeleteClass(ClassData classItem)
+        {
+            await classItem.DeleteItem(classItem);
         }
 
         #endregion

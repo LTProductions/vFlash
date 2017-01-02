@@ -41,6 +41,7 @@ namespace vFlash.Controls
                 await SavedLogin.MSLogin(true);
                 // Fire the event!
                 LoggedIn.Invoke(this, EventArgs.Empty);
+                Shell.HamburgerMenu.NavigationService.Navigate(typeof(Views.MainPage));
             }
             catch(WebException)
             {

@@ -96,5 +96,21 @@ namespace vFlash.ViewModels
         #endregion
 
 
+        #region Methods
+
+        /// <summary>
+        /// Deletes the passed item from the Azure database.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public async void DeleteItem(object item)
+        {
+            var azureItem = new BaseAzureModel();
+            await azureItem.DeleteItem(item);
+        }
+
+        #endregion
+
+
     }
 }

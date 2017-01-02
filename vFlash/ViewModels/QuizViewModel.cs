@@ -605,14 +605,12 @@ namespace vFlash.ViewModels
                     ID = (index + 1).ToString() + ".",
                     Question = QuizObjectList.ElementAt(index).Question,
                     A = QuizObjectList.ElementAt(index).A,
-                    ABG = string.Equals(QuizObjectList.ElementAt(index).A, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
                     B = QuizObjectList.ElementAt(index).B,
-                    BBG = string.Equals(QuizObjectList.ElementAt(index).B, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
-                    C = QuizObjectList.ElementAt(index).C,
-                    CBG = string.Equals(QuizObjectList.ElementAt(index).C, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
-                    D = QuizObjectList.ElementAt(index).D,
-                    DBG = string.Equals(QuizObjectList.ElementAt(index).D, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED"
+                    C = QuizObjectList.ElementAt(index).C,                  
+                    D = QuizObjectList.ElementAt(index).D,                  
                 };
+
+                SetBGCorrectOrIncorrect();
             }
 
             else
@@ -620,6 +618,7 @@ namespace vFlash.ViewModels
                 // Hide the review and show the score again.
                 ShowReviewBool = false;
                 ShowScoreBool = true;
+                ShowQuizBool = false;
             }
             
         }
@@ -639,14 +638,12 @@ namespace vFlash.ViewModels
                     ID = (index + 1).ToString() + ".",
                     Question = QuizObjectList.ElementAt(index).Question,
                     A = QuizObjectList.ElementAt(index).A,
-                    ABG = string.Equals(QuizObjectList.ElementAt(index).A, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
                     B = QuizObjectList.ElementAt(index).B,
-                    BBG = string.Equals(QuizObjectList.ElementAt(index).B, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
                     C = QuizObjectList.ElementAt(index).C,
-                    CBG = string.Equals(QuizObjectList.ElementAt(index).C, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED",
                     D = QuizObjectList.ElementAt(index).D,
-                    DBG = string.Equals(QuizObjectList.ElementAt(index).D, flashCards.ElementAt(index).Word_Side1) ? "GREEN" : "RED"
                 };
+
+                SetBGCorrectOrIncorrect();
             }
 
             else
@@ -654,6 +651,7 @@ namespace vFlash.ViewModels
                 // Hide the review and show the score again.
                 ShowReviewBool = false;
                 ShowScoreBool = true;
+                ShowQuizBool = false;
             }
         }
 

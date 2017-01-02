@@ -40,7 +40,6 @@ namespace vFlash.Views
         {
            MyHamburgerMenu.NavigationService.Navigate(typeof(Views.MainPage));
            LoginModal.IsModal = false;
-           
         }
 
         public static void SetLoginModal()

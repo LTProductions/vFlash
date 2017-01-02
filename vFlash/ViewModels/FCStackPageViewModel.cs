@@ -105,6 +105,8 @@ namespace vFlash.ViewModels
                 this.NavigationService.Navigate(typeof(Views.InteractiveVoicePage), passedItem);
             });
 
+            DeleteItemCommand = new DelegateCommand<object>(DeleteItem);
+
             #endregion
         }
 

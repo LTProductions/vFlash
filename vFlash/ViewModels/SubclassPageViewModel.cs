@@ -5,10 +5,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Template10.Mvvm;
 using Template10.Services.NavigationService;
 using vFlash.Models;
 using Windows.UI.Xaml.Navigation;
+using Prism.Commands;
 
 namespace vFlash.ViewModels
 {
@@ -83,6 +83,8 @@ namespace vFlash.ViewModels
                 // Navigate and pass passedItem.
                 this.NavigationService.Navigate(typeof(Views.SubclassAddPage), passedItem);
             });
+
+            DeleteItemCommand = new DelegateCommand<object>(DeleteItem);
 
             #endregion
         }

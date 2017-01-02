@@ -104,7 +104,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{StaticResource CustomBGColor}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -155,12 +155,13 @@
 
         <RelativePanel Grid.Row="1" Margin="4,8,0,0">
 
-            <Button x:Name="NavClassesButton" Content="Classes" Padding="4" Margin="12,12,0,0" Height="110" Width="110" Command="{Binding NavToClassesCommand}">
+            <Button x:Name="NavClassesButton" Content="Classes" FontSize="20" FontWeight="SemiBold" Padding="4" Margin="12,12,0,0" Height="110" Width="150" Command="{Binding NavToClassesCommand}">
                 <Button.Background>
-                    <ImageBrush ImageSource="/Assets/Book-icon.png"/>
+                    <ImageBrush ImageSource="/Assets/New-Book-icon.png"/>
                 </Button.Background>
             </Button>
-            <Button x:Name="NavQuickAddButton" Content="Quick Add" Padding="4" Margin="12,12,0,0" RelativePanel.RightOf="NavClassesButton" Height="110"
+            <Button x:Name="NavQuickAddButton" Content="Quick Add" Padding="4" FontSize="20" FontWeight="SemiBold"
+                    Margin="12,12,0,0" RelativePanel.RightOf="NavClassesButton" Height="110"
                     Width="150" Command="{Binding NavToQuickAddCommand}">
                 <Button.Background>
                     <ImageBrush ImageSource="/Assets/CardStack.png"/>
