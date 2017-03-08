@@ -594,10 +594,12 @@ namespace vFlash.ViewModels
         /// </summary>
         private void NextReviewQuestion()
         {
+            index++;
+
             // Make sure we aren't at the end of the list.
             if (index < QuizObjectList.Count())
             {
-                index++;
+                
 
                 // Set the object to the new question based on the index.
                 QuizObject = new QuizModel()

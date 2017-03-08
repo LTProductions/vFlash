@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using vFlash.Models;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Net.Http;
 
 namespace vFlash.ViewModels
 {
@@ -173,6 +174,18 @@ namespace vFlash.ViewModels
             else
             {
                 DataLoaded = true;
+            }
+
+            try
+            {
+                var userInfo = await App.MobileService.InvokeApiAsync(
+        "userInfo", HttpMethod.Get, null);
+                Debug.WriteLine(userInfo.ToString() + "HELLO");
+            }
+            catch (Exception e)
+            {
+
+                Debug.WriteLine(e.ToString());
             }
         }
 
