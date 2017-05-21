@@ -270,6 +270,7 @@ namespace vFlash.ViewModels
 
             _startSessionCommand = new DelegateCommand(async delegate ()
             {
+                InSession = true;
                 await ReadCurrentQuestion();
             });
 
@@ -322,6 +323,9 @@ namespace vFlash.ViewModels
             LoadMediaElements();
             await LoadFlashcards();
             Views.Busy.SetBusy(false);
+
+            // Set InSession back to false in case this page is navigated back to.
+            InSession = false;
         }
 
         /// <summary>
@@ -413,6 +417,7 @@ namespace vFlash.ViewModels
             // Session is over.
             else
             {
+                InSession = false;
                 await SpeakAndAwaitMediaEnded("Okay, let's look at your score.");
                 // save and show score.
                 await SaveScoreList();
@@ -427,6 +432,15 @@ namespace vFlash.ViewModels
         /// <returns></returns>
         private async Task CheckUserAnswer(string userAnswer)
         {
+            // Not in session means the session was cancelled.
+            if (!InSession)
+                return;
+
+            // If the string object is null, the operation was cancelled.
+            if (userAnswer == null)
+            {
+                return;
+            }
             // If the user gave the correct answer...
             if (string.Equals(userAnswer, flashCards[index].Word_Side1))
             {
@@ -472,6 +486,10 @@ namespace vFlash.ViewModels
         /// <returns></returns>
         private async Task TryAgainOrMoveOn()
         {
+            // Not in session means the session was cancelled.
+            if (!InSession)
+                return;
+
             // If the user can try again...
             if (tryAgainAttempts == 0)
             {
@@ -522,6 +540,10 @@ namespace vFlash.ViewModels
         /// <returns></returns>
         private async Task CheckTryAgainAnswer(string userResponse)
         {
+            // Not in session means the session was cancelled.
+            if (!InSession)
+                return;
+
             // Check to see if the user says "yes".
             bool userSaidYes = Utils.SpeechConstants.CheckForYes(userResponse);
 
@@ -679,6 +701,9 @@ namespace vFlash.ViewModels
         /// <returns></returns>
         private async Task StopSession()
         {
+            // Stop session.
+            InSession = false;
+
             if (SpeakMedia.CanPause)
                 SpeakMedia.Stop();
             if (ListeningSoundMedia.CanPause)
@@ -686,24 +711,32 @@ namespace vFlash.ViewModels
 
             if (recognitionOperation != null)
             {
-                if (recognitionOperation.Status != AsyncStatus.Completed)
-                {
+               if (recognitionOperation.Status != AsyncStatus.Completed)
+               {
                     try
                     {
-                        recognitionOperation.Cancel();
-                        recognitionOperation.Close();
+                      recognitionOperation.Cancel();
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine(e.ToString());
+                        Debug.WriteLine("CANCEL TRYCATCH" + e.ToString());
                     }
-                }
+               }
             }
 
             if (speechRecognizer != null)
-                await speechRecognizer.StopRecognitionAsync();
+            {
+                try
+                {
+                    await speechRecognizer.StopRecognitionAsync();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.ToString());
+                }
+            }
             
-
+            // ***TODO***
             // Show modal dialog and ask the user if they're sure they want to cancel; data will be lost.
             // If yes, go back.
         }
@@ -824,6 +857,7 @@ namespace vFlash.ViewModels
                     // Check for success.
                     if (speechResult.Status == SpeechRecognitionResultStatus.Success)
                     {
+                        string y = speechResult.Text;
                         return speechResult.Text;
                     }
 
@@ -831,6 +865,8 @@ namespace vFlash.ViewModels
                     else if (speechResult.Status == SpeechRecognitionResultStatus.UserCanceled)
                         return string.Empty;
 
+                    else if (recognitionOperation.Status == AsyncStatus.Canceled) 
+                        return null;
                     // Else, the recognition has failed.
                     else
                     {
@@ -866,7 +902,7 @@ namespace vFlash.ViewModels
                 else
                 {
                     Debug.WriteLine(exception.Message);
-                    return string.Empty;
+                    return null;
                 }
             } // end catch (Exception exception)
         }
@@ -939,7 +975,27 @@ namespace vFlash.ViewModels
             e.Handled = true;
             if (InSession)
             {
-                await StopSession();
+                if (NavigationService.CanGoBack)
+                {
+                    await StopSession();
+                    this.NavigationService.Frame.GoBack();
+                }
+                else
+                {
+                    NavigationService.Frame.Navigate(typeof(Views.MainPage));
+                }
+                
+            }
+            else
+            {
+                if (NavigationService.CanGoBack)
+                {
+                    this.NavigationService.Frame.GoBack();
+                }
+                else
+                {
+                    NavigationService.Frame.Navigate(typeof(Views.MainPage));
+                }
             }
         }
 

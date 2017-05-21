@@ -15,7 +15,7 @@
         <vm:ClassAddPageViewModel x:Name="ClassAddPageViewModel" />
     </Page.DataContext>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{StaticResource CustomBGColor}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -83,7 +83,8 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <Button x:Name="AddTextBox" Content="Add" Margin="12,8,0,0" RelativePanel.AlignLeftWith="ClassTextBoxes" RelativePanel.Below="ClassTextBoxes"
+                <Button x:Name="AddTextBox" Style="{StaticResource CustomButtonStyle}"
+                        Content="Add" Margin="12,8,0,0" RelativePanel.AlignLeftWith="ClassTextBoxes" RelativePanel.Below="ClassTextBoxes"
                         Command="{Binding AddTextBoxCommand}"/>
             </RelativePanel>
 

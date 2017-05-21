@@ -334,7 +334,7 @@ namespace vFlash.ViewModels
         /// <returns></returns>
         public string CheckBoxText(string val)
         {
-            var r = new Regex("[^\\w #-]+");
+            var r = new Regex("[@_]");
             return r.Replace(val, "");
         }
 
@@ -345,7 +345,7 @@ namespace vFlash.ViewModels
         /// <returns></returns>
         public string CheckBox2Text(string val)
         {
-            var r = new Regex("[a-zA-Z0-9!#*&^%$?]+");
+            var r = new Regex("[@_]");
             return r.Replace(val, "");
         }
 

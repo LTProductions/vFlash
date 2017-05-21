@@ -15,7 +15,7 @@
         <vm:ClassPageViewModel x:Name="ClassPageViewModel" />
     </Page.DataContext>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{StaticResource CustomBGColor}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -63,15 +63,22 @@
             </controls:PageHeader> -->
 
 
-            <ListBox x:Name="Classes" ItemsSource="{Binding ClassList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
-                <ListBox.ItemTemplate>
+            <GridView Margin="8"
+                x:Name="Classes" ItemsSource="{Binding ClassList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+                <GridView.ItemTemplate>
                     <DataTemplate>
-                        <RelativePanel>
-                            <TextBlock Text="{Binding Name}" />
+                        <RelativePanel Height="170" Width="170">
+                            <RelativePanel.Background>
+                                <ImageBrush ImageSource="/Assets/Book-icon.png"/>
+                            </RelativePanel.Background>
+                            <TextBlock Text="{Binding Name}" Foreground="White" FontWeight="Bold"
+                                       FontSize="25" TextWrapping="Wrap"
+                                       RelativePanel.AlignHorizontalCenterWithPanel="True"
+                                       RelativePanel.AlignVerticalCenterWithPanel="True"/>
                         </RelativePanel>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </GridView.ItemTemplate>
+            </GridView>
 
         </RelativePanel>
 
