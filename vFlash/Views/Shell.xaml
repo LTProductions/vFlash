@@ -14,7 +14,21 @@
 
     <Grid>
 
-        <Controls:HamburgerMenu x:Name="MyHamburgerMenu">
+        <Controls:HamburgerMenu x:Name="MyHamburgerMenu"
+                HamburgerBackground="#0c04a6"
+                HamburgerForeground="White"
+                NavAreaBackground="#0517de"
+                NavButtonBackground="#3a3ae0"
+                SecondarySeparator="White"
+                NavButtonForeground="White"
+                NavButtonCheckedBackground="#0c04a6"
+                NavButtonCheckedForeground="White"
+                NavButtonCheckedIndicatorBrush="White"
+                NavButtonHoverBackground="#7394ff"
+                NavButtonHoverForeground="White"
+                NavButtonPressedBackground="#09028c"
+                NavButtonPressedForeground="White"
+                DisplayMode="CompactOverlay">
 
             <Controls:HamburgerMenu.PrimaryButtons>
                 <!--  mainpage button  -->

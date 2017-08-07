@@ -22,6 +22,7 @@ namespace vFlash.Views
             InitializeComponent();
             if (App.MobileService.CurrentUser == null)
                 LoginModal.IsModal = true;
+
         }
 
         public Shell(INavigationService navigationService) : this()

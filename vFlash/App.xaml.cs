@@ -9,6 +9,7 @@ using System.Linq;
 using Microsoft.WindowsAzure.MobileServices;
 using vFlash.Models;
 using vFlash.Utils;
+using System.Diagnostics;
 
 namespace vFlash
 {
@@ -40,7 +41,7 @@ namespace vFlash
         // Mobile App
         public static MobileServiceClient MobileService =
         new MobileServiceClient(
-            "https://vflash.azurewebsites.net"
+            "https://vflashapp.azurewebsites.net/"
         );
 
 
@@ -62,7 +63,7 @@ namespace vFlash
                 }
                 catch
                 {
-
+                    Debug.WriteLine("LOGIN BROKEN.");
                 }
                 // create modal root
                 Window.Current.Content = new ModalDialog

@@ -43,7 +43,7 @@ namespace vFlash.Controls
                 LoggedIn.Invoke(this, EventArgs.Empty);
                 Shell.HamburgerMenu.NavigationService.Navigate(typeof(Views.MainPage));
             }
-            catch(WebException)
+            catch(WebException err)
             {
                 var msgDialog = new MessageDialog("Please check your internet connection.");
                 await msgDialog.ShowAsync();

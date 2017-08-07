@@ -113,7 +113,6 @@
         </Grid.RowDefinitions>
 
 
-
         <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
             <VisualStateManager.VisualStateGroups>
@@ -147,7 +146,7 @@
 
             <controls:PageHeader x:Name="pageHeader" RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
-                             RelativePanel.AlignTopWithPanel="True" Text="Main Page">
+                             RelativePanel.AlignTopWithPanel="True" Text="Home">
 
 
             </controls:PageHeader>
@@ -155,7 +154,7 @@
 
         <RelativePanel Grid.Row="1" Margin="4,8,0,0">
 
-            <Button x:Name="NavClassesButton" Content="Classes" FontSize="30" FontWeight="SemiBold" Padding="4" Margin="12,12,0,0" Height="140" Width="180" Command="{Binding NavToClassesCommand}">
+            <!--<Button x:Name="NavClassesButton" Content="Classes" FontSize="30" FontWeight="SemiBold" Padding="4" Margin="12,12,0,0" Height="140" Width="180" Command="{Binding NavToClassesCommand}">
                 <Button.Background>
                     <ImageBrush ImageSource="/Assets/New-Book-icon.png"/>
                 </Button.Background>
@@ -166,7 +165,7 @@
                 <Button.Background>
                     <ImageBrush ImageSource="/Assets/CardStack.png"/>
                 </Button.Background>
-            </Button>
+            </Button>-->
 
         </RelativePanel>
 
